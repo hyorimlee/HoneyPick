@@ -1,17 +1,23 @@
-import React, { useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import React, {memo} from 'react'
+import {Provider} from 'react-redux'
+import {NavigationContainer} from '@react-navigation/native'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import store from './src/store'
+import {useAppSelector} from './src/store/types'
+import {getIsLoggined} from './src/store/slices/user'
+import SignIn from './src/pages/SignIn'
+import SignUp from './src/pages/SignUp'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
-const App = () => {
-  const [tmp, setTmp] = useState(false)
+const InnerApp = memo(() => {
+  const isLoggined = useAppSelector(getIsLoggined)
 
   return (
     <NavigationContainer>
-      {tmp ? (
+      {isLoggined ? (
         <Tab.Navigator initialRouteName="">
           {/* <Tab.Screen
             name="EventPage"
@@ -31,19 +37,27 @@ const App = () => {
         </Tab.Navigator>
       ) : (
         <Stack.Navigator initialRouteName="SignIn">
-          {/* <Stack.Screen
+          <Stack.Screen
             name="SignIn"
             component={SignIn}
-            options={{title: '로그인'}}
+            options={{title: '로그인', headerShown: false}}
           />
           <Stack.Screen
             name="SignUp"
             component={SignUp}
-            options={{title: '회원가입'}}
-          /> */}
+            options={{title: '회원가입', headerShown: false}}
+          />
         </Stack.Navigator>
       )}
     </NavigationContainer>
+  )
+})
+
+const App = () => {
+  return (
+    <Provider store={store}>
+      <InnerApp />
+    </Provider>
   )
 }
 
