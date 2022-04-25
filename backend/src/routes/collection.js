@@ -1,14 +1,15 @@
 const { Router } = require('express')
 const collectionRouter = Router()
-const mongoose = require('mongoose')
+// const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { User } = require('../models')
+const { User, Collection } = require('../models')
 
 collectionRouter.post('/', async (req, res) => {
     try {
-        const collection = null
-        // 컬렉션 생성 로직
+        const { title, description } = req.body
 
+
+        // await collection.save()
         return res.status(201).send({ collection })
     } catch (error) {
         console.log(error)
@@ -18,12 +19,12 @@ collectionRouter.post('/', async (req, res) => {
 
 collectionRouter.get('/:userId', async (req, res) => {
     try {
-        const user = null
+        const { userId } = req.params
+        const collections = await Collection.find({ user: userId })
         // 컬렉션 목록 조회
         // 페이지네이션 필요할 듯
-        const collection = Array(1)
         
-        return res.status(200).send({ collection })
+        return res.status(200).send({ collections })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -32,9 +33,8 @@ collectionRouter.get('/:userId', async (req, res) => {
 
 collectionRouter.get('/:collectionId', async (req, res) => {
     try {
-        const collection = null
-        // 컬렉션 상세 조회
-        
+        const { collectionId } = req.params
+        const collection = await Collection.findById(collectionId)
         return res.status(200).send({ collection })
     } catch (error) {
         console.log(error)
@@ -45,9 +45,8 @@ collectionRouter.get('/:collectionId', async (req, res) => {
 
 collectionRouter.patch('/:collectionId', async (req, res) => {
     try {
-        const collection = null
-        // 프로필 수정 로직
-
+        const { collectionId } = req.params
+        const collection = await Collection.findOneAndUpdate({ _id: collectionId }, ...req.body, { new: true })
         return res.status(200).send({ collection })
     } catch (error) {
         console.log(error)
@@ -57,16 +56,13 @@ collectionRouter.patch('/:collectionId', async (req, res) => {
 
 collectionRouter.delete('/:collectionId', async (req, res) => {
     try {
-        const collection = null
-        // 프로필 삭제 로직
-
-        return res.status(200).send({ collection })
+        const { collectionId } = req.params
+        const collection = await Collection.findOneAndDelete({ _id: collectionId })
+        return res.status(204).send({ collection })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
     }
 })
 
-module.exports = {
-    collectionRouter
-}
+module.exports = { collectionRouter }
