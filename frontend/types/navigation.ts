@@ -1,6 +1,6 @@
-export type LoggedInParamList = {};
+export type LoggedInParamList = {}
 
 export type RootStackParamList = {
-  SignIn: undefined;
-  SignUp: undefined;
-};
+  SignIn: undefined
+  SignUp: undefined
+}
