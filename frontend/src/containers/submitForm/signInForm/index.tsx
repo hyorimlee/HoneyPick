@@ -8,7 +8,6 @@ import {noSpace, spaceAlert, usernameValid} from '../../../modules/valid'
 function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [isPressing, setIsPressing] = useState(false)
   const passwordRef = useRef<TextInput | null>(null)
 
   const usernameChanged = useCallback(
@@ -26,22 +25,14 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
   )
 
   const loginSubmit = useCallback(() => {
-    setIsPressing(false)
     Alert.alert('로그인')
-  }, [])
-
-  const pressIn = useCallback(() => {
-    setIsPressing(true)
-  }, [])
-
-  const pressOut = useCallback(() => {
-    setIsPressing(false)
   }, [])
 
   const focusPassword = () => {
     passwordRef.current?.focus()
   }
 
+  const buttonDisabled = !(username && password)
   return (
     <View style={{paddingHorizontal}}>
       <BaseTextInput
@@ -77,19 +68,10 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
       <BaseButton
         text={'로그인'}
         onPress={loginSubmit}
-        onPressIn={pressIn}
-        onPressOut={pressOut}
         marginVertical={10}
         paddingVertical={10}
         borderRadius={5}
-        backgroundColor={
-          !username || !password
-            ? '#C4C4C4'
-            : isPressing
-            ? '#FFD669'
-            : '#F9C12E'
-        }
-        disabled={username && password ? false : true}
+        disabled={buttonDisabled}
       />
     </View>
   )
