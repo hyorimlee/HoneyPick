@@ -12,7 +12,7 @@ export interface IComponentProps {
   color?: ColorValue
   fontSize?: number
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify'
-  backgroundColor?: ColorValue | '#F9C12E'
+  backgroundColor?: ColorValue
   borderRadius?: number
   borderWidth?: number
   borderColor?: ColorValue
