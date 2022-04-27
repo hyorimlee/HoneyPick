@@ -5,20 +5,32 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import store from './src/store'
 import {useAppSelector} from './src/store/types'
-import {getIsLoggined} from './src/store/slices/user'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
+import ProfileStack from './src/pages/profile'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
 const InnerApp = memo(() => {
-  const isLoggined = useAppSelector(getIsLoggined)
+  const isLoggined = useAppSelector(state => !!state.user.accessToken)
 
   return (
     <NavigationContainer>
       {isLoggined ? (
-        <Tab.Navigator initialRouteName="">
+        <Tab.Navigator
+          initialRouteName="Profile"
+          screenOptions={{
+            tabBarStyle: {
+              backgroundColor: '#FFD669',
+              borderTopLeftRadius: 30,
+            },
+          }}>
+          <Tab.Screen
+            name="Profile"
+            component={ProfileStack}
+            options={{title: '프로필', headerShown: false}}
+          />
           {/* <Tab.Screen
             name="EventPage"
             component={}
@@ -28,11 +40,6 @@ const InnerApp = memo(() => {
             name="RecommandPage"
             component={}
             options={{title: '추천'}}
-          />
-          <Tab.Screen
-            name="MyPage"
-            component={}
-            options={{title: '마이페이지'}}
           /> */}
         </Tab.Navigator>
       ) : (
