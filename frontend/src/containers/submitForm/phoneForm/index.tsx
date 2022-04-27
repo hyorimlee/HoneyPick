@@ -18,8 +18,7 @@ function PhoneForm({setValidPhone}: IComponentProps) {
   const phoneChanged = useCallback(
     (text: string) => {
       setPhone(
-        text
-          .replace(' ', '')
+        noSpace(text)
           .replace(/[^0-9]/g, '')
           .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, '$1-$2-$3')
           .replace(/(\-{1,2})$/g, ''),
@@ -36,23 +35,15 @@ function PhoneForm({setValidPhone}: IComponentProps) {
   )
 
   const phoneSubmit = useCallback(() => {
-    if (phone.length < 12) {
-      Alert.alert('핸드폰 번호를 모두 입력해주세요.')
-    } else {
-      Alert.alert('인증코드 요청')
-      setStatus('request')
-    }
+    Alert.alert('인증코드 요청')
+    setStatus('request')
+    setPhoneEditable(false)
   }, [phone])
 
   const codeSubmit = useCallback(() => {
-    if (code.length < 6) {
-      Alert.alert('인증코드 6자리를 모두 입력해주세요.')
-    } else {
-      Alert.alert('인증코드 검증')
-      setStatus('success')
-      setPhoneEditable(false)
-      setValidPhone(phone)
-    }
+    Alert.alert('인증코드 검증')
+    setStatus('success')
+    setValidPhone(phone)
   }, [code])
 
   return (
@@ -81,6 +72,7 @@ function PhoneForm({setValidPhone}: IComponentProps) {
             borderRadius={5}
             marginVertical={5}
             flex={2}
+            disabled={phone.length < 12}
           />
         ) : null}
       </HorizontalView>
@@ -104,6 +96,7 @@ function PhoneForm({setValidPhone}: IComponentProps) {
             borderRadius={5}
             marginVertical={5}
             flex={2}
+            disabled={code.length < 6}
           />
         </HorizontalView>
       ) : null}

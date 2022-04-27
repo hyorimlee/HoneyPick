@@ -18,7 +18,6 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
   const [phone, setPhone] = useState('')
   const passwordRef = useRef<TextInput | null>(null)
   const passwordConfirmRef = useRef<TextInput | null>(null)
-  const phoneRef = useRef<any>(null)
 
   const usernameChanged = useCallback(
     (text: string) => {
@@ -50,6 +49,7 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
     Alert.alert('회원가입 성공 하고 바로 로그인 시키기')
   }, [])
 
+  const buttonDisabled = !(username && password === passwordConfirm && phone)
   return (
     <View style={{paddingHorizontal}}>
       <BaseTextInput
@@ -104,6 +104,7 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onPress={signUpSubmit}
         marginVertical={10}
         borderRadius={5}
+        disabled={buttonDisabled}
       />
     </View>
   )
