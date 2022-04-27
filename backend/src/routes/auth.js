@@ -3,13 +3,16 @@ const authRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
 const { User } = require('../models')
+const bcrypt = require('becrypt')
+authRouter.get('/',(req,res)=> res.send("hello,world!"))
 
 authRouter.post('/signup', async (req, res) => {
     try {
-        const user = null
+        const {username,password,phone} = req.body
         // 회원가입 로직
-
-        return res.status(201).send({ user })
+        const user = new User(req.body)
+        await user.save()
+        return res.status(201).send({ username })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -34,6 +37,4 @@ authRouter.post('/login', async (req, res) => {
 })
 
 
-module.exports = {
-    authRouter
-}
+module.exports =  authRouter
