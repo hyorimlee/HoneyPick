@@ -9,7 +9,8 @@ export interface IComponentProps {
   value: string
   onChangeText: (text: string) => void
   placeholder: string
-  placeholderTextColor: string
+  placeholderTextColor?: string
+  defaultValue?: string
   importantForAutofill?:
     | 'yes'
     | 'auto'
@@ -94,7 +95,6 @@ export interface IComponentProps {
     | 'phone-pad'
     | undefined
   returnKeyType?: ReturnKeyTypeOptions | undefined
-  blurOnSubmit?: boolean | undefined
   onSubmitEditing?: () => void
   secureTextEntry?: boolean | undefined
   marginHorizontal?: string | number
@@ -114,6 +114,7 @@ export interface IComponentProps {
   }: {
     nativeEvent: NativeSyntheticEvent<TextInputKeyPressEventData>
   }) => void
+  multiline?: boolean
 }
 
 export interface IStyleProps {

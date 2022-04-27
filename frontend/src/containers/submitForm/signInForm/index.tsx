@@ -41,12 +41,10 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onSubmitEditing={focusPassword}
         onKeyPress={spaceAlert}
         placeholder={'아이디'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'auto'} // Android
         autoComplete={'username'} // Android
         textContentType={'username'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         maxLength={10}
       />
       <BaseTextInput
@@ -56,12 +54,10 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onSubmitEditing={loginSubmit}
         onKeyPress={spaceAlert}
         placeholder={'비밀번호'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'yes'} // Android
         autoComplete={'password'}
         textContentType={'password'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         secureTextEntry
         maxLength={30}
       />
