@@ -6,8 +6,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import store from './src/store'
 import {useAppSelector} from './src/store/types'
 import {getIsLoggined} from './src/store/slices/user'
-import SignIn from './src/pages/SignIn'
-import SignUp from './src/pages/SignUp'
+import SignIn from './src/pages/signIn'
+import SignUp from './src/pages/signUp'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()

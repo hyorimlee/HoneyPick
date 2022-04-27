@@ -1,8 +1,8 @@
 import styled from 'styled-components/native'
 
-const NavigateContainer = styled.View.attrs(() => {})`
+const HorizontalView = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `
 
-export {NavigateContainer}
+export {HorizontalView}
