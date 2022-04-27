@@ -9,7 +9,8 @@ function BaseTextInput(
     value,
     onChangeText,
     placeholder,
-    placeholderTextColor,
+    placeholderTextColor = '#C4C4C4',
+    defaultValue,
     importantForAutofill,
     autoComplete,
     textContentType,
@@ -30,6 +31,7 @@ function BaseTextInput(
     maxLength,
     editable,
     onKeyPress,
+    multiline,
   }: IComponentProps,
   ref?: React.Ref<TextInput | null>,
 ) {
@@ -40,6 +42,7 @@ function BaseTextInput(
       onChangeText={onChangeText}
       placeholder={placeholder}
       placeholderTextColor={placeholderTextColor}
+      defaultValue={defaultValue}
       importantForAutofill={importantForAutofill} // Android
       autoComplete={autoComplete} // Android
       clearButtonMode={'while-editing'} // ios
@@ -62,6 +65,7 @@ function BaseTextInput(
       maxLength={maxLength}
       editable={editable}
       onKeyPress={onKeyPress}
+      multiline={multiline}
     />
   )
 }

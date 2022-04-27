@@ -60,7 +60,6 @@ function PhoneForm({setValidPhone}: IComponentProps) {
           textContentType={'telephoneNumber'} // ios
           keyboardType={'number-pad'}
           returnKeyType={'send'}
-          blurOnSubmit={false}
           flex={3}
           maxLength={13}
           editable={phoneEditable}
@@ -86,7 +85,6 @@ function PhoneForm({setValidPhone}: IComponentProps) {
             placeholderTextColor={'#C4C4C4'}
             keyboardType={'number-pad'}
             returnKeyType={'send'}
-            blurOnSubmit={false}
             flex={3}
             maxLength={6}
           />
