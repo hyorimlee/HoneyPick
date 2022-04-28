@@ -2,12 +2,24 @@ const { Router } = require('express')
 const collectionRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { User } = require('../models')
+const { User, Collection, Profile } = require('../models')
 
 collectionRouter.post('/', async (req, res) => {
     try {
-        const collection = null
-        // 컬렉션 생성 로직
+        // jwt 검증: user 추출 및 검증
+        // const user = await User.findById(userId)
+
+        // title, description, isPublic 추출 및 검증
+        const { title, description, isPublic } = req.body
+        if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
+        if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"});
+        if (typeof isPublic !== 'boolean') return res.status(400).send({ err: "boolean isPublic is required"});
+        
+        // 컬렉션 자체 추가
+        const collection = new Collection({ ...req.body, user })
+        await collection.save()
+        // 프로필의 컬렉션 목록에 추가
+        // const blog = Profile.
 
         return res.status(201).send({ collection })
     } catch (error) {
