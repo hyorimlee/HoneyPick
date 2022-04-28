@@ -60,12 +60,10 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onSubmitEditing={() => passwordRef.current?.focus()}
         onKeyPress={spaceAlert}
         placeholder={'아이디'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'yes'} // Android
         autoComplete={'username'} // Android
         textContentType={'username'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         maxLength={10}
       />
       <BaseTextInput
@@ -75,12 +73,10 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onSubmitEditing={() => passwordConfirmRef.current?.focus()}
         onKeyPress={spaceAlert}
         placeholder={'비밀번호'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'yes'} // Android
         autoComplete={'password'} // Android
         textContentType={'password'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         secureTextEntry
         maxLength={30}
       />
@@ -91,12 +87,10 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onSubmitEditing={() => {}}
         onKeyPress={spaceAlert}
         placeholder={'비밀번호 확인'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'yes'} // Android
         autoComplete={'password'} // Android
         textContentType={'password'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         secureTextEntry
         borderBottomColor={passwordConfirmError ? 'red' : '#FFD669'}
       />
