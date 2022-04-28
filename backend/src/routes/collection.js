@@ -68,9 +68,8 @@ collectionRouter.patch('/:collectionId', async (req, res) => {
 
 collectionRouter.delete('/:collectionId', async (req, res) => {
     try {
-        const collection = null
-        // 프로필 삭제 로직
-
+        const { collectionId } = req.params
+        const collection = await Collection.findByIdAndDelete(collectionId)
         return res.status(200).send({ collection })
     } catch (error) {
         console.log(error)
