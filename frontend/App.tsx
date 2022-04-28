@@ -6,9 +6,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import store from './src/store'
 import {useAppSelector} from './src/store/types'
 import {getIsLoggined} from './src/store/slices/user'
-import SignIn from './src/pages/SignIn'
-import SignUp from './src/pages/SignUp'
-import Item from './src/pages/Item'
+import SignIn from './src/pages/signIn'
+import SignUp from './src/pages/signUp'
+import Item from './src/pages/item'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -37,7 +37,7 @@ const InnerApp = memo(() => {
           /> */}
         </Tab.Navigator>
       ) : (
-        <Stack.Navigator initialRouteName="SignIn">
+        <Stack.Navigator initialRouteName="Item">
           <Stack.Screen
             name="SignIn"
             component={SignIn}
@@ -48,11 +48,11 @@ const InnerApp = memo(() => {
             component={SignUp}
             options={{title: '회원가입', headerShown: false}}
           />
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Item"
             component={Item}
             options={{title: '아이템', headerShown: false}}
-          /> */}
+          />
         </Stack.Navigator>
       )}
     </NavigationContainer>
