@@ -1,12 +1,12 @@
 import * as React from 'react'
 import {memo} from 'react'
 import {View, Text, Image} from 'react-native'
+import RecommendBar from '../../containers/recommendBar'
 import {Container, ImageContainer, PriceText, DashedBorder} from './styles'
 
 function Item() {
   return (
     <Container>
-      <Text>아이템</Text>
       <ImageContainer
         source={require('../../assets/images/sampleimage1.jpg')}
         imageStyle={{
@@ -26,6 +26,7 @@ function Item() {
       {/* dashedborder 안먹는 중 */}
       <DashedBorder />
       <Text>다른 허니비들이 이 아이템을 추천하는 이유</Text>
+      <RecommendBar></RecommendBar>
     </Container>
   )
 }
