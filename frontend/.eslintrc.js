@@ -14,6 +14,7 @@ module.exports = {
           'error',
           {
             endOfLine: 'auto',
+            semicolon: 0
           },
         ],
         semicolon: false,
