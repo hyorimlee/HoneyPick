@@ -1,11 +1,14 @@
 import * as React from 'react'
 import {memo, useCallback, useRef, useState} from 'react'
-import {Alert, TextInput, View} from 'react-native'
+import {TextInput, View} from 'react-native'
 import BaseTextInput from '../../../components/textInput/base/index'
 import BaseButton from '../../../components/button/base/index'
 import {noSpace, spaceAlert, usernameValid} from '../../../modules/valid'
+import {useAppDispatch} from '../../../store/types'
+import {requestSignIn} from '../../../store/slices/user'
 
 function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
+  const dispatch = useAppDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const passwordRef = useRef<TextInput | null>(null)
@@ -25,7 +28,7 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
   )
 
   const loginSubmit = useCallback(() => {
-    Alert.alert('로그인')
+    dispatch(requestSignIn())
   }, [])
 
   const focusPassword = () => {
