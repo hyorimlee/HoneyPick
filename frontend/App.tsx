@@ -7,6 +7,7 @@ import store from './src/store'
 import {useAppSelector} from './src/store/types'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
+import Item from './src/pages/item'
 import ProfileStack from './src/pages/profile'
 
 const Tab = createBottomTabNavigator()
@@ -43,7 +44,7 @@ const InnerApp = memo(() => {
           /> */}
         </Tab.Navigator>
       ) : (
-        <Stack.Navigator initialRouteName="SignIn">
+        <Stack.Navigator initialRouteName="Item">
           <Stack.Screen
             name="SignIn"
             component={SignIn}
@@ -53,6 +54,11 @@ const InnerApp = memo(() => {
             name="SignUp"
             component={SignUp}
             options={{title: '회원가입', headerShown: false}}
+          />
+          <Stack.Screen
+            name="Item"
+            component={Item}
+            options={{title: '아이템', headerShown: false}}
           />
         </Stack.Navigator>
       )}
