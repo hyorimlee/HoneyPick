@@ -50,5 +50,25 @@ authRouter.post('/signup', async (req, res) => {
     }
 })
 
+authRouter.post('/login', async (req, res) => {
+    try {
+        const {username,password} = req.body
+        if(!username || !password) return res.status(400).send({err:'username and password is mandatory!'})
+        try{
+            const user = await User.findOne({username:username})
+            if(user.withdraw==true) return res.status(400).send({err:`${await user.usename} is withdrawn user!`})
+            if(await bcrypt.compare(password,user.password)==false) return res.status(400).send({err:'wrong password'})
+            const accessToken = await generateAccessToken(user._id)
+            const refreshToken = await generateRefreshToken(user._id)
+            return res.status(201).send({userPk:user._id,username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
+        }catch(err){
+            console.log(err)
+            return res.status(400).send({err:'error occurred while login'})
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({ err: error.message })
+    }
+})
 module.exports =  authRouter
 module.exports.authAccessToken = authAccessToken
