@@ -8,7 +8,6 @@ var http = require('http'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
-const { collectionRouter } = require('./src/routes/collection');
 
 require('dotenv').config()
 var isProduction = process.env.NODE_ENV === 'production'
@@ -39,17 +38,11 @@ if(isProduction){
   mongoose.set('debug', true)
 }
 
-require('./src/models/User');
 
-<<<<<<< HEAD
-app.use('/',require('./src/routes'))
-// catch 404 and forward to error handler
-=======
-app.use(require('./src/routes'))
-app.use('/collection', collectionRouter)
+app.use('/api/v1',require('./src/routes'))
+
 
 /// catch 404 and forward to error handler
->>>>>>> ea63f03a648f4256bc6235f7870619aeaf0269e7
 app.use(function(req, res, next) {
   var err = new Error('Not Found server')
   err.status = 404;
