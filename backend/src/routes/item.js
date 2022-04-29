@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
 const { Item } = require('../models')
 
+const axios = require('axios')
+
 CRAWLING_SERVER_URL = process.env.CRAWLING_SERVER_URL
 
 itemRouter.post('/', async (req, res) => {
@@ -14,19 +16,30 @@ itemRouter.post('/', async (req, res) => {
         if(typeof url !== 'string') return res.status(400).send({ err: "url is required" })
 
         let item = await Item.findOne({ url })
-        if(!item) {
+        // item이 존재하지않거나, 크롤링이 진행되지 않았을 경우
+        // 크롤링이 진행되지 않았을 경우는 나중에 제거하거나 updatedAt을 통해 체크 후 크롤링 요청 필요로 변경
+        if(!item || !item.title) {
             // mongodb에 데이터 생성
-            item = new Item({ ...req.body })
-            await item.save()
+            if(!item){
+                item = new Item({ ...req.body })
+                await item.save()
+            }
             // 크롤링 서버 요청 (Return 필요없음)
-            axios({
-                method: 'post',
-                url: `${CRAWLING_SERVER_URL}/item`,
-                data: {
-                    url: url,
-                    _id: item._id,
-                }
-            })
+            test = false
+            if(!test) {
+                axios({
+                    method: 'post',
+                    url: `${CRAWLING_SERVER_URL}/item`,
+                    data: {
+                        url: url,
+                        item_id: item._id,
+                    }
+                }).then(() => {
+                    console.log('item crawl success')
+                }).catch(({response}) => {
+                    console.log(response.data.detail)
+                })
+            }
         }
         return res.status(201).send({ item })
     } catch (error) {
@@ -74,6 +87,4 @@ itemRouter.patch('/:itemId/review', async (req, res) => {
     }
 })
 
-module.exports = {
-    itemRouter
-}
+module.exports = itemRouter
