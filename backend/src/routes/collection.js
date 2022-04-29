@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
 const { User, Collection, Profile } = require('../models')
 
+// 컬렉션 생성
 collectionRouter.post('/', async (req, res) => {
   try {
     // jwt 검증: user 추출 및 검증
@@ -30,9 +31,12 @@ collectionRouter.post('/', async (req, res) => {
   }
 })
 
+// 컬렉션 목록 조회
 collectionRouter.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params
+    let { page=1 } = req.query
+    page = parseInt(page)
     if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId"})
     const user = await User.findById(userId)
     // 컬렉션 목록 조회 w/ pagination. 최신 업데이트 순. page는 1부터 시작. 3개씩 조회.
@@ -44,11 +48,11 @@ collectionRouter.get('/:userId', async (req, res) => {
   }
 })
 
+// 컬렉션 상세 조회
 collectionRouter.get('/:collectionId', async (req, res) => {
   try {
-    const collection = null
-    // 컬렉션 상세 조회
-
+    const { collectionId } = req.params
+    const collection = await Collection.findById(collectionId)
     return res.status(200).send({ collection })
   } catch (error) {
     console.log(error)
@@ -56,7 +60,7 @@ collectionRouter.get('/:collectionId', async (req, res) => {
   }
 })
 
-
+// 컬렉션 수정(제목, 설명, 아이템, 공개여부)
 collectionRouter.patch('/:collectionId', async (req, res) => {
   try {
     const collection = null
@@ -69,6 +73,7 @@ collectionRouter.patch('/:collectionId', async (req, res) => {
   }
 })
 
+// 컬렉션 삭제
 collectionRouter.delete('/:collectionId', async (req, res) => {
   try {
     const { collectionId } = req.params
