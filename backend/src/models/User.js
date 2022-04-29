@@ -12,8 +12,9 @@ const UserSchema = new Schema({
     nickname: String,
     image: String,
     description: String,
-    following: [UserSchema],
-    follower: [UserSchema],
+
+    // following: [UserSchema],
+    // follower: [UserSchema],
     
     // Chat도 Collection의 Hashtags와 마찬가지
     // chat: []
@@ -25,4 +26,4 @@ const UserSchema = new Schema({
 
 const User = model('user', UserSchema)
 
-module.exports = { User }
+module.exports = { User, UserSchema }
