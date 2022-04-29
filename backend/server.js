@@ -8,42 +8,45 @@ var http = require('http'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
+const { collectionRouter } = require('./src/routes/collection');
 
-var isProduction = process.env.NODE_ENV === 'production';
+require('dotenv').config()
+var isProduction = process.env.NODE_ENV === 'production'
 
 // Create global app object
-var app = express();
+var app = express()
 
-app.use(cors());
+app.use(cors())
 
 // Normal express config defaults
-app.use(require('morgan')('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(require('morgan')('dev'))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
-app.use(require('method-override')());
-app.use(express.static(__dirname + '/public'));
+app.use(require('method-override')())
+app.use(express.static(__dirname + '/public'))
 
-app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
+app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }))
 
 if (!isProduction) {
-  app.use(errorhandler());
+  app.use(errorhandler())
 }
 
-// if(isProduction){
-//   mongoose.connect(process.env.MONGODB_URI);
-// } else {
-//   mongoose.connect('mongodb://localhost/conduit');
-//   mongoose.set('debug', true);
-// }
+if(isProduction){
+  mongoose.connect(process.env.MONGODB_URI)
+} else {
+  mongoose.connect(process.env.MONGODB_URI)
+  mongoose.set('debug', true)
+}
 
 // require('./models/User');
 
-app.use(require('./src/routes'));
+app.use(require('./src/routes'))
+app.use('/collection', collectionRouter)
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  var err = new Error('Not Found')
   err.status = 404;
   next(err);
 });
@@ -54,15 +57,15 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (!isProduction) {
   app.use(function(err, req, res, next) {
-    console.log(err.stack);
+    console.log(err.stack)
 
-    res.status(err.status || 500);
+    res.status(err.status || 500)
 
     res.json({'errors': {
       message: err.message,
       error: err
-    }});
-  });
+    }})
+  })
 }
 
 // production error handler
@@ -72,10 +75,10 @@ app.use(function(err, req, res, next) {
   res.json({'errors': {
     message: err.message,
     error: {}
-  }});
-});
+  }})
+})
 
 // finally, let's start our server...
 var server = app.listen( process.env.PORT || 8000, function(){
-  console.log('Listening on port ' + server.address().port);
-});
+  console.log('Listening on port ' + server.address().port)
+})

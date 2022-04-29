@@ -1,15 +1,17 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, Types: { ObjectId } } = require('mongoose')
+const { ItemSchema } = require('./Item')
 
-const CollectionSchema = new Schema({
+const CollectionSchema = new Schema(
+  {
+    user: { type: ObjectId, required: true, ref: 'user' },
     title: { type: String , required: true },
     description: { type: String, required: false },
-    // 고려 포인트 1. 이 부분 어떻게 해야할지 고민 중 -> Hashtag Schema 따로 만드는 것도 괜찮을수도
-    // hashtags: { type: String, required: false },
+    thumbnail: { type: String, required: false },
     items: [ItemSchema],
-    like_users: [UserSchema],
-
-}, { timestamps: true })
+    isPublic: { type: Boolean, required: true }
+  },
+  { timestamps: true })
 
 const Collection = model('collection', CollectionSchema)
 
-module.exports = { Collection }
+module.exports = { Collection, CollectionSchema }
