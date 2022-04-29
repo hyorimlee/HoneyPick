@@ -1,4 +1,5 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
+const { ItemSchema } = require('./Item')
 
 const CollectionSchema = new Schema(
   {

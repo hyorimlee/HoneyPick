@@ -8,6 +8,7 @@ var http = require('http'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
+const { collectionRouter } = require('./src/routes/collection');
 
 require('dotenv').config()
 var isProduction = process.env.NODE_ENV === 'production'
@@ -41,6 +42,7 @@ if(isProduction){
 // require('./models/User');
 
 app.use(require('./src/routes'))
+app.use('/collection', collectionRouter)
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

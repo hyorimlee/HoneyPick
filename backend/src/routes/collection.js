@@ -11,6 +11,11 @@ collectionRouter.post('/', async (req, res) => {
     // if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
     // const user = await User.findById(userId)
 
+    // test용
+    const userId = '626b429de890c6b5665a1c4e'
+    const user = await User.findById(userId)
+    //
+
     // title, description, isPublic 추출 및 검증
     const { title, description, isPublic } = req.body
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
@@ -49,7 +54,7 @@ collectionRouter.get('/:userId', async (req, res) => {
 })
 
 // 컬렉션 상세 조회
-collectionRouter.get('/:collectionId', async (req, res) => {
+collectionRouter.get('/:userId/:collectionId', async (req, res) => {
   try {
     const { collectionId } = req.params
     const collection = await Collection.findById(collectionId)
@@ -61,26 +66,30 @@ collectionRouter.get('/:collectionId', async (req, res) => {
 })
 
 // 컬렉션 수정(제목, 설명, 아이템, 공개여부)
-collectionRouter.patch('/:collectionId', async (req, res) => {
+collectionRouter.patch('/:userId/:collectionId', async (req, res) => {
   try {
     const { collectionId } = req.params
     const { title, description, itemId, isPublic } = req.body
 
-    const collection = Collection.findById(collectionId)
-
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
-    if (isPublic && typeof title !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
+    if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
     if (itemId && !isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId"} )
 
-    if (title) collection.title = title
-    if (description) collection.description = description
-    if (isPublic) collection.isPublic = isPublic
+    const promises = []
+    if (title) promises.push(Collection.updateOne({ _id: collectionId }, { title }, { new: true }))
+    if (description) promises.push(Collection.updateOne({ _id: collectionId }, { description }, { new: true }))
+    if (typeof isPublic !== 'undefined') promises.push(Collection.updateOne({ _id: collectionId }, { isPublic }, { new: true }))
     if (itemId) {
       const item = await Item.findById(itemId)
-      collection.items.$push(item)
+      if (collection.items.findById(itemId)) {
+        promises.push(Collection.updateOne({ _id: collectionId }, { $pull: { items: item } }, { new: true }))
+      } else {
+        promises.push(Collection.updateOne({ _id: collectionId }, { $push: { items: item } }, { new: true }))
+      }
     }
-    await collection.save()
+    await Promise.all(promises)
+    const collection = await Collection.findById(collectionId)
     return res.status(200).send({ collection })
   } catch (error) {
     console.log(error)
@@ -89,11 +98,18 @@ collectionRouter.patch('/:collectionId', async (req, res) => {
 })
 
 // 컬렉션 삭제
-collectionRouter.delete('/:collectionId', async (req, res) => {
+collectionRouter.delete('/:userId/:collectionId', async (req, res) => {
   try {
-    const { collectionId } = req.params
+    const { userId, collectionId } = req.params
+    if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId"})
+    if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId"})
+
+    const profileId = await User.findById(userId).profile
+    // 컬렉션 자체 삭제
     const collection = await Collection.findByIdAndDelete(collectionId)
-    return res.status(200).send({ collection })
+    // 프로필의 컬렉션 목록에서 삭제
+    Profile.updateOne({ _id: profileId }, { $pull: { collections: collection }})
+    return res.status(204).send({ collection })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
