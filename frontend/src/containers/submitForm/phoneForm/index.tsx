@@ -4,7 +4,12 @@ import {Alert, TextInput, View} from 'react-native'
 import {HorizontalView} from './styles'
 import BaseTextInput from '../../../components/textInput/base'
 import BaseButton from '../../../components/button/base'
-import {noSpace} from '../../../modules/valid'
+import {
+  noSpace,
+  onlyNumber,
+  onlyNumberAlert,
+  phoneValid,
+} from '../../../modules/valid'
 import {IComponentProps} from './types'
 
 function PhoneForm({setValidPhone}: IComponentProps) {
@@ -17,28 +22,28 @@ function PhoneForm({setValidPhone}: IComponentProps) {
 
   const phoneChanged = useCallback(
     (text: string) => {
-      setPhone(
-        noSpace(text)
-          .replace(/[^0-9]/g, '')
-          .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, '$1-$2-$3')
-          .replace(/(\-{1,2})$/g, ''),
-      )
+      setPhone(phoneValid(text))
     },
     [phone],
   )
 
   const codeChanged = useCallback(
     (text: string) => {
-      setCode(noSpace(text).replace(/\D/g, ''))
+      setCode(onlyNumber(text))
     },
     [code],
   )
 
   const phoneSubmit = useCallback(() => {
-    Alert.alert('인증코드 요청')
-    setStatus('request')
-    setPhoneEditable(false)
-  }, [phone])
+    if (status === 'idle') {
+      setStatus('request')
+      setPhoneEditable(false)
+      Alert.alert('인증코드 요청')
+    } else if (status === 'request') {
+      setStatus('idle')
+      setPhoneEditable(true)
+    }
+  }, [phone, status])
 
   const codeSubmit = useCallback(() => {
     Alert.alert('인증코드 검증')
@@ -53,6 +58,7 @@ function PhoneForm({setValidPhone}: IComponentProps) {
           value={phone}
           onChangeText={phoneChanged}
           onSubmitEditing={phoneSubmit}
+          onKeyPress={onlyNumberAlert}
           placeholder={'휴대전화번호'}
           placeholderTextColor={'#C4C4C4'}
           importantForAutofill={'yes'} // Android
@@ -60,14 +66,13 @@ function PhoneForm({setValidPhone}: IComponentProps) {
           textContentType={'telephoneNumber'} // ios
           keyboardType={'number-pad'}
           returnKeyType={'send'}
-          blurOnSubmit={false}
           flex={3}
           maxLength={13}
           editable={phoneEditable}
         />
         {status !== 'success' ? (
           <BaseButton
-            text={'인증번호 요청'}
+            text={status === 'idle' ? '인증번호 요청' : '인증번호 재요청'}
             onPress={phoneSubmit}
             borderRadius={5}
             marginVertical={5}
@@ -82,11 +87,11 @@ function PhoneForm({setValidPhone}: IComponentProps) {
             value={code}
             onChangeText={codeChanged}
             onSubmitEditing={codeSubmit}
+            onKeyPress={onlyNumberAlert}
             placeholder={'인증번호'}
             placeholderTextColor={'#C4C4C4'}
             keyboardType={'number-pad'}
             returnKeyType={'send'}
-            blurOnSubmit={false}
             flex={3}
             maxLength={6}
           />

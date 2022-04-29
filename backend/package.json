@@ -11,7 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "bcryptjs": "^2.4.3",
+=======
+    "axios": "^0.27.1",
+>>>>>>> ea63f03a648f4256bc6235f7870619aeaf0269e7
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "errorhandler": "^1.5.1",
@@ -21,6 +25,7 @@
     "mongoose": "^6.3.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
+    "package.json": "^2.0.1",
     "passport": "^0.5.2"
   }
 }

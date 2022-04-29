@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {Alert, Pressable, Text, TextInput, View} from 'react-native'
+import {Alert, Text, TextInput, View} from 'react-native'
 import BaseTextInput from '../../../components/textInput/base'
 import BaseButton from '../../../components/button/base'
 import PhoneForm from '../phoneForm/index'
@@ -8,6 +8,7 @@ import {
   noSpace,
   passwordCompare,
   spaceAlert,
+  specialCharacterAlert,
   usernameValid,
 } from '../../../modules/valid'
 
@@ -15,6 +16,7 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [passwordIsSame, setPasswordIsSame] = useState(false)
   const [phone, setPhone] = useState('')
   const passwordRef = useRef<TextInput | null>(null)
   const passwordConfirmRef = useRef<TextInput | null>(null)
@@ -30,15 +32,15 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
     (text: string) => {
       setPassword(noSpace(text))
     },
-    [username],
+    [password],
   )
 
   const passwordConfirmChanged = useCallback(
     (text: string) => {
       setPasswordConfirm(noSpace(text))
-      passwordCompare(password, passwordConfirm)
+      setPasswordIsSame(passwordCompare(password, text))
     },
-    [username],
+    [passwordConfirm],
   )
 
   const setValidPhone = useCallback((text: string) => {
@@ -47,23 +49,22 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
 
   const signUpSubmit = useCallback(() => {
     Alert.alert('회원가입 성공 하고 바로 로그인 시키기')
-  }, [])
+  }, [username, password, passwordConfirm, phone])
 
   const buttonDisabled = !(username && password === passwordConfirm && phone)
+  const passwordConfirmError = !passwordIsSame && passwordConfirm.length > 0
   return (
     <View style={{paddingHorizontal}}>
       <BaseTextInput
         value={username}
         onChangeText={usernameChanged}
         onSubmitEditing={() => passwordRef.current?.focus()}
-        onKeyPress={spaceAlert}
+        onKeyPress={specialCharacterAlert}
         placeholder={'아이디'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'yes'} // Android
         autoComplete={'username'} // Android
         textContentType={'username'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         maxLength={10}
       />
       <BaseTextInput
@@ -73,12 +74,10 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onSubmitEditing={() => passwordConfirmRef.current?.focus()}
         onKeyPress={spaceAlert}
         placeholder={'비밀번호'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'yes'} // Android
         autoComplete={'password'} // Android
         textContentType={'password'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         secureTextEntry
         maxLength={30}
       />
@@ -89,15 +88,19 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         onSubmitEditing={() => {}}
         onKeyPress={spaceAlert}
         placeholder={'비밀번호 확인'}
-        placeholderTextColor={'#C4C4C4'}
         importantForAutofill={'yes'} // Android
         autoComplete={'password'} // Android
         textContentType={'password'} // ios
         returnKeyType={'next'}
-        blurOnSubmit={false}
         secureTextEntry
+        borderBottomColor={passwordConfirmError ? 'red' : '#FFD669'}
       />
       {/* 패스워드 일치 여부 판별 추가 필요 */}
+      {passwordConfirmError ? (
+        <Text style={{color: 'black', fontSize: 10}}>
+          비밀번호가 일치하지 않습니다.
+        </Text>
+      ) : null}
       <PhoneForm setValidPhone={setValidPhone} />
       <BaseButton
         text={'회원가입'}
