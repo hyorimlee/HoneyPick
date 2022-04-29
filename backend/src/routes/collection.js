@@ -2,7 +2,7 @@ const { Router } = require('express')
 const collectionRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { User, Collection, Profile } = require('../models')
+const { User, Collection, Profile, Item } = require('../models')
 
 // 컬렉션 생성
 collectionRouter.post('/', async (req, res) => {
@@ -63,9 +63,24 @@ collectionRouter.get('/:collectionId', async (req, res) => {
 // 컬렉션 수정(제목, 설명, 아이템, 공개여부)
 collectionRouter.patch('/:collectionId', async (req, res) => {
   try {
-    const collection = null
-    // 프로필 수정 로직
+    const { collectionId } = req.params
+    const { title, description, itemId, isPublic } = req.body
 
+    const collection = Collection.findById(collectionId)
+
+    if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
+    if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
+    if (isPublic && typeof title !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
+    if (itemId && !isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId"} )
+
+    if (title) collection.title = title
+    if (description) collection.description = description
+    if (isPublic) collection.isPublic = isPublic
+    if (itemId) {
+      const item = await Item.findById(itemId)
+      collection.items.$push(item)
+    }
+    await collection.save()
     return res.status(200).send({ collection })
   } catch (error) {
     console.log(error)
