@@ -6,6 +6,36 @@ const { User } = require('../models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+const generateAccessToken = async function(userId){
+    try {
+        const token = await jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACESS_EXPIRESIN})
+        return token
+    } catch (err) {
+        return res.status(400).send({mst:"err occurred while generate access Token"})
+    }
+}
+const generateRefreshToken = async function(userId){
+    try {
+        const token = await jwt.sign({userId:userId},process.env.JWT_REFRESH_KEY,{expiresIn:process.env.JWT_REFRESH_EXPIRESIN})
+        return token
+    } catch (err) {
+        return res.status(400).send({mst:"err occurred while generate refresh Token"})
+    }
+}
+function authAccessToken (req, res, next)  {
+    const authHeader = req.headers["authorization"];
+    const accessToken = authHeader && authHeader.split(" ")[1];
+    if (!accessToken) return res.status(400).send({err:"wrong accessToken format or there is no accessToken"})
+    try {
+        console.log(accessToken)
+        const {userId} = jwt.verify(accessToken,process.env.JWT_ACCESS_KEY)
+        req.userId = userId
+        next()
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({err:"Invaild accessToken"})
+    }
+}
 authRouter.post('/signup', async (req, res) => {
     try {
         const {username,password,phone} = req.body
@@ -21,3 +51,4 @@ authRouter.post('/signup', async (req, res) => {
 })
 
 module.exports =  authRouter
+module.exports.authAccessToken = authAccessToken
