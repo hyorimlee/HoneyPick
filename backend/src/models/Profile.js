@@ -17,4 +17,4 @@ const ProfileSchema = new Schema(
 
 const Profile = model('profile', ProfileSchema)
 
-module.exports = { Profile }
+module.exports = { Profile, ProfileSchema }
