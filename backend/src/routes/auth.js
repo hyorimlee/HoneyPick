@@ -88,5 +88,18 @@ authRouter.post('/refresh',async (req,res)=>{
     }
 })
 
+authRouter.delete('/',authAccessToken, async(req,res)=>{
+    try {
+        let user = await User.findById(req.userId)
+        user.withdraw = true
+        await user.save()
+
+        return res.status(200).send({msg:`user [${user.username}] is withdrawn`})
+    } catch (err) {
+        console.log(err)
+        return res.status(403).send({err:"error occurred while deleting user"})
+    }
+})
+
 module.exports =  authRouter
 module.exports.authAccessToken = authAccessToken
