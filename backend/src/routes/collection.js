@@ -7,6 +7,7 @@ const { User, Collection, Profile } = require('../models')
 collectionRouter.post('/', async (req, res) => {
     try {
         // jwt 검증: user 추출 및 검증
+        // if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
         // const user = await User.findById(userId)
 
         // title, description, isPublic 추출 및 검증
@@ -14,7 +15,7 @@ collectionRouter.post('/', async (req, res) => {
         if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
         if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"});
         if (typeof isPublic !== 'boolean') return res.status(400).send({ err: "boolean isPublic is required"});
-        
+
         // 컬렉션 자체 추가
         const collection = new Collection({ ...req.body, user })
         await collection.save()
@@ -45,7 +46,7 @@ collectionRouter.get('/:collectionId', async (req, res) => {
     try {
         const collection = null
         // 컬렉션 상세 조회
-        
+
         return res.status(200).send({ collection })
     } catch (error) {
         console.log(error)

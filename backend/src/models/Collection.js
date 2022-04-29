@@ -13,4 +13,4 @@ const CollectionSchema = new Schema(
 
 const Collection = model('collection', CollectionSchema)
 
-module.exports = { Collection }
+module.exports = { Collection, CollectionSchema }
