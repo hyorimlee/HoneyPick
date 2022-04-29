@@ -70,5 +70,23 @@ authRouter.post('/login', async (req, res) => {
         return res.status(500).send({ err: error.message })
     }
 })
+authRouter.post('/refresh',async (req,res)=>{
+    try {
+        const {refreshToken} = req.body;
+        if(!refreshToken) return res.status(400).send({err:"there is no refreshToken"})
+        try {
+            const {userId} = jwt.verify(refreshToken,process.env.JWT_REFRESH_KEY)
+            const accessToken = await generateAccessToken(userId)
+            return res.status(201).send({msg:"new accessToken is generated!",accessToken:accessToken,refreshToken:refreshToken})
+        } catch (err) {
+            console.log(err)
+            return res.status(403).send({err:"Invalid refreshToken"}) 
+        }
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({err:'error occurred while refresh token'})
+    }
+})
+
 module.exports =  authRouter
 module.exports.authAccessToken = authAccessToken
