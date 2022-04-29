@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {Alert, Pressable, Text, TextInput, View} from 'react-native'
+import {Alert, Text, TextInput, View} from 'react-native'
 import BaseTextInput from '../../../components/textInput/base'
 import BaseButton from '../../../components/button/base'
 import PhoneForm from '../phoneForm/index'
@@ -8,6 +8,7 @@ import {
   noSpace,
   passwordCompare,
   spaceAlert,
+  specialCharacterAlert,
   usernameValid,
 } from '../../../modules/valid'
 
@@ -58,7 +59,7 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         value={username}
         onChangeText={usernameChanged}
         onSubmitEditing={() => passwordRef.current?.focus()}
-        onKeyPress={spaceAlert}
+        onKeyPress={specialCharacterAlert}
         placeholder={'아이디'}
         importantForAutofill={'yes'} // Android
         autoComplete={'username'} // Android

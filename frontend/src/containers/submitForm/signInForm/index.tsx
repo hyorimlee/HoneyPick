@@ -3,7 +3,12 @@ import {memo, useCallback, useRef, useState} from 'react'
 import {TextInput, View} from 'react-native'
 import BaseTextInput from '../../../components/textInput/base/index'
 import BaseButton from '../../../components/button/base/index'
-import {noSpace, spaceAlert, usernameValid} from '../../../modules/valid'
+import {
+  noSpace,
+  spaceAlert,
+  specialCharacterAlert,
+  usernameValid,
+} from '../../../modules/valid'
 import {useAppDispatch} from '../../../store/types'
 import {requestSignIn} from '../../../store/slices/user'
 
@@ -42,7 +47,7 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
         value={username}
         onChangeText={usernameChanged}
         onSubmitEditing={focusPassword}
-        onKeyPress={spaceAlert}
+        onKeyPress={specialCharacterAlert}
         placeholder={'아이디'}
         importantForAutofill={'auto'} // Android
         autoComplete={'username'} // Android
