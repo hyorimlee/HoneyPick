@@ -116,6 +116,4 @@ collectionRouter.delete('/:userId/:collectionId', async (req, res) => {
   }
 })
 
-module.exports = {
-    collectionRouter
-}
+module.exports = collectionRouter
