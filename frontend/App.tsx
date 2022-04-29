@@ -1,32 +1,20 @@
-import React, {memo, useEffect} from 'react'
+import React, {memo} from 'react'
 import {Provider} from 'react-redux'
 import {NavigationContainer} from '@react-navigation/native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import EncryptedStorage from 'react-native-encrypted-storage'
 import store from './src/store'
-import {useAppDispatch, useAppSelector} from './src/store/types'
+import {useAppSelector} from './src/store/types'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
 import Item from './src/pages/item'
 import ProfileStack from './src/pages/profile'
-import SplashScreen from 'react-native-splash-screen'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
 const InnerApp = memo(() => {
-  const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
-
-  useEffect(() => {
-    const getRefreshToken = async () => {
-      const refreshToken = await EncryptedStorage.getItem('refreshToken')
-    }
-    getRefreshToken()
-    console.log('hide')
-    SplashScreen.hide()
-  }, [])
 
   return (
     <NavigationContainer>
