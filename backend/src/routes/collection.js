@@ -3,18 +3,15 @@ const collectionRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
 const { User, Collection, Profile, Item } = require('../models')
+const { authAccessToken } = require('./auth')
 
 // 컬렉션 생성
 collectionRouter.post('/', async (req, res) => {
   try {
     // jwt 검증: user 추출 및 검증
+    const userId = await authAccessToken(req, res)
     // if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
-    // const user = await User.findById(userId)
-
-    // test용
-    const userId = '626b429de890c6b5665a1c4e'
     const user = await User.findById(userId)
-    //
 
     // title, description, isPublic 추출 및 검증
     const { title, description, isPublic } = req.body
@@ -39,6 +36,7 @@ collectionRouter.post('/', async (req, res) => {
 // 컬렉션 목록 조회
 collectionRouter.get('/:userId', async (req, res) => {
   try {
+    // 비공개인 컬렉션은, 사용자가 팔로워여야만 조회 가능
     const { userId } = req.params
     let { page=1 } = req.query
     page = parseInt(page)
@@ -56,6 +54,7 @@ collectionRouter.get('/:userId', async (req, res) => {
 // 컬렉션 상세 조회
 collectionRouter.get('/:userId/:collectionId', async (req, res) => {
   try {
+    // 비공개인 경우: jwt 토큰에서 사용자Id 가져와서 userId 의 팔로워 목록에 있는지 확인하고, 있으면 공개, 없으면 못 봄
     const { collectionId } = req.params
     const collection = await Collection.findById(collectionId)
     return res.status(200).send({ collection })
