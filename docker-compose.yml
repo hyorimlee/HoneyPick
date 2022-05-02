@@ -1,0 +1,23 @@
+version: "3"
+services:
+  backend:
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./backend
+    image: koko2022/honeypick_backend:0.1
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    container_name: backend
+  crawler:
+    build:
+      dockerfile: Dockerfile
+      context: ./crawler
+    image: koko2022/honeypick_crawler:0.1
+    volumes:
+      - ./crawler:/app
+    ports:
+      - "8081:8081"
+    container_name: crawler
