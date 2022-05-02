@@ -11,7 +11,7 @@ const ImageContainer = styled.ImageBackground`
   aspect-ratio: 1;
 `;
 
-const MenuContainer = styled.View`
+const InfoContainer = styled.View`
   flex-direction: row;
   justify-contents: space-between;
 `
@@ -20,6 +20,11 @@ const TextContainer = styled.View`
   flex: 1;
   margin-top: 10px;
   margin-bottom: 15px;
+`
+
+const MenuContainer = styled.View`
+  padding-vertical: 30px;
+  padding-horizontal: 30px;
 `
 
 const NormalText = styled.Text`
@@ -43,4 +48,4 @@ const DashedBorder = styled.View`
   border-bottom-width: 1px;
 `
 
-export {Container, ImageContainer, MenuContainer, TextContainer, NormalText, BoldText, PriceText, DashedBorder}
+export {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder}
