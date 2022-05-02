@@ -36,14 +36,19 @@ collectionRouter.post('/', async (req, res) => {
 // 컬렉션 목록 조회
 collectionRouter.get('/:userId', async (req, res) => {
   try {
-    // 비공개인 컬렉션은, 사용자가 팔로워여야만 조회 가능
     const { userId } = req.params
     let { page=1 } = req.query
     page = parseInt(page)
     if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId"})
     const user = await User.findById(userId)
+
+    // 비공개인 컬렉션은, 사용자가 팔로워여야만 조회 가능
+    const accessingId = await authAccessToken(req, res)
+    // 팔로워 목록 조회해서, 팔로워면 all, 아니면 public 보여주기
+
     // 컬렉션 목록 조회 w/ pagination. 최신 업데이트 순. page는 1부터 시작. 3개씩 조회.
-    const collections = await Collection.find({ user: userId }).sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
+    const publicCollections = await Collection.find({ user: userId, isPublic: true }).sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
+    const allCollections = await Collection.find({ user: userId }).sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
     return res.status(200).send({ collections })
   } catch (error) {
     console.log(error)
