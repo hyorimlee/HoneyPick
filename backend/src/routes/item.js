@@ -2,17 +2,20 @@ const { Router } = require('express')
 const itemRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { Item } = require('../models')
+const { Item, Review, Collection } = require('../models')
+
+const { authAccessToken } = require('./auth')
 
 const axios = require('axios')
 
 CRAWLING_SERVER_URL = process.env.CRAWLING_SERVER_URL
 
-itemRouter.post('/', async (req, res) => {
+itemRouter.use('/:itemId/review', require('./review'))
+
+itemRouter.post('/', authAccessToken, async (req, res) => {
     // 아이템 생성 로직
     try {
         const { url } = req.body
-        
         if(typeof url !== 'string') return res.status(400).send({ err: "url is required" })
 
         let item = await Item.findOne({ url })
@@ -48,39 +51,37 @@ itemRouter.post('/', async (req, res) => {
     }
 })
 
-itemRouter.get('/:itemId', async (req, res) => {
+itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
         if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
-        const item = null
-        // 아이템 상세 조회
         
-        return res.status(200).send({ item })
+        const [item, review] = await Promise.all([
+            Item.findById(itemId),
+            Review.findOne({ user: userId, item: itemId })
+        ])
+        if(!item) res.status(400).send({ err: "item does not exist" })
+
+        return res.status(200).send({ item: { ...item, review: review } })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
     }
 })
 
-itemRouter.patch('/:itemId', async (req, res) => {
+itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
     try {
-        const item = null
-        // 아이템 컬렉션에 추가
-        const collection = null
+        const { itemId } = req.params
+        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
+        const { collectionId } = req.body
+        if(!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
+        
+        const item = await Item.findById(itemId)
+        if(!item) return res.status(400).send({ err: "item does not exist" })
 
-        return res.status(200).send({ message: '성공' })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).send({ err: error.message })
-    }
-})
+        await Collection.findByIdAndUpdate(collectionId, { $push: { items: [item] } })
 
-itemRouter.patch('/:itemId/review', async (req, res) => {
-    try {
-        const item = null
-        // 아이템 리뷰 로직
-
-        return res.status(200).send({ item })
+        return res.status(200).send({ message: 'success' })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
