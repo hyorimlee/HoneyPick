@@ -29,6 +29,7 @@ function authAccessToken (req, res, next)  {
     try {
         console.log(accessToken)
         const {userId} = jwt.verify(accessToken,process.env.JWT_ACCESS_KEY)
+        return userId
         req.userId = userId
         next()
     } catch (err) {
@@ -80,7 +81,7 @@ authRouter.post('/refresh',async (req,res)=>{
             return res.status(201).send({msg:"new accessToken is generated!",accessToken:accessToken,refreshToken:refreshToken})
         } catch (err) {
             console.log(err)
-            return res.status(403).send({err:"Invalid refreshToken"}) 
+            return res.status(403).send({err:"Invalid refreshToken"})
         }
     } catch (err) {
         console.log(err)

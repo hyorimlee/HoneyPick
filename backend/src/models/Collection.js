@@ -3,7 +3,10 @@ const { ItemSchema } = require('./Item')
 
 const CollectionSchema = new Schema(
   {
-    user: { type: ObjectId, required: true, ref: 'user' },
+    user: {
+      _id: { type: ObjectId, required: true, ref: 'user' },
+      username: { type: String, required: true }
+    },
     title: { type: String , required: true },
     description: { type: String, required: false },
     thumbnail: { type: String, required: false },
