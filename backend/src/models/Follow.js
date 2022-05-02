@@ -1,5 +1,4 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
-const { UserSchema } = require('./User')
 
 const FollowSchema = new Schema(
   {
@@ -7,8 +6,20 @@ const FollowSchema = new Schema(
       _id: { type: ObjectId, required: true, ref: 'user' },
       username: { type: String, required: true }
     },
-    followings: [UserSchema],
-    followers: [UserSchema]
+    followings: [{
+      _id: { type: ObjectId, required: true, ref: 'profile' },
+      user: { type: ObjectId, required: true, ref: 'user' },
+      nickname: { type: String, required: true },
+      image: { type: String, required: false },
+      description: { type: String, required: false }
+    }],
+    followers: [{
+      _id: { type: ObjectId, required: true, ref: 'profile' },
+      user: { type: ObjectId, required: true, ref: 'user' },
+      nickname: { type: String, required: true },
+      image: { type: String, required: false },
+      description: { type: String, required: false }
+    }]
   },
   { timestamps: true })
 
