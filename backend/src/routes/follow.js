@@ -16,10 +16,10 @@ followRouter.post('/', async (req, res) => {
     // 팔로워 목록에 없으면: push, 있으면: pull.
     const { accountId } = req.body
     if (followings.includes(accountId)) {
-      Follow.updateOne({ user: userId}, { $pull: { followings: accountId }})
+      Follow.updateOne({ user: userId }, { $pull: { followings: accountId }})
       return res.status(204).send({ message: '팔로우 취소' })
     } else {
-      Follow.updateOne({ user: userId}, { $push: { followings: accountId }})
+      Follow.updateOne({ user: userId }, { $push: { followings: accountId }})
       return res.status(201).send({ message: '팔로우 시작' })
     }
     } catch (error) {
@@ -31,11 +31,15 @@ followRouter.post('/', async (req, res) => {
 // 팔로우, 팔로잉 목록 조회
 followRouter.get('/:userId', async (req, res) => {
     try {
-        const user = null
+        const { userId } = req.params
+        const userFollow = await Follow.findOne({ user: userId })
 
-        // 페이지네이션 필요할 듯
-        const following = null
-        const follower = null
+        let { page=1 } = req.query
+        page = parseInt(page)
+
+        // pagination: 최근 추가순. page는 1부터 시작. 6개씩 조회.
+        const following = userFollow.followings.sort({ updatedAt: -1 }).skip((page - 1) * 6).limit(6)
+        const follower = userFollow.followers.sort({ updatedAt: -1 }).skip((page - 1) * 6).limit(6)
 
         return res.status(200).send({ following, follower })
     } catch (error) {
