@@ -40,4 +40,4 @@ UserSchema.pre('save',function(nxt){
 
 const User = model('user', UserSchema)
 
-module.exports = { User }
+module.exports = { User, UserSchema }
