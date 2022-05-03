@@ -47,11 +47,8 @@ voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
 // 투표 상세 조회
 voteRouter.get('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
-    const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
-    const vote = null
-
-
+    const { voteId } = req.params
+    const vote = await Vote.findById(voteId)
     return res.status(200).send({ vote })
   } catch (error) {
     console.log(error)
