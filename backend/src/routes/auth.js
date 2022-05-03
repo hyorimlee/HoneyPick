@@ -34,14 +34,25 @@ function authAccessToken (req, res, next)  {
 }
 authRouter.post('/signup', async (req, res) => {
     try {
-        const user = new User(req.body)
-        const {accessToken, refreshToken} = await generateTokens(user._id)
+        const {username,phone, nickname} = req.body
+        if(typeof username!=="string") return res.status(400).send({err:"username is required"})
+        if(typeof phone!=="string") return res.status(400).send({err:"phone is required"})
+        if(typeof nickname!=="string") return res.status(400).send({err:"nickname is required"})
+        
+        if(nickname.length>10) return res.status(400).send({err:"length of nickname should less than 10"})
+        if(username.length>10) return res.status(400).send({err:"length of username should less than 10"})
+
+        if(await User.exists({username:username})) return res.status(400).send({ err: "duplicated username" })
+        
+        let user = new User(req.body)
         let follow = new Follow({ ...req.body, user})
-        await follow.save()
-        
-        
         user.follow = follow._id
-        await user.save()
+        const {accessToken, refreshToken} =await generateTokens(user._id)
+        Promise.all([   
+            await follow.save(),       
+            await user.save()
+        ])
+        
         return res.status(201).send({userPk:user._id,username:req.body.username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
