@@ -115,6 +115,7 @@ export interface IComponentProps {
     nativeEvent: NativeSyntheticEvent<TextInputKeyPressEventData>
   }) => void
   multiline?: boolean
+  color?: ColorValue
 }
 
 export interface IStyleProps {
@@ -135,4 +136,5 @@ export interface IStyleProps {
   }: {
     nativeEvent: NativeSyntheticEvent<TextInputKeyPressEventData>
   }) => void
+  color?: ColorValue
 }

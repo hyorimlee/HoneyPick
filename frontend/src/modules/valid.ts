@@ -24,7 +24,7 @@ export const spaceAlert = ({
 
 /* username 관련 */
 // username 가능한 문자 정규표현식
-const usernameRegex = /[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣|_|-]/g
+const usernameRegex = /[^a-z|A-Z|0-9|_]/g
 
 // 특수문자 입력시 모두 제거해서 반환
 export const usernameValid = (text: string): string => {
@@ -33,13 +33,33 @@ export const usernameValid = (text: string): string => {
 }
 
 // 특수문자 입력되는 경우 입력 못하도록 알림창
-export const specialCharacterAlert = ({
+export const usernameAlert = ({
   nativeEvent,
 }: {
   nativeEvent: any | NativeSyntheticEvent<TextInputKeyPressEventData>
 }) => {
   usernameRegex.test(nativeEvent.key)
-    ? Alert.alert('특수문자(-, _ 가능) 및 공백은 입력할 수 없습니다.')
+    ? Alert.alert('영문 및 숫자와 _ 입력만 가능합니다.')
+    : null
+}
+
+/* nickname 관련 */
+// nickname 가능한 문자 정규표현식
+const nicknameRegex = /[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]/g
+
+// 특수문자 입력시 모두 제거해서 반환
+export const nicknameValid = (text: string) => {
+  return text.replace(nicknameRegex, '')
+}
+
+// 특수문자 입력되는 경우 입력 못하도록 알림창
+export const nicknameAlert = ({
+  nativeEvent,
+}: {
+  nativeEvent: any | NativeSyntheticEvent<TextInputKeyPressEventData>
+}) => {
+  nicknameRegex.test(nativeEvent.key)
+    ? Alert.alert('한글 및 영문, 숫자만 입력 가능합니다.')
     : null
 }
 
@@ -68,5 +88,7 @@ export const onlyNumberAlert = ({
 }: {
   nativeEvent: any | NativeSyntheticEvent<TextInputKeyPressEventData>
 }) => {
-  ;/[^0-9]/g.test(nativeEvent.key) ? Alert.alert('숫자만 입력해주세요.') : null
+  ;/[^0-9]/g.test(nativeEvent.key) && nativeEvent.key !== 'Backspace'
+    ? Alert.alert('숫자만 입력해주세요.')
+    : null
 }
