@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
-import ActionSheet, {SheetManager} from "react-native-actions-sheet"
+import ActionSheet, { ActionSheetProps } from "react-native-actions-sheet"
 
 function Item() {
   const actionSheetRef = createRef<ActionSheet>()
