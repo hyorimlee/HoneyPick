@@ -1,17 +1,14 @@
 const { Router } = require('express')
 const voteRouter = Router()
-const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { Vote, Collection, VoteSchema, User, Profile } = require('../models')
+const { Vote, Collection, User, Profile } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 투표 생성
-voteRouter.post('/', async (req, res) => {
+voteRouter.post('/', authAccessToken, async (req, res) => {
   try {
-    // jwt 검증: user 추출 및 검증
-    const userId = await authAccessToken(req, res)
-    if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
-    const user = await User.findById(userId)
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
 
     // 투표 만들기 & 프로필의 투표 목록에 추가
     const { collection } = req.body
@@ -33,13 +30,14 @@ voteRouter.post('/', async (req, res) => {
 })
 
 // 투표 목록 조회
-voteRouter.get('/:userId', async (req, res) => {
+voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
   try {
-    const user = null
-    // 페이지네이션 필요할 듯
-    const vote = Array(1)
-
-    return res.status(200).send({ vote })
+    // 투표 목록: 페이지네이션. page 1부터 시작. 3개씩 보여줌
+    let { page=1 } = req.query
+    page = parseInt(page)
+    const { accountId } = req.params
+    const votes = await User.find({ _id: accountId }).votes.sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
+    return res.status(200).send({ votes })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -47,8 +45,10 @@ voteRouter.get('/:userId', async (req, res) => {
 })
 
 // 투표 상세 조회
-voteRouter.get('/:userId/:voteId', async (req, res) => {
+voteRouter.get('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
     const vote = null
 
 
@@ -60,8 +60,10 @@ voteRouter.get('/:userId/:voteId', async (req, res) => {
 })
 
 // 투표 종료 (종료 → 재시작 불가)
-voteRouter.patch('/:userId/:voteId', async (req, res) => {
+voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
     const vote = null
 
 
@@ -73,8 +75,10 @@ voteRouter.patch('/:userId/:voteId', async (req, res) => {
 })
 
 // 투표하기 로직
-voteRouter.patch('/:userId/:voteId/:itemId', async (req, res) => {
+voteRouter.patch('/:accountId/:voteId/:itemId', authAccessToken, async (req, res) => {
   try {
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
     const vote = null
     const item = null
 
