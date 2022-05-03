@@ -29,14 +29,13 @@ function authAccessToken (req, res, next)  {
     try {
         console.log(accessToken)
         const {userId} = jwt.verify(accessToken,process.env.JWT_ACCESS_KEY)
-        return userId
         req.userId = userId
         next()
     } catch (err) {
         console.log(err)
         return res.status(400).send({err:"Invaild accessToken"})
     }
-}
+}z
 authRouter.post('/signup', async (req, res) => {
     try {
         const {username,password,phone} = req.body
