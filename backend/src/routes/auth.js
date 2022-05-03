@@ -6,20 +6,16 @@ const { User } = require('../models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const generateAccessToken = async function(userId){
+const generateTokens = async function(userId,res){
     try {
-        const token = await jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACESS_EXPIRESIN})
-        return token
+        const [accessToken, refreshToken] = await Promise.all([
+            jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACESS_EXPIRESIN}),
+            jwt.sign({userId:userId},process.env.JWT_REFRESH_KEY,{expiresIn:process.env.JWT_REFRESH_EXPIRESIN})
+        ])
+        return {accessToken,refreshToken}
     } catch (err) {
-        return res.status(400).send({mst:"err occurred while generate access Token"})
-    }
-}
-const generateRefreshToken = async function(userId){
-    try {
-        const token = await jwt.sign({userId:userId},process.env.JWT_REFRESH_KEY,{expiresIn:process.env.JWT_REFRESH_EXPIRESIN})
-        return token
-    } catch (err) {
-        return res.status(400).send({mst:"err occurred while generate refresh Token"})
+        console.log(err)
+        return res.status(400).send({err:"err occurred while generate tokens"})
     }
 }
 function authAccessToken (req, res, next)  {
@@ -29,7 +25,6 @@ function authAccessToken (req, res, next)  {
     try {
         console.log(accessToken)
         const {userId} = jwt.verify(accessToken,process.env.JWT_ACCESS_KEY)
-        return userId
         req.userId = userId
         next()
     } catch (err) {
@@ -41,9 +36,9 @@ authRouter.post('/signup', async (req, res) => {
     try {
         const {username,password,phone} = req.body
         const user = new User(req.body)
+        
+        const {accessToken, refreshToken} = await generateTokens(username)
         await user.save()
-        const accessToken = await generateAccessToken(user._id)
-        const refreshToken = await generateRefreshToken(user._id)
         return res.status(201).send({user_pk:user._id,username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
@@ -81,7 +76,7 @@ authRouter.post('/refresh',async (req,res)=>{
             return res.status(201).send({msg:"new accessToken is generated!",accessToken:accessToken,refreshToken:refreshToken})
         } catch (err) {
             console.log(err)
-            return res.status(403).send({err:"Invalid refreshToken"})
+            return res.status(403).send({err:"Invalid refreshToken"}) 
         }
     } catch (err) {
         console.log(err)
