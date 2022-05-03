@@ -6,10 +6,7 @@ const UserSchema = new Schema({
     password: { type: String, required: true},
     nickname: String,
     nickname: { type: String, required: true},
-    phone: {
-        type:Schema.Types.String,
-        ref:'phone',
-    },
+    phone:{ type: String, required:true},
     follow: {
         type:Schema.Types.ObjectId,
         ref:'follow',
