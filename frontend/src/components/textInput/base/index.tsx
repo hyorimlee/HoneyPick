@@ -32,6 +32,7 @@ function BaseTextInput(
     editable,
     onKeyPress,
     multiline,
+    color = '#000000',
   }: IComponentProps,
   ref?: React.Ref<TextInput | null>,
 ) {
@@ -66,6 +67,7 @@ function BaseTextInput(
       editable={editable}
       onKeyPress={onKeyPress}
       multiline={multiline}
+      color={color}
     />
   )
 }

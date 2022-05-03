@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useState, useCallback, forwardRef} from 'react'
+import {memo, useState, useCallback, useRef} from 'react'
 import {Alert, TextInput, View} from 'react-native'
 import {HorizontalView} from './styles'
 import BaseTextInput from '../../../components/textInput/base'
@@ -11,52 +11,73 @@ import {
   phoneValid,
 } from '../../../modules/valid'
 import {IComponentProps} from './types'
+import {useAppDispatch} from '../../../store/types'
+import {
+  requestPhoneVerify,
+  requestPhoneVerifyCheck,
+} from '../../../store/slices/user/asyncThunk'
 
 function PhoneForm({setValidPhone}: IComponentProps) {
-  const [phone, setPhone] = useState('')
-  const [code, setCode] = useState('')
+  const dispatch = useAppDispatch()
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [verificationCode, setVerificationCode] = useState('')
+  const [phoneId, setPhoneId] = useState('')
   const [phoneEditable, setPhoneEditable] = useState(true)
   const [status, setStatus] = useState<'idle' | 'request' | 'success' | 'fail'>(
     'idle',
   )
 
-  const phoneChanged = useCallback(
+  const phoneNumberChanged = useCallback(
     (text: string) => {
-      setPhone(phoneValid(text))
+      setPhoneNumber(phoneValid(text))
     },
-    [phone],
+    [phoneNumber],
   )
 
-  const codeChanged = useCallback(
+  const verificationCodeChanged = useCallback(
     (text: string) => {
-      setCode(onlyNumber(text))
+      setVerificationCode(onlyNumber(text))
     },
-    [code],
+    [verificationCode],
   )
 
   const phoneSubmit = useCallback(() => {
     if (status === 'idle') {
       setStatus('request')
       setPhoneEditable(false)
-      Alert.alert('인증코드 요청')
+      dispatch(requestPhoneVerify({phoneNumber}))
+        .unwrap()
+        .then(response => {
+          setPhoneId(response.phone._id)
+        })
+        .catch(() => {
+          setStatus('idle')
+          setPhoneEditable(true)
+        })
     } else if (status === 'request') {
       setStatus('idle')
       setPhoneEditable(true)
     }
-  }, [phone, status])
+  }, [phoneNumber, status])
 
-  const codeSubmit = useCallback(() => {
-    Alert.alert('인증코드 검증')
-    setStatus('success')
-    setValidPhone(phone)
-  }, [code])
+  const verificationCodeSubmit = useCallback(() => {
+    dispatch(requestPhoneVerifyCheck({phoneId, verificationCode}))
+      .unwrap()
+      .then(response => {
+        setStatus('success')
+        setValidPhone(phoneNumber)
+      })
+      .catch(() => {
+        setStatus('fail')
+      })
+  }, [verificationCode, phoneId])
 
   return (
     <View>
       <HorizontalView>
         <BaseTextInput
-          value={phone}
-          onChangeText={phoneChanged}
+          value={phoneNumber}
+          onChangeText={phoneNumberChanged}
           onSubmitEditing={phoneSubmit}
           onKeyPress={onlyNumberAlert}
           placeholder={'휴대전화번호'}
@@ -77,16 +98,16 @@ function PhoneForm({setValidPhone}: IComponentProps) {
             borderRadius={5}
             marginVertical={5}
             flex={2}
-            disabled={phone.length < 12}
+            disabled={phoneNumber.length < 12}
           />
         ) : null}
       </HorizontalView>
       {status === 'request' || status === 'fail' ? (
         <HorizontalView>
           <BaseTextInput
-            value={code}
-            onChangeText={codeChanged}
-            onSubmitEditing={codeSubmit}
+            value={verificationCode}
+            onChangeText={verificationCodeChanged}
+            onSubmitEditing={verificationCodeSubmit}
             onKeyPress={onlyNumberAlert}
             placeholder={'인증번호'}
             placeholderTextColor={'#C4C4C4'}
@@ -97,11 +118,11 @@ function PhoneForm({setValidPhone}: IComponentProps) {
           />
           <BaseButton
             text={'인증번호 확인'}
-            onPress={codeSubmit}
+            onPress={verificationCodeSubmit}
             borderRadius={5}
             marginVertical={5}
             flex={2}
-            disabled={code.length < 6}
+            disabled={verificationCode.length < 6}
           />
         </HorizontalView>
       ) : null}

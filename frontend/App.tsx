@@ -8,9 +8,9 @@ import store from './src/store'
 import {useAppDispatch, useAppSelector} from './src/store/types'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
-import Item from './src/pages/item'
 import ProfileStack from './src/pages/profile'
 import SplashScreen from 'react-native-splash-screen'
+import {requestAccessToken} from './src/store/slices/user/asyncThunk'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -22,10 +22,21 @@ const InnerApp = memo(() => {
   useEffect(() => {
     const getRefreshToken = async () => {
       const refreshToken = await EncryptedStorage.getItem('refreshToken')
+      if (!refreshToken) {
+        SplashScreen.hide()
+        return
+      }
+
+      dispatch(requestAccessToken({refreshToken}))
+        .unwrap()
+        .then(() => {
+          SplashScreen.hide()
+        })
+        .catch(() => {
+          SplashScreen.hide()
+        })
     }
     getRefreshToken()
-    console.log('hide')
-    SplashScreen.hide()
   }, [])
 
   return (
@@ -67,11 +78,11 @@ const InnerApp = memo(() => {
             component={SignUp}
             options={{title: '회원가입', headerShown: false}}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Item"
             component={Item}
             options={{title: '아이템', headerShown: false}}
-          />
+          /> */}
         </Stack.Navigator>
       )}
     </NavigationContainer>
