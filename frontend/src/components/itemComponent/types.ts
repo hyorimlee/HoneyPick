@@ -12,7 +12,7 @@ export interface IComponentProps {
   paddingVertical?: string | number
   color?: ColorValue
   fontSize?: number
-  fontWeight?: string
+  fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | undefined;
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify'
   backgroundColor?: ColorValue
   borderRadius?: number
