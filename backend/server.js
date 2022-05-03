@@ -38,13 +38,13 @@ if(isProduction){
   mongoose.set('debug', true)
 }
 
-// require('./models/User');
 
-app.use(require('./src/routes'))
+app.use('/api/v1',require('./src/routes'))
+
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found')
+  var err = new Error('Not Found server')
   err.status = 404;
   next(err);
 });
