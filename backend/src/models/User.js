@@ -1,19 +1,22 @@
 const { Schema, model } = require('mongoose')
 const bcrypt = require('bcrypt')
+const { CollectionSchema } = require('./Collection')
+const { VoteSchema } = require('./Vote')
 const saltRound = 10
 const UserSchema = new Schema({
     username: { type: String, required: true , unique: true },
     password: { type: String, required: true},
-    nickname: String,
     nickname: { type: String, required: true},
-    phone:{ type: String, required:true},
+    phone:{ type: String, required: true},
+    image: {type: String, default: process.env.DEFAULT_PROFILE_IMG},
+    description: {type: String},
+    followingCount: {type: Number, default: 0},
+    follwerCount: {type: Number, default: 0},
+    collections: [CollectionSchema],
+    votes: [VoteSchema],
     follow: {
         type:Schema.Types.ObjectId,
         ref:'follow',
-    },
-    profile: {
-        type:Schema.Types.String,
-        ref:'profile',
     },
     review: {
         type:Schema.Types.String,
