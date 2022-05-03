@@ -2,7 +2,7 @@ const { Router } = require('express')
 const authRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { User } = require('../models')
+const { User,Follow } = require('../models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -34,12 +34,15 @@ function authAccessToken (req, res, next)  {
 }
 authRouter.post('/signup', async (req, res) => {
     try {
-        const {username,password,phone} = req.body
         const user = new User(req.body)
-        
-        const {accessToken, refreshToken} = await generateTokens(username)
         await user.save()
-        return res.status(201).send({user_pk:user._id,username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
+        const {accessToken, refreshToken} = await generateTokens(user._id)
+        const follow = new Follow(user._id, user.username)
+        await follow.save()
+        
+        user.follow = follow
+        await user.save()
+        return res.status(201).send({user_pk:user._id,username:req.body.username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -97,5 +100,13 @@ authRouter.delete('/',authAccessToken, async(req,res)=>{
     }
 })
 
+<<<<<<< Updated upstream
 module.exports =  authRouter
+<<<<<<< Updated upstream
 module.exports.authAccessToken = authAccessToken
+=======
+module.exports.authAccessToken = authAccessToken
+=======
+module.exports =  authRouter,{authAccessToken}
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
