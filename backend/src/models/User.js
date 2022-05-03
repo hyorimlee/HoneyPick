@@ -4,9 +4,9 @@ const { CollectionSchema } = require('./Collection')
 const { VoteSchema } = require('./Vote')
 const saltRound = 10
 const UserSchema = new Schema({
-    username: { type: String, required: true , unique: true },
+    username: { type: String, required: true , unique: true , maxlength:10 },
     password: { type: String, required: true},
-    nickname: { type: String, required: true},
+    nickname: { type: String, required: true , maxlength:10},
     phone:{ type: String, required: true},
     image: {type: String, default: process.env.DEFAULT_PROFILE_IMG},
     description: {type: String},
