@@ -72,16 +72,18 @@ voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
   }
 })
 
-// 투표하기 로직
+// 투표하기 로직 (투표 취소 불가)
 voteRouter.patch('/:accountId/:voteId/:itemId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
+    const { accountId, voteId, itemId } = req.params
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    const vote = null
-    const item = null
+    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
+    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
+    if (!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId"})
 
-
-    return res.status(200).send({ vote })
+    const vote = await Vote.updateOne({ _id: voteId, 'result._id': itemId }, { $inc: { 'result.$.count': 1 } })
+    return res.status(201).send({ vote })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
