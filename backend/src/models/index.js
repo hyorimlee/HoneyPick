@@ -5,5 +5,6 @@ module.exports = {
   ...require('./Vote'),
   ...require('./Phone'),
   ...require('./Profile'),
-  ...require('./Follow')
+  ...require('./Follow'),
+  ...require('./Review'),
 }
