@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, createRef, useEffect} from 'react'
-import {Alert, SafeAreaView, StatusBar, Text, TouchableOpacity} from 'react-native'
+import {memo, createRef} from 'react'
+import {Alert, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native'
 import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder} from './styles'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
