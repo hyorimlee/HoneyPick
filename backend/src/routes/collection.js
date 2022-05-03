@@ -111,7 +111,11 @@ collectionRouter.patch('/:accountId/:collectionId', async (req, res) => {
       if (collection.items.findById(itemId)) {
         promises.push(Collection.updateOne({ _id: collectionId }, { $pull: { items: item } }, { new: true }))
       } else {
-        promises.push(Collection.updateOne({ _id: collectionId }, { $push: { items: item } }, { new: true }))
+        if (Collection.findById(collectionId).items.length < 30) {
+          promises.push(Collection.updateOne({ _id: collectionId }, { $push: { items: item } }, { new: true }))
+        } else {
+          return res.status(400).send({ err: 'maximum 30 items'})
+        }
       }
     }
     await Promise.all(promises)
