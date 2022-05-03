@@ -8,7 +8,7 @@ const { authAccessToken } = require('./auth')
 voteRouter.post('/', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
 
     // 투표 만들기 & 프로필의 투표 목록에 추가
     const { collection } = req.body
@@ -60,10 +60,11 @@ voteRouter.get('/:accountId/:voteId', authAccessToken, async (req, res) => {
 voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
-    const vote = null
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
+    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
+    if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
 
-
+    const vote = await Vote.updateOne({ _id: voteId }, { $set: { isClosed: true } })
     return res.status(200).send({ vote })
   } catch (error) {
     console.log(error)
@@ -75,7 +76,7 @@ voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
 voteRouter.patch('/:accountId/:voteId/:itemId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId"})
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
     const vote = null
     const item = null
 
