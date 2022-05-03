@@ -5,6 +5,7 @@ const UserSchema = new Schema({
     username: { type: String, required: true , unique: true },
     password: { type: String, required: true},
     nickname: String,
+    nickname: { type: String, required: true},
     phone: {
         type:Schema.Types.String,
         ref:'phone',
@@ -21,7 +22,7 @@ const UserSchema = new Schema({
         type:Schema.Types.String,
         ref:'review',
     },
-    withdraw: {type: Boolean},
+    withdraw: {type: Boolean, default:false},
 }, { timestamps: true })
 
 UserSchema.pre('save',function(nxt){
