@@ -5,21 +5,30 @@ import BaseTextInput from '../../../components/textInput/base'
 import BaseButton from '../../../components/button/base'
 import PhoneForm from '../phoneForm/index'
 import {
+  nicknameValid,
   noSpace,
   passwordCompare,
   spaceAlert,
-  specialCharacterAlert,
+  usernameAlert,
+  nicknameAlert,
   usernameValid,
 } from '../../../modules/valid'
+import {useAppDispatch} from '../../../store/types'
+import {requestSignUp} from '../../../store/slices/user/asyncThunk'
 
 function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
+  const dispatch = useAppDispatch()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [nickname, setNickname] = useState('')
   const [passwordIsSame, setPasswordIsSame] = useState(false)
   const [phone, setPhone] = useState('')
+
   const passwordRef = useRef<TextInput | null>(null)
   const passwordConfirmRef = useRef<TextInput | null>(null)
+  const nicknameRef = useRef<TextInput | null>(null)
 
   const usernameChanged = useCallback(
     (text: string) => {
@@ -40,7 +49,14 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
       setPasswordConfirm(noSpace(text))
       setPasswordIsSame(passwordCompare(password, text))
     },
-    [passwordConfirm],
+    [password],
+  )
+
+  const nicknameChanged = useCallback(
+    (text: string) => {
+      setNickname(nicknameValid(text))
+    },
+    [nickname],
   )
 
   const setValidPhone = useCallback((text: string) => {
@@ -48,8 +64,8 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
   }, [])
 
   const signUpSubmit = useCallback(() => {
-    Alert.alert('회원가입 성공 하고 바로 로그인 시키기')
-  }, [username, password, passwordConfirm, phone])
+    dispatch(requestSignUp({username, password, nickname, phone}))
+  }, [username, password, passwordConfirm, phone, nickname])
 
   const buttonDisabled = !(username && password === passwordConfirm && phone)
   const passwordConfirmError = !passwordIsSame && passwordConfirm.length > 0
@@ -59,7 +75,7 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         value={username}
         onChangeText={usernameChanged}
         onSubmitEditing={() => passwordRef.current?.focus()}
-        onKeyPress={specialCharacterAlert}
+        onKeyPress={usernameAlert}
         placeholder={'아이디'}
         importantForAutofill={'yes'} // Android
         autoComplete={'username'} // Android
@@ -85,7 +101,7 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         ref={passwordConfirmRef}
         value={passwordConfirm}
         onChangeText={passwordConfirmChanged}
-        onSubmitEditing={() => {}}
+        onSubmitEditing={() => nicknameRef.current?.focus()}
         onKeyPress={spaceAlert}
         placeholder={'비밀번호 확인'}
         importantForAutofill={'yes'} // Android
@@ -95,12 +111,20 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         secureTextEntry
         borderBottomColor={passwordConfirmError ? 'red' : '#FFD669'}
       />
-      {/* 패스워드 일치 여부 판별 추가 필요 */}
       {passwordConfirmError ? (
         <Text style={{color: 'black', fontSize: 10}}>
           비밀번호가 일치하지 않습니다.
         </Text>
       ) : null}
+      <BaseTextInput
+        ref={nicknameRef}
+        value={nickname}
+        onChangeText={nicknameChanged}
+        onKeyPress={nicknameAlert}
+        placeholder={'별명'}
+        returnKeyType={'next'}
+        maxLength={10}
+      />
       <PhoneForm setValidPhone={setValidPhone} />
       <BaseButton
         text={'회원가입'}

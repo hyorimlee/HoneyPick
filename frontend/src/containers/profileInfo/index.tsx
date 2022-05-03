@@ -31,7 +31,9 @@ function ProfileInfo() {
             backgroundColor: 'black',
           }}
         />
-        <Text style={{fontSize: 18, fontWeight: '500'}}>{username}</Text>
+        <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
+          {username}
+        </Text>
         <Text style={{fontSize: 10}}>{description}</Text>
         <Text style={{fontSize: 10}}>100팔로잉 200팔로워</Text>
       </InfoContainer>
