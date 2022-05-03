@@ -5,7 +5,7 @@ const { User, Collection, Profile, Item } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
-function isFollower(accountId, userId) {
+async function isFollower(accountId, userId) {
   const profileId = await User.findById(accountId).profile
   const followers = await Profile.findById(profileId).followers
   if (followers.includes(userId)) {
