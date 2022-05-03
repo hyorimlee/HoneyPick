@@ -15,11 +15,11 @@ function isFollower(accountId, userId) {
 }
 
 // 컬렉션 생성
-collectionRouter.post('/', async (req, res) => {
+collectionRouter.post('/', authAccessToken, async (req, res) => {
   try {
     // jwt 검증: user 추출 및 검증
-    const userId = await authAccessToken(req, res)
-    if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
     const user = await User.findById(userId)
 
     // title, description, isPublic 추출 및 검증
@@ -43,7 +43,7 @@ collectionRouter.post('/', async (req, res) => {
 })
 
 // 컬렉션 목록 조회
-collectionRouter.get('/:accountId', async (req, res) => {
+collectionRouter.get('/:accountId', authAccessToken, async (req, res) => {
   try {
     let { page=1 } = req.query
     page = parseInt(page)
@@ -51,8 +51,8 @@ collectionRouter.get('/:accountId', async (req, res) => {
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
 
     // 비공개인 컬렉션은, 사용자가 팔로워여야만 조회 가능 (jwt)
-    const userId = await authAccessToken(req, res)
-    if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
     // 팔로워 목록 조회해서, 팔로워면 all, 아니면 public 보여주기
     // 컬렉션 목록 조회 w/ pagination. 최신 업데이트 순. page는 1부터 시작. 3개씩 조회.
     if (isFollower(accountId, userId)) {
@@ -69,7 +69,7 @@ collectionRouter.get('/:accountId', async (req, res) => {
 })
 
 // 컬렉션 상세 조회
-collectionRouter.get('/:accountId/:collectionId', async (req, res) => {
+collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, res) => {
   try {
     const { accountId, collectionId } = req.params
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
@@ -78,8 +78,8 @@ collectionRouter.get('/:accountId/:collectionId', async (req, res) => {
     // 비공개인 경우: jwt 토큰에서 userId 가져와서 accountId 의 팔로워 목록에 있는지 확인하고, 있으면 공개, 없으면 못 봄
     const collection = await Collection.findById(collectionId)
     if (collection.isPublic == 'false') {
-      const userId = await authAccessToken(req, res)
-      if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
+      const { userId } = req
+      if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
       if (!isFollower(accountId, userId)) {
         return res.status(400).send({ err: 'private collection'})
       }
@@ -92,11 +92,15 @@ collectionRouter.get('/:accountId/:collectionId', async (req, res) => {
 })
 
 // 컬렉션 수정(제목, 설명, 아이템, 공개여부)
-collectionRouter.patch('/:accountId/:collectionId', async (req, res) => {
+collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req, res) => {
   try {
     const { collectionId } = req.params
     const { title, description, itemId, isPublic } = req.body
+    const { userId } = req
+    const collection = await Collection.findById(collectionId)
 
+    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
+    if (collection.user._id !== userId || userId !== accountId) return res.status(201).send({ err: "Unauthorized" })
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
@@ -108,7 +112,7 @@ collectionRouter.patch('/:accountId/:collectionId', async (req, res) => {
     if (typeof isPublic !== 'undefined') promises.push(Collection.updateOne({ _id: collectionId }, { isPublic }, { new: true }))
     if (itemId) {
       const item = await Item.findById(itemId)
-      if (collection.items.findById(itemId)) {
+      if (Collection.findById(collectionId).items.includes(item)) {
         promises.push(Collection.updateOne({ _id: collectionId }, { $pull: { items: item } }, { new: true }))
       } else {
         if (Collection.findById(collectionId).items.length < 30) {
@@ -119,7 +123,6 @@ collectionRouter.patch('/:accountId/:collectionId', async (req, res) => {
       }
     }
     await Promise.all(promises)
-    const collection = await Collection.findById(collectionId)
     return res.status(200).send({ collection })
   } catch (error) {
     console.log(error)
@@ -128,10 +131,12 @@ collectionRouter.patch('/:accountId/:collectionId', async (req, res) => {
 })
 
 // 컬렉션 삭제
-collectionRouter.delete('/:accountId/:collectionId', async (req, res) => {
+collectionRouter.delete('/:accountId/:collectionId', authAccessToken, async (req, res) => {
   try {
     const { accountId, collectionId } = req.params
+    const { userId } = req
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
+    if (userId !== accountId) return res.status(201).send({ err: "Unauthorized" })
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId"})
 
     const profileId = await User.findById(accountId).profile
