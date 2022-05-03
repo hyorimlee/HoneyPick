@@ -31,7 +31,7 @@ function authAccessToken (req, res, next)  {
         console.log(err)
         return res.status(400).send({err:"Invaild accessToken"})
     }
-}
+}z
 authRouter.post('/signup', async (req, res) => {
     try {
         const user = new User(req.body)
