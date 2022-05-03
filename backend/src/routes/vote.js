@@ -36,6 +36,7 @@ voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
     let { page=1 } = req.query
     page = parseInt(page)
     const { accountId } = req.params
+    const profileId = await User.find({ _id: accountId }).profile
     const votes = await User.find({ _id: accountId }).votes.sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
     return res.status(200).send({ votes })
   } catch (error) {
