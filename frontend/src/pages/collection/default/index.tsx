@@ -4,7 +4,6 @@ import {Text, View} from 'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import CollectionInfo from '../../../containers/collectionInfo'
 import CollectionItems from '../../../containers/collectionItems'
-import collectionItems from '../../../containers/collectionItems'
 
 function Collection() {
   return (
