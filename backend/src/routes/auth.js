@@ -47,12 +47,11 @@ authRouter.post('/signup', async (req, res) => {
         let user = new User(req.body)
         let follow = new Follow({ ...req.body, user})
         user.follow = follow._id
-        const {accessToken, refreshToken} =await generateTokens(user._id)
-        Promise.all([   
-            await follow.save(),       
-            await user.save()
+        const [{accessToken,refreshToken}]=await Promise.all([ 
+            generateTokens(user._id),  
+            follow.save(),       
+            user.save()
         ])
-        
         return res.status(201).send({userPk:user._id,username:req.body.username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
