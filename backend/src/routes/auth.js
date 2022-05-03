@@ -31,18 +31,18 @@ function authAccessToken (req, res, next)  {
         console.log(err)
         return res.status(400).send({err:"Invaild accessToken"})
     }
-}z
+}
 authRouter.post('/signup', async (req, res) => {
     try {
         const user = new User(req.body)
-        await user.save()
         const {accessToken, refreshToken} = await generateTokens(user._id)
-        const follow = new Follow(user._id, user.username)
+        let follow = new Follow({ ...req.body, user})
         await follow.save()
         
-        user.follow = follow
+        
+        user.follow = follow._id
         await user.save()
-        return res.status(201).send({user_pk:user._id,username:req.body.username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
+        return res.status(201).send({userPk:user._id,username:req.body.username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -100,13 +100,5 @@ authRouter.delete('/',authAccessToken, async(req,res)=>{
     }
 })
 
-<<<<<<< Updated upstream
-module.exports =  authRouter
-<<<<<<< Updated upstream
+module.exports =  authRouter 
 module.exports.authAccessToken = authAccessToken
-=======
-module.exports.authAccessToken = authAccessToken
-=======
-module.exports =  authRouter,{authAccessToken}
->>>>>>> Stashed changes
->>>>>>> Stashed changes
