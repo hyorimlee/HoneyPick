@@ -17,8 +17,9 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
     try {
         const { url } = req.body
         if(typeof url !== 'string') return res.status(400).send({ err: "url is required" })
+        
+        var item = await Item.findOne({ url })
 
-        let item = await Item.findOne({ url })
         // item이 존재하지않거나, 크롤링이 진행되지 않았을 경우
         // 크롤링이 진행되지 않았을 경우는 나중에 제거하거나 updatedAt을 통해 체크 후 크롤링 요청 필요로 변경
         if(!item || !item.title) {
@@ -54,21 +55,26 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
 itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
+        const { userId } = req.query
         if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
-        
+        if(!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
+
         const [item, review] = await Promise.all([
             Item.findById(itemId),
             Review.findOne({ user: userId, item: itemId })
         ])
         if(!item) res.status(400).send({ err: "item does not exist" })
 
-        return res.status(200).send({ item: { ...item, review: review } })
+        return res.status(200).send({ item, review })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
     }
 })
 
+// 아이템 - 컬렉션 관리
+// 아이템 컬렉션에서 삭제
+// 아이템
 itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
