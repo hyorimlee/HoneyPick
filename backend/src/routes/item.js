@@ -45,7 +45,7 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
                 })
             }
         }
-        return res.status(201).send({ item })
+        return res.status(201).send({ _id: item._id })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
