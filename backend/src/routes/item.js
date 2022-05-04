@@ -55,15 +55,18 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
 itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
-        const { userId } = req.query
-        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
-        if(!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
+        // query에 userId가 없을 경우 본인의 리뷰 가져오기
+        var { userId } = req.query
+        if(!userId) userId = req.userId
+        
+        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
+        if(!isValidObjectId(userId)) return res.status(400).send({ err: "잘못된 userId" })
 
         const [item, review] = await Promise.all([
             Item.findById(itemId),
             Review.findOne({ user: userId, item: itemId })
         ])
-        if(!item) res.status(400).send({ err: "item does not exist" })
+        if(!item) res.status(400).send({ err: "아이템이 존재하지 않습니다." })
 
         return res.status(200).send({ item, review })
     } catch (error) {
@@ -78,12 +81,14 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
 itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
-        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
+        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
+        // 아이템 별로 저장할 수 있는 컬렉션 개수는 하나 -> 하나만 update치면 됨
+        // 만약에 수정한다 하면 기존 저장되어있던 collectionId도 바꿔야함
         const { collectionId } = req.body
-        if(!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
+        if(!isValidObjectId(collectionId)) return res.status(400).send({ err: "잘못된 collectionId" })
         
         const item = await Item.findById(itemId)
-        if(!item) return res.status(400).send({ err: "item does not exist" })
+        if(!item) return res.status(400).send({ err: "아이템이 존재하지 않습니다." })
 
         await Collection.findByIdAndUpdate(collectionId, { $push: { items: [item] } })
 
