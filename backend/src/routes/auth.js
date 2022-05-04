@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
 
 const generateTokens = function(userId,res){
     try {
-        const accessToken =  jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACESS_EXPIRESIN})
+        const accessToken =  jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACCESS_EXPIRESIN})
         const refreshToken = jwt.sign({userId:userId},process.env.JWT_REFRESH_KEY,{expiresIn:process.env.JWT_REFRESH_EXPIRESIN})
         return {accessToken,refreshToken}
     } catch (err) {
@@ -94,7 +94,7 @@ authRouter.post('/refresh',async (req,res)=>{
         if(!refreshToken) return res.status(400).send({err:"refreshToken이 없습니다."})
         try {
             const {userId} = jwt.verify(refreshToken,process.env.JWT_REFRESH_KEY)
-            const accessToken = jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACESS_EXPIRESIN})
+            const accessToken = jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACCESS_EXPIRESIN})
             return res.status(201).send({msg:"새로운 accessToken 발급 완료",accessToken:accessToken,refreshToken:refreshToken})
         } catch (err) {
             console.log(err)
