@@ -1,5 +1,5 @@
 export interface IAccessToken {
-  refreshToken: string
+  refreshToken: string | null
 }
 
 export interface ISignInParameter {
