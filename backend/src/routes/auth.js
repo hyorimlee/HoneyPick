@@ -2,24 +2,20 @@ const { Router } = require('express')
 const authRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { User } = require('../models')
+const { User,Follow } = require('../models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const generateAccessToken = async function(userId){
+const generateTokens = async function(userId,res){
     try {
-        const token = await jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACESS_EXPIRESIN})
-        return token
+        const [accessToken, refreshToken] = await Promise.all([
+            jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACESS_EXPIRESIN}),
+            jwt.sign({userId:userId},process.env.JWT_REFRESH_KEY,{expiresIn:process.env.JWT_REFRESH_EXPIRESIN})
+        ])
+        return {accessToken,refreshToken}
     } catch (err) {
-        return res.status(400).send({mst:"err occurred while generate access Token"})
-    }
-}
-const generateRefreshToken = async function(userId){
-    try {
-        const token = await jwt.sign({userId:userId},process.env.JWT_REFRESH_KEY,{expiresIn:process.env.JWT_REFRESH_EXPIRESIN})
-        return token
-    } catch (err) {
-        return res.status(400).send({mst:"err occurred while generate refresh Token"})
+        console.log(err)
+        return res.status(400).send({err:"err occurred while generate tokens"})
     }
 }
 function authAccessToken (req, res, next)  {
@@ -35,15 +31,28 @@ function authAccessToken (req, res, next)  {
         console.log(err)
         return res.status(400).send({err:"Invaild accessToken"})
     }
-}z
+}
 authRouter.post('/signup', async (req, res) => {
     try {
-        const {username,password,phone} = req.body
-        const user = new User(req.body)
-        await user.save()
-        const accessToken = await generateAccessToken(user._id)
-        const refreshToken = await generateRefreshToken(user._id)
-        return res.status(201).send({user_pk:user._id,username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,access_token:accessToken,refresh_token:refreshToken})
+        const {username,phone, nickname} = req.body
+        if(typeof username!=="string") return res.status(400).send({err:"username is required"})
+        if(typeof phone!=="string") return res.status(400).send({err:"phone is required"})
+        if(typeof nickname!=="string") return res.status(400).send({err:"nickname is required"})
+        
+        if(nickname.length>10) return res.status(400).send({err:"length of nickname should less than 10"})
+        if(username.length>10) return res.status(400).send({err:"length of username should less than 10"})
+
+        if(await User.exists({username:username})) return res.status(400).send({ err: "duplicated username" })
+        
+        let user = new User(req.body)
+        let follow = new Follow({ ...req.body, user})
+        user.follow = follow._id
+        const [{accessToken,refreshToken}]=await Promise.all([ 
+            generateTokens(user._id),  
+            follow.save(),       
+            user.save()
+        ])
+        return res.status(201).send({userPk:user._id,username:req.body.username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -80,7 +89,7 @@ authRouter.post('/refresh',async (req,res)=>{
             return res.status(201).send({msg:"new accessToken is generated!",accessToken:accessToken,refreshToken:refreshToken})
         } catch (err) {
             console.log(err)
-            return res.status(403).send({err:"Invalid refreshToken"})
+            return res.status(403).send({err:"Invalid refreshToken"}) 
         }
     } catch (err) {
         console.log(err)
@@ -101,5 +110,5 @@ authRouter.delete('/',authAccessToken, async(req,res)=>{
     }
 })
 
-module.exports =  authRouter
+module.exports =  authRouter 
 module.exports.authAccessToken = authAccessToken
