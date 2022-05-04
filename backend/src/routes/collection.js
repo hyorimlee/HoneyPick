@@ -19,7 +19,7 @@ collectionRouter.post('/', authAccessToken, async (req, res) => {
   try {
     // jwt 검증: user 추출 및 검증
     const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     const user = await User.findById(userId)
 
     // title, description, isPublic 추출 및 검증
@@ -52,7 +52,7 @@ collectionRouter.get('/:accountId', authAccessToken, async (req, res) => {
 
     // 비공개인 컬렉션은, 사용자가 팔로워여야만 조회 가능 (jwt)
     const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     // 팔로워 목록 조회해서, 팔로워면 all, 아니면 public 보여주기
     // 컬렉션 목록 조회 w/ pagination. 최신 업데이트 순. page는 1부터 시작. 3개씩 조회.
     if (isFollower(accountId, userId)) {
@@ -79,7 +79,7 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
     const collection = await Collection.findById(collectionId)
     if (collection.isPublic == 'false') {
       const { userId } = req
-      if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
+      if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
       if (!isFollower(accountId, userId)) {
         return res.status(400).send({ err: 'private collection'})
       }
@@ -99,8 +99,8 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
     const { userId } = req
     const collection = await Collection.findById(collectionId)
 
-    if (!isValidObjectId(userId)) return res.status(201).send({ err: "invalid userId" })
-    if (collection.user._id !== userId || userId !== accountId) return res.status(201).send({ err: "Unauthorized" })
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (collection.user._id !== userId || userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
@@ -135,8 +135,9 @@ collectionRouter.delete('/:accountId/:collectionId', authAccessToken, async (req
   try {
     const { accountId, collectionId } = req.params
     const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
-    if (userId !== accountId) return res.status(201).send({ err: "Unauthorized" })
+    if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId"})
 
     const profileId = await User.findById(accountId).profile

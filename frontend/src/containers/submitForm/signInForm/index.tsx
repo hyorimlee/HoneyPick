@@ -6,11 +6,11 @@ import BaseButton from '../../../components/button/base/index'
 import {
   noSpace,
   spaceAlert,
-  specialCharacterAlert,
+  usernameAlert,
   usernameValid,
 } from '../../../modules/valid'
 import {useAppDispatch} from '../../../store/types'
-import {requestSignIn} from '../../../store/slices/user'
+import {requestSignIn} from '../../../store/slices/user/asyncThunk'
 
 function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
   const dispatch = useAppDispatch()
@@ -33,8 +33,8 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
   )
 
   const loginSubmit = useCallback(() => {
-    dispatch(requestSignIn())
-  }, [])
+    dispatch(requestSignIn({username, password}))
+  }, [username, password])
 
   const focusPassword = () => {
     passwordRef.current?.focus()
@@ -47,7 +47,7 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
         value={username}
         onChangeText={usernameChanged}
         onSubmitEditing={focusPassword}
-        onKeyPress={specialCharacterAlert}
+        onKeyPress={usernameAlert}
         placeholder={'아이디'}
         importantForAutofill={'auto'} // Android
         autoComplete={'username'} // Android
