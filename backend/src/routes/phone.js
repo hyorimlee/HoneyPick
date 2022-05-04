@@ -7,7 +7,8 @@ const { Phone } = require('../models')
 phoneRouter.post('/', async (req, res) => {
     try {
         const { phoneNumber } = req.body
-        if(typeof phoneNumber !== 'string') return res.status(400).send({ err: "phoneNumber is required" })
+        if(typeof phoneNumber !== 'string') return res.status(400).send({ err: "핸드폰 번호를 입력해주세요." })
+        // 폰번호 검증 01000000000
 
         const verificationCode = Math.floor(Math.random()*1000000).toString().padStart(6, '0')
         
@@ -27,18 +28,18 @@ phoneRouter.post('/check', async (req, res) => {
     try {
         const { phoneId, verificationCode } = req.body
 
-        if(!isValidObjectId(phoneId)) return res.status(400).send({ err: "phoneId is invalid" })
-        if(typeof verificationCode !== 'string') return res.status(400).send({ err: "verificationCode is required" })
+        if(!isValidObjectId(phoneId)) return res.status(400).send({ err: "phoneId가 유효하지 않습니다." })
+        if(typeof verificationCode !== 'string') return res.status(400).send({ err: "인증번호를 입력해주세요" })
 
         const phone = await Phone.findById(phoneId)
-        if(!phone) res.status(400).send({ err: "phone does not exist" })
+        if(!phone) res.status(400).send({ err: "인증정보가 없습니다." })
 
-        if(phone.verificationCode !== verificationCode) return res.status(400).send({ err: "verificationCode is invalid" })
+        if(phone.verificationCode !== verificationCode) return res.status(400).send({ err: "인증번호가 일치하지 않습니다." })
 
         const nowDate = new Date()
         const phoneDate = new Date(phone.createdAt)
         const minuteDiff = (nowDate.getTime() - phoneDate.getTime()) / (1000*60)
-        if(minuteDiff > 5) return res.status(400).send({ err: "verificationCode is expired" })
+        if(minuteDiff > 5) return res.status(400).send({ err: "인증기한이 만료되었습니다." })
 
         return res.status(200).send({ message: 'success', phoneNumber: phone.phoneNumber })
     } catch (error) {
