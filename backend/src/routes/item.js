@@ -41,7 +41,7 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
                 }).then(() => {
                     console.log('item crawl success')
                 }).catch(({response}) => {
-                    console.log(response.data.detail)
+                    console.log(response)
                 })
             }
         }
