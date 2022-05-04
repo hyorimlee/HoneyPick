@@ -1,16 +1,20 @@
 const { Router } = require('express')
 const profileRouter = Router()
 const mongoose = require('mongoose')
-const { isValidObjectId } = require('mongoose')
+const { isValidObjectId } = require('mongoose') 
 const { User } = require('../models')
 const bcrypt = require('bcrypt')
+<<<<<<< Updated upstream
 const jwt = require('jsonwebtoken')
+=======
+const { authAccessToken } = require('./auth')
+>>>>>>> Stashed changes
 
-profileRouter.get('/', async (req, res) => {
+profileRouter.get('/', authAccessToken,async (req, res) => {
     try {
-        const user = null
-        // 유저정보 조회 로직
-
+        if(!isValidObjectId(req.userId)) return res.status(400).send({ err: "유효하지 않은 user id" })
+        const user = User.findById(req.userId)
+        
         return res.status(200).send({ user })
     } catch (error) {
         console.log(error)
