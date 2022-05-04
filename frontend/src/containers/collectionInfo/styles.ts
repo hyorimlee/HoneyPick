@@ -3,7 +3,6 @@ import styled from 'styled-components/native'
 export const Container = styled.View`
   flex-direction: column;
   padding: 20px
-  background-color: #C3C3C3;
 `
 
 export const InfoTextContainer = styled.View`
@@ -21,9 +20,12 @@ export const ButtonContainer = styled.View`
   flex: 1;
 `
 
-export const MenuContainer = styled.View`
+export const MenuButtonContainer = styled.View`
   flex-direction: row;
   justify-content: flex-end;
-  margin-top: 6px;
-  flex: 1;
+`
+
+export const MenuContainer = styled.View`
+  padding-vertical: 30px;
+  padding-horizontal: 30px;
 `

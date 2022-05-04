@@ -6,8 +6,15 @@ const { Phone } = require('../models')
 
 phoneRouter.post('/', async (req, res) => {
     try {
-        const phone = null
-        // 핸드폰 인증번호 생성 로직
+        const { phoneNumber } = req.body
+        if(typeof phoneNumber !== 'string') return res.status(400).send({ err: "phoneNumber is required" })
+
+        const verificationCode = Math.floor(Math.random()*1000000).toString().padStart(6, '0')
+        
+        // 문자 발송 로직
+
+        const phone = new Phone({ phoneNumber, verificationCode })
+        await phone.save()
 
         return res.status(201).send({ phone })
     } catch (error) {
@@ -18,20 +25,26 @@ phoneRouter.post('/', async (req, res) => {
 
 phoneRouter.post('/check', async (req, res) => {
     try {
-        const phone = null
-        // 핸드폰 인증 로직
-        // 1. objectId, code 체크
-        // 2. DB에 저장된 코드와 일치하는지 체크
-        // 3. 유효기간 만료되었을 시 삭제 (5분 -> 1000ms * 300), Fail 반환
+        const { phoneId, verificationCode } = req.body
 
-        return res.status(200).send({ phone })
+        if(!isValidObjectId(phoneId)) return res.status(400).send({ err: "phoneId is invalid" })
+        if(typeof verificationCode !== 'string') return res.status(400).send({ err: "verificationCode is required" })
+
+        const phone = await Phone.findById(phoneId)
+        if(!phone) res.status(400).send({ err: "phone does not exist" })
+
+        if(phone.verificationCode !== verificationCode) return res.status(400).send({ err: "verificationCode is invalid" })
+
+        const nowDate = new Date()
+        const phoneDate = new Date(phone.createdAt)
+        const minuteDiff = (nowDate.getTime() - phoneDate.getTime()) / (1000*60)
+        if(minuteDiff > 5) return res.status(400).send({ err: "verificationCode is expired" })
+
+        return res.status(200).send({ message: 'success', phoneNumber: phone.phoneNumber })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
     }
 })
 
-
-module.exports = {
-    phoneRouter
-}
+module.exports = phoneRouter
