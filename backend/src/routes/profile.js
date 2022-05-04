@@ -3,6 +3,8 @@ const profileRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
 const { User } = require('../models')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 profileRouter.get('/', async (req, res) => {
     try {

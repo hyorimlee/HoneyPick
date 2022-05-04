@@ -15,4 +15,5 @@ export type ProfileStackParamList = {
 export type CollectionStackParamList = {
   Default: undefined
   EditCollection: undefined
+  ItemPage: undefined
 }

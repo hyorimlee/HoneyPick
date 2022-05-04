@@ -1,10 +1,15 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import axios from 'axios'
-import Config from 'react-native-config'
+import {createSlice} from '@reduxjs/toolkit'
 import EncryptedStorage from 'react-native-encrypted-storage'
-import uiSlice from '../ui'
+import {
+  requestAccessToken,
+  requestPhoneVerify,
+  requestPhoneVerifyCheck,
+  requestSignIn,
+  requestSignUp,
+} from './asyncThunk'
 
 const initialState = {
+  userPk: -1,
   username: 'Honey_Bee',
   description:
     // '열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ',
@@ -13,27 +18,6 @@ const initialState = {
     'https://www.pngfind.com/pngs/m/387-3877350_kakao-friends-ryan-png-kakao-friends-ryan-icon.png',
   accessToken: '',
 }
-
-export const requestSignIn = createAsyncThunk(
-  'user/signIn',
-  async (_, thunkAPI) => {
-    try {
-      thunkAPI.dispatch(uiSlice.actions.setIsLoadingTrue())
-
-      const response = await axios({
-        method: 'GET',
-        url: `${Config.API_BASE_URL}/auth`,
-      })
-
-      thunkAPI.dispatch(uiSlice.actions.setIsLoadingFalse())
-
-      return response.data
-    } catch (error: any) {
-      thunkAPI.dispatch(uiSlice.actions.setIsLoadingFalse())
-      return thunkAPI.rejectWithValue(error.response.data)
-    }
-  },
-)
 
 const userSlice = createSlice({
   name: 'user',
@@ -50,15 +34,49 @@ const userSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(requestSignIn.fulfilled, (state, action) => {
-      state.username = action.payload
-      state.description = action.payload
-      state.profileImage = action.payload
-      state.accessToken = action.payload
-      EncryptedStorage.setItem('refreshToken', action.payload)
-        .then(() => console.log('저장'))
-        .catch(err => console.log(err))
-    })
+    builder
+      .addCase(requestAccessToken.fulfilled, (state, action) => {
+        state.accessToken = action.payload.accessToken
+      })
+      .addCase(requestAccessToken.rejected, (state, action) => {
+        console.log(action.payload)
+      })
+      .addCase(requestSignIn.fulfilled, (state, action) => {
+        state.userPk = action.payload.userPk
+        state.username = action.payload.username
+        state.description = action.payload.description
+        state.profileImage = action.payload.profile
+        state.accessToken = action.payload.accessToken
+        EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)
+          .then(() => console.log('login => refreshToken success'))
+          .catch(err => console.log('login => refreshToken fail', err))
+      })
+      .addCase(requestSignIn.rejected, (state, action) => {
+        console.log(action.payload)
+      })
+      .addCase(requestSignUp.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.userPk = action.payload.userPk
+        state.username = action.payload.username
+        state.description = action.payload.description
+        state.profileImage = action.payload.profile
+        state.accessToken = action.payload.accessToken
+        EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)
+          .then(() => console.log('signup => refreshToken success'))
+          .catch(err => console.log('signup => refreshToken fail', err))
+      })
+      .addCase(requestSignUp.rejected, (state, action) => {
+        console.log(action.payload)
+      })
+      .addCase(requestPhoneVerify.fulfilled, (state, action) => {
+        console.log(action.payload.phone.verificationCode)
+      })
+      .addCase(requestPhoneVerify.rejected, (state, action) => {
+        console.log(action)
+      })
+      .addCase(requestPhoneVerifyCheck.rejected, (state, action) => {
+        console.log(action)
+      })
   },
 })
 
