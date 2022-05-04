@@ -11,6 +11,7 @@ import SignUp from './src/pages/signUp'
 import ProfileStack from './src/pages/profile'
 import SplashScreen from 'react-native-splash-screen'
 import {requestAccessToken} from './src/store/slices/user/asyncThunk'
+import axios from 'axios'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -37,6 +38,33 @@ const InnerApp = memo(() => {
         })
     }
     getRefreshToken()
+
+    axios.interceptors.response.use(
+      response => response,
+      async error => {
+        const {
+          config,
+          response: {status},
+        } = error
+
+        // access token 기간 만료시
+        if (status === 419) {
+          console.log('accessToken expired! - accessToken reissue')
+          const refreshToken = await EncryptedStorage.getItem('refreshToken')
+
+          if (refreshToken) {
+            dispatch(requestAccessToken({refreshToken}))
+              .unwrap()
+              .then(response => {
+                config.headers.authorization = `Bearer ${response.accessToken}`
+                return axios(config)
+              })
+          }
+        }
+
+        return Promise.reject(error)
+      },
+    )
   }, [])
 
   return (
