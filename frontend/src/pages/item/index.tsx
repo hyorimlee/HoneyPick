@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, createRef} from 'react'
-import {Alert, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native'
+import {memo, createRef, useCallback, useState} from 'react'
+import {Alert, Pressable, SafeAreaView, StatusBar, TouchableOpacity, Text} from 'react-native'
 import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder} from './styles'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
@@ -8,17 +8,34 @@ import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
 import ActionSheet from "react-native-actions-sheet"
+import {useSelector} from 'react-redux'
+import {RootState} from '../../store/reducer'
+import {useAppDispatch} from '../../store/types'
+import {saveItem} from '../../store/slices/collection'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 function Item() {
+  const dispatch = useAppDispatch()
   const actionSheetRef = createRef<ActionSheet>()
+  const {itemId, item, review} = useSelector((state: RootState) => state.collection)
+
+  const [copiedText, setCopiedText] = useState<string>('')
 
   const openSheet = () => {
     actionSheetRef.current?.show()
   }
 
-  // const closeSheet = () => {
-  //   actionSheetRef.current?.show()
-  // }
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString()
+    if (text.indexOf('http') > -1) {
+      setCopiedText(text)
+      console.log(copiedText)
+    }
+  }
+
+  const submitItem = (copiedLink: string) => {
+    dispatch(saveItem(copiedLink))
+  }
 
   const goToSite = () => {
     Alert.alert('사이트로 이동하기')
@@ -86,6 +103,16 @@ function Item() {
         <BaseButton
           text={'사이트로 이동하기'}
           onPress={goToSite}
+          borderRadius={25}
+          marginVertical={10}
+          paddingVertical={15}
+        />
+        <Pressable onPress={fetchCopiedText}>
+          <Text>복사복사복사</Text>
+        </Pressable>
+        <BaseButton
+          text={'아이템 저장 테스트'}
+          onPress={() => submitItem(copiedText)}
           borderRadius={25}
           marginVertical={10}
           paddingVertical={15}
