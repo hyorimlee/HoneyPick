@@ -1,13 +1,13 @@
 const { Router } = require('express')
 const collectionRouter = Router()
 const { isValidObjectId } = require('mongoose')
-const { User, Collection, Profile, Item } = require('../models')
+const { User, Collection, Item, Follow } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
 async function isFollower(accountId, userId) {
-  const profileId = await User.findById(accountId).profile
-  const followers = await Profile.findById(profileId).followers
+  const followId = await User.findById(accountId).follow
+  const followers = await Follow.findById(followId).followers
   if (followers.includes(userId)) {
     return true
   }
@@ -30,10 +30,9 @@ collectionRouter.post('/', authAccessToken, async (req, res) => {
 
     // 컬렉션 자체 추가 & 프로필의 컬렉션 목록에 추가
     const collection = new Collection({ ...req.body, user })
-    const profileId = await User.findById(userId).profile
     await Promise.all([
       collection.save(),
-      Profile.updateOne({ _id: profileId }, { $push: { collections: collection }})
+      User.updateOne({ _id: userId }, { $push: { collections: collection }})
     ])
     return res.status(201).send({ collection })
   } catch (error) {
@@ -91,11 +90,11 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
   }
 })
 
-// 컬렉션 수정(제목, 설명, 아이템, 공개여부)
+// 컬렉션 수정(제목, 설명, 공개여부. 아이템 추가 및 제거는 item.js에서 처리)
 collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req, res) => {
   try {
     const { collectionId } = req.params
-    const { title, description, itemId, isPublic } = req.body
+    const { title, description, isPublic } = req.body
     const { userId } = req
     const collection = await Collection.findById(collectionId)
 
@@ -104,24 +103,11 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
-    if (itemId && !isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId"} )
 
     const promises = []
     if (title) promises.push(Collection.updateOne({ _id: collectionId }, { title }, { new: true }))
     if (description) promises.push(Collection.updateOne({ _id: collectionId }, { description }, { new: true }))
     if (typeof isPublic !== 'undefined') promises.push(Collection.updateOne({ _id: collectionId }, { isPublic }, { new: true }))
-    if (itemId) {
-      const item = await Item.findById(itemId)
-      if (Collection.findById(collectionId).items.includes(item)) {
-        promises.push(Collection.updateOne({ _id: collectionId }, { $pull: { items: item } }, { new: true }))
-      } else {
-        if (Collection.findById(collectionId).items.length < 30) {
-          promises.push(Collection.updateOne({ _id: collectionId }, { $push: { items: item } }, { new: true }))
-        } else {
-          return res.status(400).send({ err: 'maximum 30 items'})
-        }
-      }
-    }
     await Promise.all(promises)
     return res.status(200).send({ collection })
   } catch (error) {
@@ -140,11 +126,9 @@ collectionRouter.delete('/:accountId/:collectionId', authAccessToken, async (req
     if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId"})
 
-    const profileId = await User.findById(accountId).profile
-    // 컬렉션 자체 삭제
+    // 컬렉션 자체 삭제 & user의 컬렉션 목록에서 삭제
     const collection = await Collection.findByIdAndDelete(collectionId)
-    // 프로필의 컬렉션 목록에서 삭제
-    Profile.updateOne({ _id: profileId }, { $pull: { collections: collection }})
+    await User.updateOne({ _id: accountId }, { $pull: { collections: collection }})
     return res.status(204).send({ collection })
   } catch (error) {
     console.log(error)
