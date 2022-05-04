@@ -7,21 +7,21 @@ const FollowSchema = new Schema(
       username: { type: String, required: true }
     },
     followings: [{
-      _id: { type: ObjectId, required: true, ref: 'profile' },
-      user: { type: ObjectId, required: true, ref: 'user' },
+      _id: { type: ObjectId, required: true, ref: 'user' },
+      username: { type: String, required: true },
       nickname: { type: String, required: true },
-      image: { type: String, required: false },
-      description: { type: String, required: false }
+      description: { type: String, required: false },
+      image: { type: String, required: false }
     }],
     followers: [{
-      _id: { type: ObjectId, required: true, ref: 'profile' },
-      user: { type: ObjectId, required: true, ref: 'user' },
+      _id: { type: ObjectId, required: true, ref: 'user' },
+      username: { type: String, required: true },
       nickname: { type: String, required: true },
-      image: { type: String, required: false },
-      description: { type: String, required: false }
+      description: { type: String, required: false },
+      image: { type: String, required: false }
     }]
-  },
-  { timestamps: true })
+  }
+)
 
 const Follow = model('follow', FollowSchema)
 
