@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {CollectionState} from './types'
@@ -8,9 +8,9 @@ const initialState = {
   itemId: '',
   item: {
     _id: '',
-    url: '',
-    title: '',
-    thumbnail: '',
+    url: 'url',
+    title: 'title',
+    thumbnail: 'thumbnail',
     priceBefore: 0,
     priceAfter: 0,
     discountRate: 0,
@@ -26,14 +26,17 @@ const initialState = {
 } as CollectionState
 
 export const saveItem = createAsyncThunk<any, string, {state: RootState}>(
-  'items/saveItem',
+  'item/saveItem',
   async (url: string, thunkAPI) => {
     try {
       const {accessToken} = thunkAPI.getState().user
-      const response = await axios.post(`${Config.API_BASE_URL}/item`, {url}, {
+      const response = await axios({
+        method: 'POST',
+        url: `${Config.API_BASE_URL}/item`,
+        data: {url},
         headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
+          authorization: `Bearer ${accessToken}`
+        }
       })
       return response.data
     } catch (err: any) {
@@ -43,10 +46,13 @@ export const saveItem = createAsyncThunk<any, string, {state: RootState}>(
 )
 
 export const getItem = createAsyncThunk(
-  'items/getItem',
-  async (data: number, thunkAPI) => {
+  'item/getItem',
+  async (data: string, thunkAPI) => {
     try {
-      const response = await axios.get(`${Config.API_BASE_URL}/item/${data}`)
+      const response = await axios({
+        method: 'GET',
+        url: `${Config.API_BASE_URL}/item/${data}`
+      })
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
@@ -62,9 +68,11 @@ const collectionSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(saveItem.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.itemId = action.payload
       })
       .addCase(getItem.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.item = action.payload
       })
   },
