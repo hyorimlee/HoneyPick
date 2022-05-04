@@ -1,12 +1,24 @@
 import * as React from 'react'
-import {memo} from 'react'
+import {memo, useEffect} from 'react'
+import {RouteProp, useRoute} from '@react-navigation/native'
 import {Text, View} from 'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import {ProfileStackParamList} from '../../../../types/navigation'
 import ProfileInfo from '../../../containers/profileInfo'
+import {getProfile} from '../../../store/slices/profile/asyncThunk'
+import {useAppDispatch} from '../../../store/types'
 
 const paddingHorizontal = 30
 
 function Profile() {
+  const dispatch = useAppDispatch()
+  const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const userId = route.params!.userId
+
+  useEffect(() => {
+    dispatch(getProfile({userId}))
+  }, [])
+
   return (
     <KeyboardAwareScrollView style={{paddingHorizontal}}>
       <ProfileInfo></ProfileInfo>

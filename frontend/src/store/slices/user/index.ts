@@ -9,7 +9,7 @@ import {
 } from './asyncThunk'
 
 const initialState = {
-  userPk: -1,
+  userId: '',
   username: 'Honey_Bee',
   description:
     // '열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ',
@@ -22,17 +22,7 @@ const initialState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    setUsername(state, action) {
-      state.username = action.payload
-    },
-    setDescription(state, action) {
-      state.description = action.payload
-    },
-    setProfileImage(state, action) {
-      state.profileImage = action.payload
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(requestAccessToken.fulfilled, (state, action) => {
@@ -42,7 +32,7 @@ const userSlice = createSlice({
         console.log(action.payload)
       })
       .addCase(requestSignIn.fulfilled, (state, action) => {
-        state.userPk = action.payload.userPk
+        state.userId = action.payload.userId
         state.username = action.payload.username
         state.description = action.payload.description
         state.profileImage = action.payload.profile
@@ -56,7 +46,7 @@ const userSlice = createSlice({
       })
       .addCase(requestSignUp.fulfilled, (state, action) => {
         console.log(action.payload)
-        state.userPk = action.payload.userPk
+        state.userId = action.payload.userId
         state.username = action.payload.username
         state.description = action.payload.description
         state.profileImage = action.payload.profile
