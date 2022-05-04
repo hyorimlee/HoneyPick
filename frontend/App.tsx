@@ -8,6 +8,7 @@ import store from './src/store'
 import {RootState, useAppDispatch, useAppSelector} from './src/store/types'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
+import Item from './src/pages/item'
 import ProfileStack from './src/pages/profile'
 import SplashScreen from 'react-native-splash-screen'
 import {requestAccessToken} from './src/store/slices/user/asyncThunk'
@@ -93,6 +94,11 @@ const InnerApp = memo(() => {
             component={ProfileStack}
             options={{title: '프로필', headerShown: false}}
           />
+          <Tab.Screen
+            name="Item"
+            component={Item}
+            options={{title:'아이템', headerShown: false}}
+          />
           {/* <Tab.Screen
             name="EventPage"
             component={}
@@ -105,7 +111,7 @@ const InnerApp = memo(() => {
           /> */}
         </Tab.Navigator>
       ) : (
-        <Stack.Navigator initialRouteName="Item">
+        <Stack.Navigator initialRouteName="SignIn">
           <Stack.Screen
             name="SignIn"
             component={SignIn}
@@ -116,11 +122,6 @@ const InnerApp = memo(() => {
             component={SignUp}
             options={{title: '회원가입', headerShown: false}}
           />
-          {/* <Stack.Screen
-            name="Item"
-            component={Item}
-            options={{title: '아이템', headerShown: false}}
-          /> */}
         </Stack.Navigator>
       )}
     </NavigationContainer>

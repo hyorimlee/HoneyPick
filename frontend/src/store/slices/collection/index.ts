@@ -1,7 +1,8 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {CollectionState} from './types'
+import {RootState} from '../../types'
 
 const initialState = {
   itemId: '',
@@ -24,14 +25,15 @@ const initialState = {
   }
 } as CollectionState
 
-export const saveItem = createAsyncThunk(
+export const saveItem = createAsyncThunk<any, string, {state: RootState}>(
   'items/saveItem',
-  async (data: string, thunkAPI) => {
+  async (url: string, thunkAPI) => {
     try {
-      const response = await axios.post(`${Config.API_BASE_URL}/item`, data, {
-        // headers: {
-        //   Authorization: 
-        // }
+      const {accessToken} = thunkAPI.getState().user
+      const response = await axios.post(`${Config.API_BASE_URL}/item`, {url}, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
       })
       return response.data
     } catch (err: any) {

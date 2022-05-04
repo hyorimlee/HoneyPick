@@ -9,7 +9,7 @@ import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
 import ActionSheet from "react-native-actions-sheet"
 import {useSelector} from 'react-redux'
-import {RootState} from '../../store/reducer'
+import {RootState} from '../../store/types'
 import {useAppDispatch} from '../../store/types'
 import {saveItem} from '../../store/slices/collection'
 import Clipboard from '@react-native-clipboard/clipboard'
@@ -29,7 +29,6 @@ function Item() {
     const text = await Clipboard.getString()
     if (text.indexOf('http') > -1) {
       setCopiedText(text)
-      console.log(copiedText)
     }
   }
 

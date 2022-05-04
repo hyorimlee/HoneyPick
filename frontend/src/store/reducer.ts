@@ -9,6 +9,4 @@ const rootReducer = combineReducers({
   collection: collectionSlice.reducer,
 })
 
-export type RootState = ReturnType<typeof rootReducer>
-
 export default rootReducer
