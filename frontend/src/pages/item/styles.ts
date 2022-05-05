@@ -28,10 +28,12 @@ const MenuContainer = styled.View`
 `
 
 const NormalText = styled.Text`
+  color: #000000;
   margin-top: 5px;
 `
 
 const BoldText = styled.Text`
+  color: #000000;
   margin-top: 5px;
   font-weight: bold;
 `

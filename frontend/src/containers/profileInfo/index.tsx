@@ -13,7 +13,6 @@ function ProfileInfo() {
     const {username, description, profileImage} = state.user
     return {username, description, profileImage}
   })
-
   const editProfile = useCallback(() => {
     navigation.push('EditProfile')
   }, [])
@@ -34,8 +33,10 @@ function ProfileInfo() {
         <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
           {username}
         </Text>
-        <Text style={{fontSize: 10}}>{description}</Text>
-        <Text style={{fontSize: 10}}>100팔로잉 200팔로워</Text>
+        <Text style={{fontSize: 10, color: '#000000'}}>{description}</Text>
+        <Text style={{fontSize: 10, color: '#000000'}}>
+          100팔로잉 200팔로워
+        </Text>
       </InfoContainer>
       <EditContainer>
         <BaseButton text={'프로필 수정'} onPress={editProfile}></BaseButton>

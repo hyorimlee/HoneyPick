@@ -17,7 +17,9 @@ export const requestAccessToken = createAsyncThunk(
       const response = await axios({
         method: 'POST',
         url: `${Config.API_BASE_URL}/auth/refresh`,
-        data: {refreshToken},
+        headers: {
+          authorization: `Bearer ${refreshToken}`,
+        },
       })
 
       return response.data
