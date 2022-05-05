@@ -45,19 +45,21 @@ followRouter.post('/', authAccessToken, async (req, res) => {
 followRouter.get('/:accountId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     const { accountId } = req.params
-    const userFollow = await Follow.findOne({ user: userId })
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (!isValidObjectId(ObjectId(accountId))) return res.status(401).send({ err: "invalid accountId" })
+
+    const follow = await Follow.findOne({ "user._id": accountId })
 
     let { page=1 } = req.query
     page = parseInt(page)
 
     // pagination: 최근 추가순. page는 1부터 시작. 6개씩 조회.
-    const [following, follower] = await Promise.all([
-      userFollow.followings.sort({ updatedAt: -1 }).skip((page - 1) * 6).limit(6),
-      userFollow.followers.sort({ updatedAt: -1 }).skip((page - 1) * 6).limit(6)
+    const [followings, followers] = await Promise.all([
+      Follow.findOne({ "user._id": accountId }).sort( { "followings.updatedAt": -1 }).skip((page - 1) * 6).limit(6).select('followings'),
+      Follow.findOne({ "user._id": accountId }).sort({ "followers.updatedAt": -1 }).skip((page - 1) * 6).limit(6).select('followers')
     ])
-    return res.status(200).send({ following, follower })
+    return res.status(200).send({ followings: followings.followings, followers: followers.followers })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
