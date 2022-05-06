@@ -8,9 +8,10 @@ const initialState = {
   itemId: '',
   item: {
     _id: '',
+    brand: 'brand',
     url: 'url',
     title: 'title',
-    thumbnail: 'thumbnail',
+    thumbnail: '',
     priceBefore: 0,
     priceAfter: 0,
     discountRate: 0,
@@ -45,13 +46,17 @@ export const saveItem = createAsyncThunk<any, string, {state: RootState}>(
   }
 )
 
-export const getItem = createAsyncThunk(
+export const getItem = createAsyncThunk<any, string, {state: RootState}>(
   'item/getItem',
   async (data: string, thunkAPI) => {
     try {
+      const {accessToken} = thunkAPI.getState().user
       const response = await axios({
         method: 'GET',
-        url: `${Config.API_BASE_URL}/item/${data}`
+        url: `${Config.API_BASE_URL}/item/${data}`,
+        headers: {
+          authorization: `Bearer ${accessToken}`
+        }
       })
       return response.data
     } catch (err: any) {
@@ -69,11 +74,13 @@ const collectionSlice = createSlice({
     builder
       .addCase(saveItem.fulfilled, (state, action) => {
         console.log(action.payload)
-        state.itemId = action.payload
+        state.itemId = action.payload._id
       })
       .addCase(getItem.fulfilled, (state, action) => {
-        console.log(action.payload)
-        state.item = action.payload
+        console.log(action.payload.item)
+        console.log(action.payload.review)
+        state.item = action.payload.item
+        state.review = action.payload.review
       })
   },
 })

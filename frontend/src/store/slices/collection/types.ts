@@ -2,6 +2,7 @@ export interface CollectionState {
   itemId: string,
   item: {
     _id: string,
+    brand?: string,
     url: string,
     title?: string,
     thumbnail?: string,

@@ -78,7 +78,7 @@ function Item() {
       </ActionSheet>
       <Container>
         <ImageContainer
-          source={require('../../assets/images/sampleimage1.jpg')}
+          source={item.thumbnail ? {uri: item.thumbnail} : require('../../assets/images/sampleimage1.jpg')}
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,
@@ -86,7 +86,7 @@ function Item() {
         />
         <InfoContainer>
           <TextContainer>
-            <NormalText>사이트명</NormalText>
+            <NormalText>{item.brand}</NormalText>
             <BoldText>{item.title}</BoldText>
             <PriceText>{item.priceBefore}</PriceText>
             <NormalText>컬렉션 이름</NormalText>
