@@ -14,7 +14,7 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
 
     // 투표 만들기 & 프로필의 투표 목록에 추가
     const collection = await Collection.findById(collectionId)
-    const vote = new Vote({ collectionId, result: collection.items})
+    const vote = new Vote({ collectionId, result: collection.items })
     await Promise.all([
       vote.save(),
       User.updateOne({ _id: userId }, { $push: { votes: vote } })
@@ -26,15 +26,29 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
   }
 })
 
-// 투표 목록 조회
+// 투표 목록 조회 (투표는 전체공개)
 voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
   try {
     // 투표 목록: 페이지네이션. page 1부터 시작. 3개씩 보여줌
     let { page=1 } = req.query
     page = parseInt(page)
     const { accountId } = req.params
-    const profileId = await User.find({ _id: accountId }).profile
-    const votes = await User.find({ _id: accountId }).votes.sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
+    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
+
+    const account = await User.findById(accountId)
+    const votes =
+      await account.votes
+        .sort((a,b) => {
+          if (a.updatedAt > b.updatedAt) {
+            return -1
+          } else if (a.updatedAt < b.updatedAt) {
+            return 1
+          }
+          return 0
+        })
+        .slice((page-1)*3, page*3)
     return res.status(200).send({ votes })
   } catch (error) {
     console.log(error)
