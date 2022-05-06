@@ -1,26 +1,23 @@
 const { Router } = require('express')
 const voteRouter = Router()
 const { isValidObjectId } = require('mongoose')
-const { Vote, Collection, User, Profile } = require('../models')
+const { Vote, Collection, User } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 투표 생성
 voteRouter.post('/', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
+    const { collectionId } = req.body
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
+    if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
 
     // 투표 만들기 & 프로필의 투표 목록에 추가
-    const { collection } = req.body
-    if (!isValidObjectId(collection)) return res.status(400).send({ err: "invalid collectionId" })
-    const result = await Collection.findById(collection).items
-    const [vote, profileId] = await Promise.all([
-      new Vote({ collectionId: collection, result }),
-      User.findById(userId).profile
-    ])
+    const collection = await Collection.findById(collectionId)
+    const vote = new Vote({ collectionId, result: collection.items})
     await Promise.all([
       vote.save(),
-      Profile.updateOne({ _id: profileId }, { $push: { votes: vote } })
+      User.updateOne({ _id: userId }, { $push: { votes: vote } })
     ])
     return res.status(201).send({ vote })
   } catch (error) {
