@@ -1,4 +1,4 @@
-import React, {memo, useEffect} from 'react'
+import React, {memo, useEffect, useState} from 'react'
 import {Provider} from 'react-redux'
 import {NavigationContainer} from '@react-navigation/native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'

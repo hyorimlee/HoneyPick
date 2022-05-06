@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, createRef, useCallback, useState} from 'react'
+import {memo, createRef, useState, useEffect} from 'react'
 import {Alert, Pressable, SafeAreaView, StatusBar, TouchableOpacity, Text} from 'react-native'
 import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder} from './styles'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
@@ -8,16 +8,14 @@ import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
 import ActionSheet from "react-native-actions-sheet"
-import {useSelector} from 'react-redux'
-import {RootState} from '../../store/types'
-import {useAppDispatch} from '../../store/types'
-import {saveItem} from '../../store/slices/collection'
+import {useAppSelector, useAppDispatch} from '../../store/types'
+import {saveItem, getItem} from '../../store/slices/collection'
 import Clipboard from '@react-native-clipboard/clipboard'
 
 function Item() {
   const dispatch = useAppDispatch()
   const actionSheetRef = createRef<ActionSheet>()
-  const {itemId, item, review} = useSelector((state: RootState) => state.collection)
+  const {itemId, item, review} = useAppSelector(state => state.collection)
 
   const [copiedText, setCopiedText] = useState<string>('')
 
@@ -25,15 +23,23 @@ function Item() {
     actionSheetRef.current?.show()
   }
 
+  // clipboard 복사
   const fetchCopiedText = async () => {
     const text = await Clipboard.getString()
     if (text.indexOf('http') > -1) {
       setCopiedText(text)
+      console.log('복사 완료')
     }
   }
 
   const submitItem = (copiedLink: string) => {
     dispatch(saveItem(copiedLink))
+    console.log('등록')
+  }
+
+  const getItemInfo = (itemId: string) => {
+    dispatch(getItem(itemId))
+    console.log('아이템 정보 가져오기')
   }
 
   const goToSite = () => {
@@ -72,7 +78,7 @@ function Item() {
       </ActionSheet>
       <Container>
         <ImageContainer
-          source={require('../../assets/images/sampleimage1.jpg')}
+          source={item.thumbnail ? {uri: item.thumbnail} : require('../../assets/images/sampleimage1.jpg')}
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,
@@ -80,9 +86,9 @@ function Item() {
         />
         <InfoContainer>
           <TextContainer>
-            <NormalText>사이트명</NormalText>
-            <BoldText>아이템 이름</BoldText>
-            <PriceText>가격</PriceText>
+            <NormalText>{item.brand}</NormalText>
+            <BoldText>{item.title}</BoldText>
+            <PriceText>{item.priceBefore}</PriceText>
             <NormalText>컬렉션 이름</NormalText>
           </TextContainer>
           <TouchableOpacity onPress={openSheet}>
@@ -112,6 +118,13 @@ function Item() {
         <BaseButton
           text={'아이템 저장 테스트'}
           onPress={() => submitItem(copiedText)}
+          borderRadius={25}
+          marginVertical={10}
+          paddingVertical={15}
+        />
+        <BaseButton
+          text={'아이템 가져오기 테스트'}
+          onPress={() => getItemInfo(itemId)}
           borderRadius={25}
           marginVertical={10}
           paddingVertical={15}
