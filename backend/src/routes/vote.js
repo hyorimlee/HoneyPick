@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const voteRouter = Router()
-const { isValidObjectId } = require('mongoose')
+const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
 const { Vote, Collection, User } = require('../models')
 const { authAccessToken } = require('./auth')
 
@@ -89,17 +89,21 @@ voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
   }
 })
 
-// 투표 삭제: 투표 자체 & 회원의 투표 목록에서 제거
+// 투표 삭제
 voteRouter.delete('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
     const { accountId, voteId } = req.params
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
+    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
     if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
 
-
-
+    await Promise.all([
+      Vote.deleteOne({ _id: voteId }),
+      User.updateOne({ _id: accountId }, { $pull: { votes: { _id: ObjectId(voteId) } }})
+    ])
+    return res.status(204).send()
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
