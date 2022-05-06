@@ -1,12 +1,12 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import uiSlice from './slices/ui'
 import userSlice from './slices/user'
-import collectionSlice from './slices/collection'
+import itemSlice from './slices/item'
 
 const rootReducer = combineReducers({
   ui: uiSlice.reducer,
   user: userSlice.reducer,
-  collection: collectionSlice.reducer,
+  item: itemSlice.reducer,
 })
 
 export default rootReducer

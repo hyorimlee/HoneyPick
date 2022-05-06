@@ -68,7 +68,8 @@ function BaseButton({
       borderWidth={borderWidth}
       borderColor={borderColor}
       flex={flex}
-      disabled={disabled}>
+      disabled={disabled}
+      >
       <Text style={{textAlign, color, fontSize}}>{text}</Text>
     </CustomBaseButtonPressable>
   )
