@@ -7,8 +7,9 @@ import {saveItem} from '../../store/slices/item'
 
 import {Container} from './styles'
 import {IComponentProps} from './types'
+import {TouchableWithoutFeedback} from 'react-native'
 
-function saveItemBtn({copiedUrl, setCopiedUrl}: IComponentProps) {
+function saveItemBtn({copiedUrl, setCopiedUrl, btnShowHandler}: IComponentProps) {
   const dispatch = useAppDispatch()
 
   const submitItem = (text: string) => {
@@ -18,16 +19,21 @@ function saveItemBtn({copiedUrl, setCopiedUrl}: IComponentProps) {
   }
 
   return (
-    <Container>
-      <BaseButton
-        text={'링크 복사된 아이템 추가하기'}
-        onPress={() => submitItem(copiedUrl)}
-        borderRadius={25}
-        marginVertical={10}
-        marginHorizontal={30}
-        paddingVertical={15}
-      />
-    </Container>
+    <TouchableWithoutFeedback onPress={btnShowHandler}>
+        <Container>
+          <BaseButton
+            text={'링크 복사된 아이템 추가하기'}
+            onPress={() => submitItem(copiedUrl)}
+            borderRadius={25}
+            marginVertical={10}
+            marginHorizontal={30}
+            paddingVertical={15}
+            position='absolute'
+            width='100%'
+            bottom='8%'
+          />
+        </Container>
+    </TouchableWithoutFeedback>
   )
 }
 
