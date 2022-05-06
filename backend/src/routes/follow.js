@@ -1,25 +1,38 @@
 const { Router } = require('express')
 const followRouter = Router()
-const mongoose = require('mongoose')
-const { isValidObjectId } = require('mongoose')
-const { User, Follow } = require('../models')
+const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
+const { Follow, User } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로우 또는 팔로우 취소
-followRouter.post('/', async (req, res) => {
+followRouter.post('/', authAccessToken, async (req, res) => {
     try {
-    // jwt 검증: user 추출 및 검증
-    const userId = await authAccessToken(req, res)
-    // if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
-    const followings = await Follow.findOne({ user: userId })
-    console.log(followings)
-    // 팔로워 목록에 없으면: push, 있으면: pull.
+    const { userId } = req
     const { accountId } = req.body
-    if (followings.includes(accountId)) {
-      Follow.updateOne({ user: userId}, { $pull: { followings: accountId }})
-      return res.status(204).send({ message: '팔로우 취소' })
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (!isValidObjectId(accountId)) return res.status(401).send({ err: "invalid accountId" })
+    if (userId == accountId) return res.status(401).send({ err: "self-following is not allowed" })
+    let [user, account, isFollowing] = await Promise.all([
+      User.findById(userId),
+      User.findById(accountId),
+      Follow.findOne({ "user._id": userId, followings: { $elemMatch: { _id: ObjectId(accountId)}}})
+    ])
+
+    if (isFollowing) {
+      await Promise.all([
+        Follow.updateOne({ "user._id": userId }, { $pull: { followings: { _id: ObjectId(accountId) } }}),
+        Follow.updateOne({ "user._id": accountId }, { $pull: { followers: { _id: ObjectId(userId) } }}),
+        User.updateOne({ _id: userId }, { $inc: { followingCount: -1 }}),
+        User.updateOne({ _id: accountId }, { $inc: { followerCount: -1 }})
+      ])
+      return res.status(201).send({ message: '팔로우 취소' })
     } else {
-      Follow.updateOne({ user: userId}, { $push: { followings: accountId }})
+      await Promise.all([
+        Follow.updateOne({ "user._id": userId }, { $push: { followings: account }}),
+        Follow.updateOne({ "user._id": accountId }, { $push: { followers: user }}),
+        User.updateOne({ _id: userId }, { $inc: { followingCount: 1 }}),
+        User.updateOne({ _id: accountId }, { $inc: { followerCount: 1 }})
+      ])
       return res.status(201).send({ message: '팔로우 시작' })
     }
     } catch (error) {
@@ -29,19 +42,28 @@ followRouter.post('/', async (req, res) => {
 })
 
 // 팔로우, 팔로잉 목록 조회
-followRouter.get('/:userId', async (req, res) => {
-    try {
-        const user = null
+followRouter.get('/:accountId', authAccessToken, async (req, res) => {
+  try {
+    const { userId } = req
+    const { accountId } = req.params
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (!isValidObjectId(ObjectId(accountId))) return res.status(401).send({ err: "invalid accountId" })
 
-        // 페이지네이션 필요할 듯
-        const following = null
-        const follower = null
+    const follow = await Follow.findOne({ "user._id": accountId })
 
-        return res.status(200).send({ following, follower })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).send({ err: error.message })
-    }
+    let { page=1 } = req.query
+    page = parseInt(page)
+
+    // pagination: 최근 추가순. page는 1부터 시작. 6개씩 조회.
+    const [followings, followers] = await Promise.all([
+      Follow.findOne({ "user._id": accountId }).sort( { "followings.updatedAt": -1 }).skip((page - 1) * 6).limit(6).select('followings'),
+      Follow.findOne({ "user._id": accountId }).sort({ "followers.updatedAt": -1 }).skip((page - 1) * 6).limit(6).select('followers')
+    ])
+    return res.status(200).send({ followings: followings.followings, followers: followers.followers })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({ err: error.message })
+  }
 })
 
 module.exports = followRouter

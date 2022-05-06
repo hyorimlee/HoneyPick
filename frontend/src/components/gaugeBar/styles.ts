@@ -28,12 +28,14 @@ const Emoji = styled.Text`
 `
 
 const Description = styled.Text`
+  color: #000000;
   font-size: 12px;
   font-weight: bold;
   padding-left: 10px;
 `
 
 const Count = styled.Text`
+  color: #000000;
   font-size: 12px;
   font-weight: bold;
 `
