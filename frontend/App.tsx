@@ -19,6 +19,8 @@ import {
   Dispatch,
   ThunkDispatch,
 } from '@reduxjs/toolkit'
+import SaveItemBtn from './src/containers/saveItemBtn'
+import {Text} from 'react-native'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -132,6 +134,8 @@ const App = () => {
   return (
     <Provider store={store}>
       <InnerApp />
+      {/* <Text style={{position: 'absolute', bottom: '50%'}}>되는거?</Text> */}
+      <SaveItemBtn />
     </Provider>
   )
 }
