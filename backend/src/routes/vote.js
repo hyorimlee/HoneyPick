@@ -78,7 +78,7 @@ voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
     if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
     if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
-    const [vote] = await Promise.all([
+    await Promise.all([
       Vote.updateOne({ _id: voteId }, { $set: { isClosed: true } }),
       User.updateOne({ _id: userId, 'votes._id': voteId }, { 'votes.$.isClosed': true })
     ])
@@ -110,7 +110,7 @@ voteRouter.delete('/:accountId/:voteId', authAccessToken, async (req, res) => {
   }
 })
 
-// 투표하기 로직 (투표 취소 불가)
+// 투표하기 로직 (투표 취소 불가, 1인 1표)
 voteRouter.patch('/:accountId/:voteId/:itemId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
@@ -120,8 +120,17 @@ voteRouter.patch('/:accountId/:voteId/:itemId', authAccessToken, async (req, res
     if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
     if (!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId"})
 
-    const vote = await Vote.updateOne({ _id: voteId, 'result._id': itemId }, { $inc: { 'result.$.count': 1 } })
-    return res.status(201).send({ vote })
+    const [vote, user, participated] = await Promise.all([
+      Vote.findById(voteId),
+      User.findById(userId),
+      Vote.findOne({ 'participants._id': userId })
+    ])
+    if (participated) return res.status(403).send({ err: "voting is allowed only once"})
+    if (vote.isClosed == true) return res.status(403).send({ err: "closed poll"})
+    await Promise.all([
+      Vote.updateOne({ _id: voteId, 'result._id': ObjectId(itemId) }, { $inc: { 'result.$.count': 1 }, $push: { participants: user } })
+    ])
+    return res.status(201).send({ message: "success" })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
