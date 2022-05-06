@@ -6,4 +6,5 @@ router.use('/collection', require('./collection'))
 router.use('/follow', require('./follow'))
 router.use('/vote', require('./vote'))
 router.use('/phone', require('./phone'))
+router.use('/profile',require('./profile'))
 module.exports = router
