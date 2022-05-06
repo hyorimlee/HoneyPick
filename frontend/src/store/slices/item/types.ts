@@ -1,5 +1,6 @@
-export interface CollectionState {
+export interface ItemState {
   itemId: string,
+  copiedUrl: string,
   item: {
     _id: string,
     brand?: string,
