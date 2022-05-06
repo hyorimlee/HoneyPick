@@ -4,6 +4,15 @@ const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
 const { Follow, User } = require('../models')
 const { authAccessToken } = require('./auth')
 
+// 전체 페이지 수 (한 페이지에 6개)
+function getTotalPages(length) {
+  if (length % 6) {
+    return (parseInt(length / 6) + 1)
+  } else {
+    return (length / 6)
+  }
+}
+
 // 팔로우 또는 팔로우 취소
 followRouter.post('/', authAccessToken, async (req, res) => {
     try {
@@ -41,25 +50,64 @@ followRouter.post('/', authAccessToken, async (req, res) => {
     }
 })
 
-// 팔로우, 팔로잉 목록 조회
-followRouter.get('/:accountId', authAccessToken, async (req, res) => {
+// 팔로워 목록 조회
+followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
   try {
+    let { page=1 } = req.query
+    page = parseInt(page)
     const { userId } = req
     const { accountId } = req.params
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (!isValidObjectId(ObjectId(accountId))) return res.status(401).send({ err: "invalid accountId" })
 
+    // pagination: 최근 추가순. page는 1부터 시작. 6개씩 조회.
     const follow = await Follow.findOne({ "user._id": accountId })
+    const [followers, totalPages] = await Promise.all([
+      follow.followers
+        .sort((a,b) => {
+          if (a.updatedAt > b.updatedAt) {
+            return -1
+          } else if (a.updatedAt < b.updatedAt) {
+            return 1
+          }
+          return 0
+        })
+        .slice((page-1)*6, page*6),
+      getTotalPages(follow.followers.length)
+    ])
+    return res.status(200).send({ totalPages, page, followers })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({ err: error.message })
+  }
+})
 
+// 팔로잉 목록 조회
+followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => {
+  try {
     let { page=1 } = req.query
     page = parseInt(page)
+    const { userId } = req
+    const { accountId } = req.params
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (!isValidObjectId(ObjectId(accountId))) return res.status(401).send({ err: "invalid accountId" })
 
-    // pagination: 최근 추가순. page는 1부터 시작. 6개씩 조회.
-    const [followings, followers] = await Promise.all([
-      Follow.findOne({ "user._id": accountId }).sort( { "followings.updatedAt": -1 }).skip((page - 1) * 6).limit(6).select('followings'),
-      Follow.findOne({ "user._id": accountId }).sort({ "followers.updatedAt": -1 }).skip((page - 1) * 6).limit(6).select('followers')
+    // pagination: user의 updatedAt 내림차순(→ 랜덤으로 보임). page는 1부터 시작. 6개씩 조회.
+    const follow = await Follow.findOne({ "user._id": accountId })
+    const [followings, totalPages] = await Promise.all([
+      follow.followings
+        .sort((a,b) => {
+          if (a.updatedAt > b.updatedAt) {
+            return -1
+          } else if (a.updatedAt < b.updatedAt) {
+            return 1
+          }
+          return 0
+        })
+        .slice((page-1)*6, page*6),
+      getTotalPages(follow.followings.length)
     ])
-    return res.status(200).send({ followings: followings.followings, followers: followers.followers })
+    return res.status(200).send({ totalPages, page, followings })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
