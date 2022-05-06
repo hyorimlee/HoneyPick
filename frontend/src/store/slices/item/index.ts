@@ -6,7 +6,6 @@ import {RootState} from '../../types'
 
 const initialState = {
   itemId: '',
-  copiedUrl: '',
   item: {
     _id: '',
     brand: 'brand',
@@ -70,9 +69,6 @@ const itemSlice = createSlice({
   name: 'item',
   initialState,
   reducers: {
-    setCopiedUrl: (state, action) => {
-      state.copiedUrl = action.payload
-    }
   },
   extraReducers: builder => {
     builder
