@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, createRef, useState, useEffect} from 'react'
-import {Alert, Pressable, SafeAreaView, StatusBar, TouchableOpacity, Text} from 'react-native'
+import {memo, createRef} from 'react'
+import {Alert, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native'
 import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder} from './styles'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
@@ -9,32 +9,15 @@ import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
 import ActionSheet from "react-native-actions-sheet"
 import {useAppSelector, useAppDispatch} from '../../store/types'
-import {saveItem, getItem} from '../../store/slices/item'
-import Clipboard from '@react-native-clipboard/clipboard'
+import {getItem} from '../../store/slices/item'
 
 function Item() {
   const dispatch = useAppDispatch()
   const actionSheetRef = createRef<ActionSheet>()
   const {itemId, item, review} = useAppSelector(state => state.item)
 
-  const [copiedText, setCopiedText] = useState<string>('')
-
   const openSheet = () => {
     actionSheetRef.current?.show()
-  }
-
-  // clipboard 복사
-  const fetchCopiedText = async () => {
-    const text = await Clipboard.getString()
-    if (text.indexOf('http') > -1) {
-      setCopiedText(text)
-      console.log('복사 완료')
-    }
-  }
-
-  const submitItem = (copiedLink: string) => {
-    dispatch(saveItem(copiedLink))
-    console.log('등록')
   }
 
   const getItemInfo = (itemId: string) => {
@@ -108,16 +91,6 @@ function Item() {
         <BaseButton
           text={'사이트로 이동하기'}
           onPress={goToSite}
-          borderRadius={25}
-          marginVertical={10}
-          paddingVertical={15}
-        />
-        <Pressable onPress={fetchCopiedText}>
-          <Text>복사복사복사</Text>
-        </Pressable>
-        <BaseButton
-          text={'아이템 저장 테스트'}
-          onPress={() => submitItem(copiedText)}
           borderRadius={25}
           marginVertical={10}
           paddingVertical={15}

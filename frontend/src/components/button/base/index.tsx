@@ -24,6 +24,9 @@ function BaseButton({
   borderColor,
   flex,
   disabled,
+  position,
+  bottom,
+  width,
 }: IComponentProps) {
   const [isPressing, setIsPressing] = useState(false)
 
@@ -69,6 +72,9 @@ function BaseButton({
       borderColor={borderColor}
       flex={flex}
       disabled={disabled}
+      position={position}
+      bottom={bottom}
+      width={width}
       >
       <Text style={{textAlign, color, fontSize}}>{text}</Text>
     </CustomBaseButtonPressable>
