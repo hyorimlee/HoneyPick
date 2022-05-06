@@ -17,6 +17,15 @@ async function isFollower(accountId, userId) {
   return false
 }
 
+// 전체 페이지 수
+function getTotalPages(length) {
+  if (length % 3) {
+    return (parseInt(length / 3) + 1)
+  } else {
+    return (length / 3)
+  }
+}
+
 // 컬렉션 생성
 collectionRouter.post('/', authAccessToken, async (req, res) => {
   try {
@@ -30,6 +39,10 @@ collectionRouter.post('/', authAccessToken, async (req, res) => {
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"});
     if (typeof isPublic !== 'boolean') return res.status(400).send({ err: "boolean isPublic is required"});
+    console.log(user.collections.length)
+
+    // 기존 컬렉션이 30개 이상이면, 생성 차단
+    if (user.collections.length >= 30) return res.status(403).send({ err: "maximum 30 collections per user" })
 
     // 컬렉션 자체 추가 & 프로필의 컬렉션 목록에 추가
     const collection = new Collection({ ...req.body, user })
@@ -51,18 +64,44 @@ collectionRouter.get('/:accountId', authAccessToken, async (req, res) => {
     page = parseInt(page)
     const { accountId } = req.params
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
+    const account = await User.findById(accountId)
 
     // 비공개인 컬렉션은, 사용자가 팔로워여야만 조회 가능 (jwt)
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     // 팔로워 목록 조회해서, 팔로워면 all, 아니면 public 보여주기
     // 컬렉션 목록 조회 w/ pagination. 최신 업데이트 순. page는 1부터 시작. 3개씩 조회.
-    if (await isFollower(accountId, userId) === true) {
-      const allCollections = await Collection.find({ "user._id": accountId }).sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
-      return res.status(200).send({ collections: allCollections })
+    if (await isFollower(accountId, userId) === true || accountId == userId) {
+      const [allCollections, totalPages] = await Promise.all([
+        account.collections
+          .sort((a,b) => {
+            if (a.updatedAt > b.updatedAt) {
+              return -1
+            } else if (a.updatedAt < b.updatedAt) {
+              return 1
+            }
+            return 0
+          })
+          .slice((page-1)*3, page*3),
+        getTotalPages(account.collections.length)
+      ])
+      return res.status(200).send({ totalPages, page, collections: allCollections })
     } else {
-      const publicCollections = await Collection.find({ "user._id": accountId, isPublic: true }).sort({ updatedAt: -1 }).skip((page - 1) * 3).limit(3)
-      return res.status(200).send({ collections: publicCollections })
+      const unsortedCollections = await account.collections.filter(collection => collection['isPublic'] == true)
+      const [publicCollections, totalPages] = await Promise.all([
+        unsortedCollections
+          .sort((a,b) => {
+            if (a.updatedAt > b.updatedAt) {
+              return -1
+            } else if (a.updatedAt < b.updatedAt) {
+              return 1
+            }
+            return 0
+          })
+          .slice((page-1)*3, page*3),
+        getTotalPages(unsortedCollections.length)
+      ])
+      return res.status(200).send({ totalPages, page, collections: publicCollections })
     }
   } catch (error) {
     console.log(error)
@@ -74,15 +113,15 @@ collectionRouter.get('/:accountId', authAccessToken, async (req, res) => {
 collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, res) => {
   try {
     const { accountId, collectionId } = req.params
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
 
     // 비공개인 경우: jwt 토큰에서 userId 가져와서 accountId 의 팔로워 목록에 있는지 확인하고, 있으면 공개, 없으면 못 봄
     const collection = await Collection.findById(collectionId)
     if (collection.isPublic === false) {
-      const { userId } = req
-      if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
-      if (await isFollower(accountId, userId) == false) {
+      if (await isFollower(accountId, userId) == false && accountId !== userId) {
         return res.status(400).send({ err: 'private collection'})
       }
     }
@@ -108,9 +147,18 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
 
     const promises = []
-    if (title) promises.push(Collection.updateOne({ _id: collectionId }, { title }))
-    if (description) promises.push(Collection.updateOne({ _id: collectionId }, { description }))
-    if (typeof isPublic !== 'undefined') promises.push(Collection.updateOne({ _id: collectionId }, { isPublic }))
+    if (title) {
+      promises.push(Collection.updateOne({ _id: collectionId }, { title }))
+      promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.title': title }))
+    }
+    if (description) {
+      promises.push(Collection.updateOne({ _id: collectionId }, { description }))
+      promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.description': description }))
+    }
+    if (typeof isPublic !== 'undefined') {
+      promises.push(Collection.updateOne({ _id: collectionId }, { isPublic }))
+      promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.isPublic': isPublic }))
+    }
     await Promise.all(promises)
     collection = await Collection.findById(collectionId)
     return res.status(200).send({ collection })
