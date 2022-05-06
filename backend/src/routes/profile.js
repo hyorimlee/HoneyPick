@@ -30,6 +30,7 @@ profileRouter.patch('/',authAccessToken, async (req, res) => {
         }
         if(nickname){
             if(typeof nickname!=="string") return res.status(400).send({err:"nickname 형식이 잘못되었습니다."})
+            if(await User.findOne({nickname:nickname})) return res.status(400).send({err:"이미 존재하는 nickname입니다"})
             if(nickname.length>10) return res.status(400).send({err:"nickname 길이가 10을 넘습니다"})
             user.nickname = nickname
         }
@@ -46,19 +47,22 @@ profileRouter.patch('/',authAccessToken, async (req, res) => {
             user.description = description
         }
         await user.save()
-        return res.status(200).send({msg:"DONE",user:user.username })
+        return res.status(200).send({msg:"DONE",username:user.username,nickname:user.nickname,profileImage:user.profileImage,description:user.description,following:user.followingCount,follower:followerCount })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
     }
 })
 
-profileRouter.patch('/password', async (req, res) => {
+profileRouter.patch('/password', authAccessToken,async (req, res) => {
     try {
-        const user = null
-        // 비밀번호 변경 로직
+        const {newPassword} = req.body
+        const user =await User.findById(req.userId)
+        if(typeof newPassword !=="string") return res.status(400).send({err:"newPassword는 필수입니다."}) 
+        user.password = newPassword
+        await user.save()
 
-        return res.status(200).send({ user })
+        return res.status(200).send({ msg:`${user.username}의 password가 변경되었습니다.` })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
