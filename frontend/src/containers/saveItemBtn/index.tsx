@@ -1,19 +1,20 @@
 import * as React from 'react'
 import {memo} from 'react'
-import {useAppSelector, useAppDispatch} from '../../store/types'
+import {useAppDispatch} from '../../store/types'
 
 import BaseButton from '../../components/button/base'
 import {saveItem} from '../../store/slices/item'
 
 import {Container} from './styles'
+import {IComponentProps} from './types'
 
-function saveItemBtn() {
+function saveItemBtn({copiedUrl, setCopiedUrl}: IComponentProps) {
   const dispatch = useAppDispatch()
-  const {copiedUrl} = useAppSelector(state => state.item)
 
   const submitItem = (text: string) => {
     dispatch(saveItem(text))
     console.log('아이템 등록')
+    setCopiedUrl('')
   }
 
   return (

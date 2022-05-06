@@ -20,7 +20,8 @@ import {
   ThunkDispatch,
 } from '@reduxjs/toolkit'
 import SaveItemBtn from './src/containers/saveItemBtn'
-import {Text} from 'react-native'
+import {Platform} from 'react-native'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -78,6 +79,12 @@ const InnerApp = memo(() => {
   useEffect(() => {
     getRefreshToken(dispatch)
     axiosInterceptor(dispatch)
+    // if (Platform.OS === 'ios' || Platform.OS === 'android') {
+    //   const listener = Clipboard.addListener(clipboardListener);
+    //   return () => {
+    //     listener.remove();
+    //   }
+    // }
   }, [])
 
   return (
@@ -131,11 +138,30 @@ const InnerApp = memo(() => {
 })
 
 const App = () => {
+  const [copiedUrl, setCopiedUrl] = useState<string>('')
+
+  const clipboardListener = async () => {
+    const text = await Clipboard.getString()
+      if (text.indexOf('http') > -1) {
+        console.log('링크 감지 완료')
+        setCopiedUrl(text)
+      }
+  }
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      const listener = Clipboard.addListener(clipboardListener);
+      return () => {
+        listener.remove();
+      }
+    }
+  }, [])
+
   return (
     <Provider store={store}>
       <InnerApp />
-      {/* <Text style={{position: 'absolute', bottom: '50%'}}>되는거?</Text> */}
-      <SaveItemBtn />
+      {/* 버튼 없애는 로직도 추가해야 함 */}
+      {copiedUrl ? <SaveItemBtn copiedUrl={copiedUrl} setCopiedUrl={(text: string) => setCopiedUrl(text)} /> : null}
     </Provider>
   )
 }
