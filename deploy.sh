@@ -8,9 +8,9 @@ echo ${TAG_EX_VERSION}
 sed -i "7s/$TAG_EX_VERSION/$TAG_NEW_VERSION/g" docker-compose.yml
 sed -i "18s/$TAG_EX_VERSION/$TAG_NEW_VERSION/g" docker-compose.yml
 
-sudo docker-compose down
-sudo docker image prune -af
-sudo docker-compose up
-sudo docker-compose push
+docker-compose down
+docker image prune -af
+docker-compose up
+docker-compose push
 
-sudo docker ps
+docker ps
