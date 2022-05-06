@@ -60,6 +60,7 @@ voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
 voteRouter.get('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
     const { voteId } = req.params
+    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
     const vote = await Vote.findById(voteId)
     return res.status(200).send({ vote })
   } catch (error) {
@@ -72,12 +73,33 @@ voteRouter.get('/:accountId/:voteId', authAccessToken, async (req, res) => {
 voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
+    const { accountId, voteId } = req.params
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
+    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
+    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
+    if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
+    const [vote] = await Promise.all([
+      Vote.updateOne({ _id: voteId }, { $set: { isClosed: true } }),
+      User.updateOne({ _id: userId, 'votes._id': voteId }, { 'votes.$.isClosed': true })
+    ])
+    return res.status(200).send({ message: "poll is now closed" })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({ err: error.message })
+  }
+})
+
+// 투표 삭제: 투표 자체 & 회원의 투표 목록에서 제거
+voteRouter.delete('/:accountId/:voteId', authAccessToken, async (req, res) => {
+  try {
+    const { userId } = req
+    const { accountId, voteId } = req.params
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
     if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
 
-    const vote = await Vote.updateOne({ _id: voteId }, { $set: { isClosed: true } })
-    return res.status(200).send({ vote })
+
+
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
