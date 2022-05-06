@@ -1,11 +1,12 @@
 import axios from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {CollectionState} from './types'
+import {ItemState} from './types'
 import {RootState} from '../../types'
 
 const initialState = {
   itemId: '',
+  copiedUrl: '',
   item: {
     _id: '',
     brand: 'brand',
@@ -24,7 +25,7 @@ const initialState = {
     isRecommend: 0,
     stickers: [],
   }
-} as CollectionState
+} as ItemState
 
 export const saveItem = createAsyncThunk<any, string, {state: RootState}>(
   'item/saveItem',
@@ -65,10 +66,13 @@ export const getItem = createAsyncThunk<any, string, {state: RootState}>(
   }
 )
 
-const collectionSlice = createSlice({
-  name: 'collection',
+const itemSlice = createSlice({
+  name: 'item',
   initialState,
   reducers: {
+    setCopiedUrl: (state, action) => {
+      state.copiedUrl = action.payload
+    }
   },
   extraReducers: builder => {
     builder
@@ -85,4 +89,4 @@ const collectionSlice = createSlice({
   },
 })
 
-export default collectionSlice
+export default itemSlice

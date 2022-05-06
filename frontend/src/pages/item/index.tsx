@@ -9,13 +9,13 @@ import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
 import ActionSheet from "react-native-actions-sheet"
 import {useAppSelector, useAppDispatch} from '../../store/types'
-import {saveItem, getItem} from '../../store/slices/collection'
+import {saveItem, getItem} from '../../store/slices/item'
 import Clipboard from '@react-native-clipboard/clipboard'
 
 function Item() {
   const dispatch = useAppDispatch()
   const actionSheetRef = createRef<ActionSheet>()
-  const {itemId, item, review} = useAppSelector(state => state.collection)
+  const {itemId, item, review} = useAppSelector(state => state.item)
 
   const [copiedText, setCopiedText] = useState<string>('')
 
