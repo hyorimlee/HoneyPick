@@ -113,15 +113,15 @@ collectionRouter.get('/:accountId', authAccessToken, async (req, res) => {
 collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, res) => {
   try {
     const { accountId, collectionId } = req.params
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
 
     // 비공개인 경우: jwt 토큰에서 userId 가져와서 accountId 의 팔로워 목록에 있는지 확인하고, 있으면 공개, 없으면 못 봄
     const collection = await Collection.findById(collectionId)
     if (collection.isPublic === false) {
-      const { userId } = req
-      if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
-      if (await isFollower(accountId, userId) == false) {
+      if (await isFollower(accountId, userId) == false && accountId !== userId) {
         return res.status(400).send({ err: 'private collection'})
       }
     }
