@@ -2,7 +2,7 @@ const { Router } = require('express')
 const reviewRouter = Router({ mergeParams: true })
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { User, Item, Review } = require('../models')
+const { User, Item, Review, Collection } = require('../models')
 
 const { authAccessToken } = require('./auth')
 
@@ -26,13 +26,14 @@ reviewRouter.post('/', authAccessToken, async (req, res) => {
       if (typeof isRecommend !== 'number') return res.status(400).send({ err: "추천 정도는 필수값입니다."});
       if (!Array.isArray(stickers)) return res.status(400).send({ err: "스티커는 필수값입니다."});
 
-      review = new Review({ user, item, ...req.body })
-
+      const review = new Review({ user, item, ...req.body })
+      
       const changedStickers = calStickers([], stickers)
 
       await Promise.all([
         review.save(),
-        item.updateOne({ $inc : changedStickers })
+        item.updateOne({ $inc : changedStickers }),
+        Collection.findOneAndUpdate({ 'user._id': userId, 'items._id': itemId }, { 'items.$.recommend': isRecommend })
       ])
 
       return res.status(200).send({ review })
@@ -45,7 +46,8 @@ reviewRouter.post('/', authAccessToken, async (req, res) => {
 reviewRouter.patch('/:reviewId', authAccessToken, async (req, res) => {
   try {
     const { itemId, reviewId } = req.params
-    if(!isValidObjectId(reviewId)) return res.status(400).send({ err: "잘못된 itemId" })
+    if(!isValidObjectId(reviewId)) return res.status(400).send({ err: "잘못된 reviewId" })
+    const userId = req.userId
 
     const { isRecommend, stickers } = req.body      
     if (typeof isRecommend !== 'number') return res.status(400).send({ err: "추천 정도는 필수값입니다."});
@@ -54,7 +56,11 @@ reviewRouter.patch('/:reviewId', authAccessToken, async (req, res) => {
     const review = await Review.findByIdAndUpdate(reviewId, { $set: { isRecommend, stickers } })
 
     const changedStickers = calStickers(review.stickers, stickers)
-    await Item.updateOne({ _id: itemId }, { $inc: changedStickers })
+
+    await Promise.all([
+      Item.updateOne({ _id: itemId }, { $inc: changedStickers }),
+      Collection.findOneAndUpdate({ 'user._id': userId, 'items._id': itemId }, { 'items.$.recommend': isRecommend })
+    ])
 
     return res.status(200).send({ message: "success" })
 } catch (error) {
