@@ -30,6 +30,10 @@ collectionRouter.post('/', authAccessToken, async (req, res) => {
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"});
     if (typeof isPublic !== 'boolean') return res.status(400).send({ err: "boolean isPublic is required"});
+    console.log(user.collections.length)
+
+    // 기존 컬렉션이 30개 이상이면, 생성 차단
+    if (user.collections.length >= 30) return res.status(403).send({ err: "maximum 30 collections per user" })
 
     // 컬렉션 자체 추가 & 프로필의 컬렉션 목록에 추가
     const collection = new Collection({ ...req.body, user })
