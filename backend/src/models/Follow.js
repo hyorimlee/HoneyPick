@@ -11,14 +11,16 @@ const FollowSchema = new Schema(
       username: { type: String, required: true },
       nickname: { type: String, required: true },
       description: { type: String, required: false },
-      image: { type: String, required: false }
+      image: { type: String, required: false },
+      updatedAt: { type: Date, required: true}
     }],
     followers: [{
       _id: { type: ObjectId, required: true, ref: 'user' },
       username: { type: String, required: true },
       nickname: { type: String, required: true },
       description: { type: String, required: false },
-      image: { type: String, required: false }
+      image: { type: String, required: false },
+      updatedAt: { type: Date, required: true}
     }]
   }
 )
