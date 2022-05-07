@@ -9,7 +9,7 @@ import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
 import ActionSheet from "react-native-actions-sheet"
 import {useAppSelector, useAppDispatch} from '../../store/types'
-import {getItem} from '../../store/slices/item'
+import {getItem} from '../../store/slices/item/asyncThunk'
 
 function Item() {
   const dispatch = useAppDispatch()

@@ -11,17 +11,30 @@ export interface ItemState {
     discountRate?: number
     stickers: object
   },
-  review: {
+  review?: {
     _id: string
     user: string
     item: string
     isRecommend: 0 | 1 | 2
     stickers: number[]
-  } | null
+  }
 }
 
 export interface IItemToCollectionParameter {
   itemId: string
   originalCollectionId?: string
   collectionId?: string
+}
+
+export interface ISaveReviewParameter {
+  itemId: string
+  isRecommend: 0 | 1 | 2
+  stickers: number[]
+}
+
+export interface IEditReviewParameter {
+  itemId: string
+  reviewId: string
+  isRecommend?: 0 | 1 | 2
+  stickers?: number[]
 }
