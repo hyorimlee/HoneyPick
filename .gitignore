@@ -1,6 +1,7 @@
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,node,reactnative,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,node,reactnative,react
+docker-compose.yml
 ### macOS ###
 # General
 .DS_Store
