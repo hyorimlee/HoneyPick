@@ -3,7 +3,8 @@ import {memo} from 'react'
 import {useAppDispatch} from '../../store/types'
 
 import BaseButton from '../../components/button/base'
-import {saveItem} from '../../store/slices/item'
+import {saveItem} from '../../store/slices/item/asyncThunk'
+import {setSaveCollection} from '../../store/slices/item'
 
 import {Container} from './styles'
 import {IComponentProps} from './types'
@@ -14,6 +15,7 @@ function saveItemBtn({copiedUrl, setCopiedUrl, btnShowHandler}: IComponentProps)
 
   const submitItem = (text: string) => {
     dispatch(saveItem(text))
+    // dispatch(setSaveCollection('yet'))
     console.log('아이템 등록')
     setCopiedUrl('')
   }

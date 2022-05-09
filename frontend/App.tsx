@@ -1,28 +1,31 @@
 import React, {memo, useEffect, useState} from 'react'
 import {Provider} from 'react-redux'
+import {Modal, Platform, Text, View} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import EncryptedStorage from 'react-native-encrypted-storage'
-import store from './src/store'
-import {RootState, useAppDispatch, useAppSelector} from './src/store/types'
-import SignIn from './src/pages/signIn'
-import SignUp from './src/pages/signUp'
-import Item from './src/pages/item'
-import ProfileStack from './src/pages/profile'
-import SplashScreen from 'react-native-splash-screen'
-import {requestAccessToken} from './src/store/slices/user/asyncThunk'
 import axios from 'axios'
+
+import SplashScreen from 'react-native-splash-screen'
+import Clipboard from '@react-native-clipboard/clipboard'
+import EncryptedStorage from 'react-native-encrypted-storage'
 import {
   AnyAction,
   CombinedState,
   Dispatch,
   ThunkDispatch,
 } from '@reduxjs/toolkit'
+
+import {RootState, useAppDispatch, useAppSelector} from './src/store/types'
+import {requestAccessToken} from './src/store/slices/user/asyncThunk'
+import store from './src/store'
+import SignIn from './src/pages/signIn'
+import SignUp from './src/pages/signUp'
+import Item from './src/pages/item'
+import ProfileStack from './src/pages/profile'
 import SaveItemBtn from './src/containers/saveItemBtn'
-import {Platform} from 'react-native'
-import Clipboard from '@react-native-clipboard/clipboard'
-import {View, TouchableWithoutFeedback} from 'react-native'
+import ChooseCollectionModal from './src/containers/chooseCollectionModal'
+
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -76,79 +79,19 @@ const axiosInterceptor = (dispatch: IDispatch) => {
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
+  const {saveCollection} = useAppSelector(state => state.item)
 
-  useEffect(() => {
-    getRefreshToken(dispatch)
-    axiosInterceptor(dispatch)
-    // if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    //   const listener = Clipboard.addListener(clipboardListener);
-    //   return () => {
-    //     listener.remove();
-    //   }
-    // }
-  }, [])
-
-  return (
-    <NavigationContainer>
-      {isLoggined ? (
-        <Tab.Navigator
-          initialRouteName="Profile"
-          screenOptions={{
-            tabBarStyle: {
-              backgroundColor: '#FFD669',
-              borderTopLeftRadius: 30,
-            },
-          }}>
-          <Tab.Screen
-            name="Profile"
-            component={ProfileStack}
-            options={{title: '프로필', headerShown: false}}
-          />
-          <Tab.Screen
-            name="Item"
-            component={Item}
-            options={{title:'아이템', headerShown: false}}
-          />
-          {/* <Tab.Screen
-            name="EventPage"
-            component={}
-            options={{title: '이벤트'}}
-          />
-          <Tab.Screen
-            name="RecommandPage"
-            component={}
-            options={{title: '추천'}}
-          /> */}
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator initialRouteName="SignIn">
-          <Stack.Screen
-            name="SignIn"
-            component={SignIn}
-            options={{title: '로그인', headerShown: false}}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{title: '회원가입', headerShown: false}}
-          />
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
-  )
-})
-
-const App = () => {
   const [copiedUrl, setCopiedUrl] = useState<string>('')
   const [btnShow, setBtnShow] = useState<boolean>(false)
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   const clipboardListener = async () => {
     const text = await Clipboard.getString()
-      if (text.indexOf('http') > -1) {
-        console.log('링크 감지 완료')
-        setCopiedUrl(text)
-        setBtnShow(true)
-      }
+    if (text.indexOf('http') > -1) {
+      console.log('링크 감지 완료')
+      setCopiedUrl(text)
+      setBtnShow(true)
+    }
   }
 
   const btnShowHandler = () => {
@@ -167,14 +110,92 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (saveCollection === 'yet') {
+      setModalVisible(true)
+    } else {
+      setModalVisible(false)
+    }
+  }, [saveCollection])
+
+  useEffect(() => {
+    getRefreshToken(dispatch)
+    axiosInterceptor(dispatch)
+  }, [])
+
   return (
-    <Provider store={store}>
-      <InnerApp />
+    <View style={{height: '100%'}}>
+      <NavigationContainer>
+        {isLoggined ? (
+          <Tab.Navigator
+            initialRouteName="Profile"
+            screenOptions={{
+              tabBarStyle: {
+                backgroundColor: '#FFD669',
+                borderTopLeftRadius: 30,
+              },
+            }}>
+            <Tab.Screen
+              name="Profile"
+              component={ProfileStack}
+              options={{title: '프로필', headerShown: false}}
+            />
+            <Tab.Screen
+              name="Item"
+              component={Item}
+              options={{title:'아이템', headerShown: false}}
+            />
+            {/* <Tab.Screen
+              name="EventPage"
+              component={}
+              options={{title: '이벤트'}}
+            />
+            <Tab.Screen
+              name="RecommandPage"
+              component={}
+              options={{title: '추천'}}
+            /> */}
+          </Tab.Navigator>
+        ) : (
+          <Stack.Navigator initialRouteName="SignIn">
+            <Stack.Screen
+              name="SignIn"
+              component={SignIn}
+              options={{title: '로그인', headerShown: false}}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUp}
+              options={{title: '회원가입', headerShown: false}}
+            />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+      {/* 전역 버튼, 모달 */}
       {btnShow ? <SaveItemBtn
         copiedUrl={copiedUrl}
         setCopiedUrl={(text: string) => setCopiedUrl(text)}
         btnShowHandler={() => btnShowHandler()}
       /> : null}
+      <Text onPress={() => setModalVisible(true)}>모달열기</Text>
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible)
+        }}
+      >
+        <ChooseCollectionModal></ChooseCollectionModal>
+      </Modal>
+    </View>
+  )
+})
+
+const App = () => {
+  return (
+    <Provider store={store}>
+      <InnerApp />
     </Provider>
   )
 }
