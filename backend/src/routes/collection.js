@@ -193,45 +193,4 @@ collectionRouter.delete('/:accountId/:collectionId', authAccessToken, async (req
   }
 })
 
-// 컬렉션 찜 설정/해제
-collectionRouter.post('/:accountId/:collectionId/like', authAccessToken, async (req, res) => {
-  try {
-    const { userId } = req
-    const { accountId, collectionId } = req.params
-    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
-    if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId"})
-
-    // user의 likes에 추가 혹은 빼기
-    const [collection, isLiked] = await Promise.all([
-      Collection.findById(collectionId),
-      User.findOne({ _id: userId, 'likes._id': collectionId })
-    ])
-    if (isLiked) {
-      await User.updateOne({ _id: userId }, { $pull: { likes: { _id: ObjectId(collectionId) } }})
-    } else {
-      await User.updateOne({ _id: userId }, { $push: { likes: collection }})
-    }
-    const user = await User.findById(userId)
-    return res.status(200).send({ likes: user.likes })
-  } catch (error) {
-    console.log(error)
-    return res.status(500).send({ err: error.message })
-  }
-})
-
-// 컬렉션 찜 목록 조회 (3*4=12개씩)
-collectionRouter.post('/:accountId/:collectionId/like', authAccessToken, async (req, res) => {
-  try {
-    const { userId } = req
-    const { accountId, collectionId } = req.params
-
-
-
-  } catch (error) {
-    console.log(error)
-    return res.status(500).send({ err: error.message })
-  }
-})
-
 module.exports = collectionRouter
