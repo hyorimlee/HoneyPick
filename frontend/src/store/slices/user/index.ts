@@ -9,43 +9,26 @@ import {
 } from './asyncThunk'
 
 const initialState = {
-  userPk: -1,
-  username: 'Honey_Bee',
-  description:
-    // '열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ABCD EF!! 1234 67!! 열글자를 넣기!! ',
-    '열글자를 넣기!! 열글자를 넣기!! 열글자를 넣기!! 열글자를 넣기!! 열글자를 넣기!! ',
-  profileImage:
-    'https://www.pngfind.com/pngs/m/387-3877350_kakao-friends-ryan-png-kakao-friends-ryan-icon.png',
+  userId: '',
   accessToken: '',
+  collections: [],
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    setUsername(state, action) {
-      state.username = action.payload
-    },
-    setDescription(state, action) {
-      state.description = action.payload
-    },
-    setProfileImage(state, action) {
-      state.profileImage = action.payload
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(requestAccessToken.fulfilled, (state, action) => {
         state.accessToken = action.payload.accessToken
+        state.userId = action.payload.userId
       })
       .addCase(requestAccessToken.rejected, (state, action) => {
         console.log(action.payload)
       })
       .addCase(requestSignIn.fulfilled, (state, action) => {
-        state.userPk = action.payload.userPk
-        state.username = action.payload.username
-        state.description = action.payload.description
-        state.profileImage = action.payload.profile
+        state.userId = action.payload.userId
         state.accessToken = action.payload.accessToken
         EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)
           .then(() => console.log('login => refreshToken success'))
@@ -56,10 +39,7 @@ const userSlice = createSlice({
       })
       .addCase(requestSignUp.fulfilled, (state, action) => {
         console.log(action.payload)
-        state.userPk = action.payload.userPk
-        state.username = action.payload.username
-        state.description = action.payload.description
-        state.profileImage = action.payload.profile
+        state.userId = action.payload.userId
         state.accessToken = action.payload.accessToken
         EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)
           .then(() => console.log('signup => refreshToken success'))

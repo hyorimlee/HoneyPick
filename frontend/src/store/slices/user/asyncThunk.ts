@@ -1,6 +1,7 @@
 import {createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
 import Config from 'react-native-config'
+import {RootState} from '../../types'
 
 import {
   IAccessToken,
@@ -96,3 +97,25 @@ export const requestPhoneVerifyCheck = createAsyncThunk(
     }
   },
 )
+
+export const getUserCollectionList = createAsyncThunk<
+  any,
+  undefined,
+  {state: RootState}
+>('user/getUserCollectionList', async (_, thunkAPI) => {
+  try {
+    const {accessToken, userId} = thunkAPI.getState().user
+
+    const response = await axios({
+      method: 'GET',
+      url: `${Config.API_BASE_URL}/collection/${userId}`,
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    return response.data
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response.data)
+  }
+})
