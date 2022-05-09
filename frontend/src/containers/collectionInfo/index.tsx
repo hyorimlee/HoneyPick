@@ -10,19 +10,15 @@ import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
+import {CollectionState} from '../../store/slices/collection/types'
 
-
-function CollectionInfo() {
+function CollectionInfo(collection: CollectionState) {
   const navigation = useNavigation<CollectionNavigationProp>()
-  const [collectionName, setCollectionName] = useState('내 콜렉션')
-  const [collectionDesc, setCollectionDesc] = useState('내 콜렉션에 대한 설명 내 콜렉션에 대한 설명 내 콜렉션에 대한 설명 내 콜렉션에 대한 설명 내 콜렉션에 대한 설명 내 콜렉션에 대한 설명')
-  const [collectioImage, setCollectioImage] = useState('')
   const [isVoting, setIsVoting] = useState(false)
+  const [isMyList, setIsMyList] = useState(true)
   const [voteResult, setVoteResult] = useState('')
-  const [menuPopup, setMenuPopup] = useState(false)
-
   const actionSheetRef = createRef<ActionSheet>()
-
+  const username = collection?.user?.username ? collection.user.username : 'No name'
   const openSheet = () => {
     actionSheetRef.current?.show()
   }
@@ -58,8 +54,8 @@ function CollectionInfo() {
     <Container>
       <InfoContainer>
         <InfoTextContainer>
-          <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>{collectionName}</Text>
-          <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>{collectionDesc}</Text>
+          <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>{collection.title}</Text>
+          <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>{collection.description}</Text>
         </InfoTextContainer>
         <Image
           source={require('../../assets/images/honeybee.png')}
@@ -75,17 +71,27 @@ function CollectionInfo() {
         />
       </InfoContainer>
       <ButtonContainer>
-        {!isVoting ?
-          <BaseButton text={'투표 시작하기'} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>:
-          <BaseButton text={'투표 종료하기'} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>
+        {/* 내 리스트 판별로직 추가필요 */}
+        {}
+        {isMyList ?
+          (!isVoting ?
+           <BaseButton text={'투표 시작하기'} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>:
+           <BaseButton text={'투표 종료하기'} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>
+          ) : null
         }
-        {voteResult ? <BaseButton text={'투표 결과보기'} onPress={showVoteResult} fontSize={8} paddingVertical={5} paddingHorizontal={10} marginHorizontal={6}></BaseButton> : null}
-      </ButtonContainer>
+        {isMyList && voteResult ? <BaseButton text={'투표 결과보기'} onPress={showVoteResult} fontSize={8} paddingVertical={5} paddingHorizontal={10} marginHorizontal={6}></BaseButton> : null}
+        {!isMyList ? <BaseButton text={'컬렉션 찜하기'} onPress={showVoteResult} fontSize={8} paddingVertical={5} paddingHorizontal={10} marginHorizontal={6}></BaseButton> : null}
+        {!isMyList ?
+          (true ? <BaseButton text={`${username}님을 팔로우`} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>:
+          <BaseButton text={`${username}님을 언팔로우`} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>) : null
+        }
+        </ButtonContainer>
       {/* Dashed Line 나중에 svg나 다른 라이브러리로 교체해야함 */}
       <Text ellipsizeMode="clip" numberOfLines={1}>
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       </Text>
-      <MenuButtonContainer>
+      {isMyList ?
+      <><MenuButtonContainer>
         <TouchableOpacity onPress={openSheet}>
           <FontAwesomeIcon
             icon={faEllipsisVertical as IconProp}
@@ -95,28 +101,28 @@ function CollectionInfo() {
           />
         </TouchableOpacity>
       </MenuButtonContainer>
-        <ActionSheet
-          ref={actionSheetRef}
-          containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}
-        >
-          <MenuContainer>
-            <BaseButton
-              text={'컬렉션 정보 수정하기'}
-              onPress={editCollection}
-              borderRadius={25}
-              marginVertical={5}
-              paddingVertical={15}
-            />
-            <BaseButton
-              text={'이 컬렉션 삭제하기'}
-              onPress={deleteCollection}
-              borderRadius={25}
-              marginVertical={5}
-              paddingVertical={15}
-            />
-          </MenuContainer>
-        </ActionSheet>
-
+      <ActionSheet
+        ref={actionSheetRef}
+        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}
+      >
+        <MenuContainer>
+          <BaseButton
+            text={'컬렉션 정보 수정하기'}
+            onPress={editCollection}
+            borderRadius={25}
+            marginVertical={5}
+            paddingVertical={15}
+          />
+          <BaseButton
+            text={'이 컬렉션 삭제하기'}
+            onPress={deleteCollection}
+            borderRadius={25}
+            marginVertical={5}
+            paddingVertical={15}
+          />
+        </MenuContainer>
+      </ActionSheet></> : null
+      }
     </Container>
   )
 }
