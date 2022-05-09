@@ -36,11 +36,13 @@ class Store:
         sp = BeautifulSoup(res, 'html.parser')
         title = sp.select_one('title').text
         price = re.search('[0-9\,]+원', res)
+        thumbnail = sp.select_one('img')
         # brand 정보
 
         return {
             'title': title,
             'priceBefore': price.group(0) if price else None,
+            'thumbnail': thumbnail.attrs['src'] if thumbnail else None,
         }
     
     def crawl(self, url):
