@@ -1,95 +1,67 @@
 import * as React from 'react'
-import {memo, useState, useCallback, useRef} from 'react'
-import {Alert, Image, Pressable, Text, TextInput, View} from 'react-native'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import BaseTextInput from '../../../components/textInput/base'
-import BaseButton from '../../../components/button/base'
-import PhoneForm from '../../../containers/submitForm/phoneForm'
-import {specialCharacterAlert, usernameValid} from '../../../modules/valid'
-import {useAppSelector} from '../../../store/types'
-import {imagePath} from '../../../modules/condition'
-
-const paddingHorizontal = 30
+import {memo, useCallback, useRef, useState, useMemo} from 'react'
+import {Text, View} from 'react-native'
+import BaseTextInput from '../../../components/textInput/base/index'
+import BaseButton from '../../../components/button/base/index'
+import {useAppDispatch} from '../../../store/types'
+import { editCollection } from '../../../store/slices/collection/asyncThunk'
+import { useNavigation } from '@react-navigation/native'
+import { CollectionNavigationProp } from '../types'
+import { useAppSelector } from '../../../store/types'
 
 function EditCollection() {
-  const [username, setUsername] = useState('컬렉션 닉네임')
-  const [description, setDescription] = useState('컬렉션 소개')
-  const [profileImage, setProfileImage] = useState('')
-  const descriptionRef = useRef<TextInput | null>(null)
+  const navigation = useNavigation<CollectionNavigationProp>()
+  const dispatch = useAppDispatch()
+  const [collectionName, setCollectionName] = useState('')
+  const [collectionDescription, setCollectionDescription] = useState('')
+  const {userId} = useAppSelector(state => state.user)
 
-  const usernameChanged = useCallback(
+  const collectionNameChanged = useCallback(
     (text: string) => {
-      setUsername(usernameValid(text))
+      setCollectionName(text)
     },
-    [username],
-  )
-  const descriptionChanged = useCallback(
-    (text: string) => {
-      setDescription(text)
-    },
-    [description],
+    [collectionName],
   )
 
-  const focusDescription = useCallback(() => {
-    descriptionRef.current?.focus()
-  }, [])
+  const collectionDescChanged = useCallback(
+    (text: string) => {
+      setCollectionDescription(text)
+    },
+    [collectionDescription],
+  )
 
-  const setProfileChange = useCallback(() => {
-    Alert.alert(
-      `name : ${username} | Image : ${profileImage} | des : ${description.slice(
-        5,
-      )}..`,
-    )
-  }, [username, description, profileImage])
+  const editCollectionInfo = useCallback(async () => {
+    await dispatch(editCollection({accountId: userId, collectionId:1 , collectionInfo: {title: collectionName, description: collectionDescription, isPublic: true}}))
+    navigation.push('Default')
+  }, [collectionName, collectionDescription])
 
   return (
-    <KeyboardAwareScrollView style={{paddingHorizontal}}>
-      <Pressable onPress={() => Alert.alert('이미지 변경 로직')}>
-        <Image
-          source={{
-            uri: 'https://www.pngfind.com/pngs/m/387-3877350_kakao-friends-ryan-png-kakao-friends-ryan-icon.png',
-          }}
-          style={{
-            width: 128,
-            height: 128,
-            resizeMode: 'contain',
-            borderRadius: 100,
-            backgroundColor: 'black',
-            alignSelf: 'center',
-            marginVertical: 30,
-          }}
-        />
-      </Pressable>
+    <View style={{paddingHorizontal:20}}>
+      <Text style={{fontWeight:'bold'}}>변경될 컬렉션의 이름을 적어주세요</Text>
       <BaseTextInput
-        value={username}
-        defaultValue={'사용자 기본 이름'}
-        onChangeText={usernameChanged}
-        onSubmitEditing={focusDescription}
-        onKeyPress={specialCharacterAlert}
-        placeholder={'아이디'}
-        importantForAutofill={'auto'} // Android
-        autoComplete={'username'} // Android
-        textContentType={'username'} // ios
+        value={collectionName}
+        onChangeText={collectionNameChanged}
+        placeholder={'컬렉션 이름'}
         returnKeyType={'next'}
         maxLength={10}
       />
+      <Text style={{fontWeight:'bold'}}>변경될 컬렉션에 대한 설명이 있나요?</Text>
       <BaseTextInput
-        ref={descriptionRef}
-        value={description}
-        defaultValue={'사용자소개'}
-        onChangeText={descriptionChanged}
-        placeholder={'자기소개'}
-        returnKeyType={'done'}
+        value={collectionDescription}
+        onChangeText={collectionDescChanged}
+        placeholder={'컬렉션에 대한 설명'}
+        returnKeyType={'next'}
         maxLength={50}
-        multiline={true}
       />
       <BaseButton
-        text={'수정 완료'}
-        onPress={setProfileChange}
-        marginVertical={30}
+        text={'컬렉션 생성하기'}
+        onPress={editCollectionInfo}
+        marginVertical={10}
         paddingVertical={10}
+        borderRadius={5}
+        disabled={!collectionName}
       />
-    </KeyboardAwareScrollView>
+    </View>
   )
 }
 
