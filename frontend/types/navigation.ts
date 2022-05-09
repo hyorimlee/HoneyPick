@@ -17,3 +17,8 @@ export type CollectionStackParamList = {
   EditCollection: undefined
   ItemPage: undefined
 }
+
+export type ChooseCollectionParamList = {
+  ChooseCollectionModal: undefined
+  CreateCollection: undefined
+}

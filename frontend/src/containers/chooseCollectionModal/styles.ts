@@ -13,28 +13,18 @@ export const ModalView = styled.View`
   border-radius: 20px;
   background-color: white;
   padding-vertical: 15px;
-  padding-horizontal: 15px;
+  padding-horizontal: 20px;
   justify-content: space-between;
 `
 
 export const RadioContainer = styled.View`
+  height: 70%;
   align-items: flex-start;
+  margin-vertical: 10px;
+  background-color: palegreen;
 `
 
 export const NormalText = styled.Text`
   color: #000000;
-  margin-top: 5px;
-`
-
-export const BoldText = styled.Text`
-  color: #000000;
-  margin-top: 5px;
-  font-weight: bold;
-`
-
-export const PriceText = styled.Text`
-  color: #F9C12E;
-  font-size: 18px;
-  font-weight: bold;
   margin-top: 5px;
 `

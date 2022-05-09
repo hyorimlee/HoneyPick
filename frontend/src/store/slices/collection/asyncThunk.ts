@@ -37,7 +37,7 @@ export const createCollection = createAsyncThunk<any, ICollectionInfo, {state: R
           authorization: `Bearer ${accessToken}`
         }
       })
-
+      console.log(response.data)
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)

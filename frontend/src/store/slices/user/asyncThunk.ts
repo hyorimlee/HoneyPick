@@ -105,7 +105,6 @@ export const getUserCollectionList = createAsyncThunk<
 >('user/getUserCollectionList', async (_, thunkAPI) => {
   try {
     const {accessToken, userId} = thunkAPI.getState().user
-
     const response = await axios({
       method: 'GET',
       url: `${Config.API_BASE_URL}/collection/${userId}`,
@@ -113,7 +112,6 @@ export const getUserCollectionList = createAsyncThunk<
         authorization: `Bearer ${accessToken}`,
       },
     })
-
     return response.data
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err.response.data)

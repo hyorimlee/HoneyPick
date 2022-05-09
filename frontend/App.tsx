@@ -26,7 +26,6 @@ import ProfileStack from './src/pages/profile'
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
 
-
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
@@ -94,13 +93,6 @@ const InnerApp = memo(({}) => {
     }
   }
 
-  const btnShowHandler = () => {
-    if (btnShow) {
-      // setCopiedUrl('')
-      setBtnShow(false)
-    }
-  }
-
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
       const listener = Clipboard.addListener(clipboardListener);
@@ -110,12 +102,22 @@ const InnerApp = memo(({}) => {
     }
   }, [])
 
+  const btnShowHandler = () => {
+    if (btnShow) {
+      setBtnShow(false)
+    }
+  }
+
   useEffect(() => {
     if (saveCollection === 'yet') {
       setModalVisible(true)
+    } else if (saveCollection === 'done') {
+      Clipboard.setString('')
+      setModalVisible(false)
     } else {
       setModalVisible(false)
     }
+    setBtnShow(false)
   }, [saveCollection])
 
   useEffect(() => {
@@ -170,24 +172,23 @@ const InnerApp = memo(({}) => {
             />
           </Stack.Navigator>
         )}
+        {/* 전역 버튼, 모달 */}
+        {btnShow ? <SaveItemBtn
+          copiedUrl={copiedUrl}
+          setCopiedUrl={(text: string) => setCopiedUrl(text)}
+          btnShowHandler={() => btnShowHandler()}
+          /> : null}
+        <Modal
+          animationType='slide'
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible)
+          }}
+          >
+          <ChooseCollectionModal></ChooseCollectionModal>
+        </Modal>
       </NavigationContainer>
-      {/* 전역 버튼, 모달 */}
-      {btnShow ? <SaveItemBtn
-        copiedUrl={copiedUrl}
-        setCopiedUrl={(text: string) => setCopiedUrl(text)}
-        btnShowHandler={() => btnShowHandler()}
-      /> : null}
-      <Text onPress={() => setModalVisible(true)}>모달열기</Text>
-      <Modal
-        animationType='slide'
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible)
-        }}
-      >
-        <ChooseCollectionModal></ChooseCollectionModal>
-      </Modal>
     </View>
   )
 })
