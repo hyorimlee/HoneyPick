@@ -9,8 +9,9 @@ import {
   editReview,
 } from './asyncThunk'
 
-const initialState = {
+const initialState: ItemState = {
   itemId: '',
+  saveCollection: 'no',
   item: {
     _id: '',
     brand: 'brand',
@@ -29,12 +30,15 @@ const initialState = {
     isRecommend: 0,
     stickers: [],
   }
-} as ItemState
+}
 
 const itemSlice = createSlice({
   name: 'item',
   initialState,
   reducers: {
+    setSaveCollection(state, action) {
+      state.saveCollection = action.payload
+    },
   },
   extraReducers: builder => {
     builder
@@ -61,4 +65,5 @@ const itemSlice = createSlice({
   },
 })
 
+export const {setSaveCollection} = itemSlice.actions
 export default itemSlice

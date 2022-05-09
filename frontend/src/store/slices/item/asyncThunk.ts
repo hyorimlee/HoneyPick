@@ -92,7 +92,7 @@ export const saveReview = createAsyncThunk<any, ISaveReviewParameter, {state: Ro
 )
 
 export const editReview = createAsyncThunk<any, IEditReviewParameter, {state: RootState}>(
-  'item/saveReview',
+  'item/editReview',
   async ({itemId, reviewId, isRecommend, stickers}: IEditReviewParameter, thunkAPI) => {
     try {
       const {accessToken} = thunkAPI.getState().user

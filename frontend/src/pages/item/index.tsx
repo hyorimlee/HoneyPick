@@ -1,19 +1,23 @@
 import * as React from 'react'
-import {memo, createRef} from 'react'
-import {Alert, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native'
-import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder} from './styles'
+import Config from 'react-native-config'
+import {memo, createRef, useState} from 'react'
+import {Alert, SafeAreaView, StatusBar, TouchableOpacity, Modal} from 'react-native'
+
+import RecommendBar from '../../containers/recommendBar'
+import BaseButton from '../../components/button/base'
+import {getItem} from '../../store/slices/item/asyncThunk'
+import {useAppSelector, useAppDispatch} from '../../store/types'
+
+import ActionSheet from "react-native-actions-sheet"
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
-import RecommendBar from '../../containers/recommendBar'
-import BaseButton from '../../components/button/base'
-import ActionSheet from "react-native-actions-sheet"
-import {useAppSelector, useAppDispatch} from '../../store/types'
-import {getItem} from '../../store/slices/item/asyncThunk'
+import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder} from './styles'
 
 function Item() {
   const dispatch = useAppDispatch()
   const actionSheetRef = createRef<ActionSheet>()
+  const [modalVisible, setModalVisible] = useState(false)
   const {itemId, item, review} = useAppSelector(state => state.item)
 
   const openSheet = () => {
@@ -59,9 +63,16 @@ function Item() {
           />
         </MenuContainer>
       </ActionSheet>
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+      </Modal>
       <Container>
         <ImageContainer
-          source={item.thumbnail ? {uri: item.thumbnail} : require('../../assets/images/sampleimage1.jpg')}
+          source={item.thumbnail ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`} : require('../../assets/images/sampleimage1.jpg')}
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,

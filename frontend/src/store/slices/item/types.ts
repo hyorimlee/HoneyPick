@@ -1,5 +1,6 @@
 export interface ItemState {
   itemId: string
+  saveCollection: 'no' | 'yet' | 'done'
   item: {
     _id: string
     brand?: string
