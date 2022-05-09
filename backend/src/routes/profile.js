@@ -30,7 +30,6 @@ profileRouter.patch('/',authAccessToken, async (req, res) => {
         }
         if(nickname){
             if(typeof nickname!=="string") return res.status(400).send({err:"nickname 형식이 잘못되었습니다."})
-            if(await User.findOne({nickname:nickname})) return res.status(400).send({err:"이미 존재하는 nickname입니다"})
             if(nickname.length>10) return res.status(400).send({err:"nickname 길이가 10을 넘습니다"})
             user.nickname = nickname
         }
@@ -47,7 +46,7 @@ profileRouter.patch('/',authAccessToken, async (req, res) => {
             user.description = description
         }
         await user.save()
-        return res.status(200).send({msg:"DONE",username:user.username,nickname:user.nickname,profileImage:user.profileImage,description:user.description,following:user.followingCount,follower:followerCount })
+        return res.status(200).send({msg:"DONE",username:user.username,nickname:user.nickname,profileImage:user.profileImage,description:user.description,following:user.followingCount,follower:user.followerCount })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
