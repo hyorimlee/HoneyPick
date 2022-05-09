@@ -19,6 +19,10 @@ import {
   Dispatch,
   ThunkDispatch,
 } from '@reduxjs/toolkit'
+import SaveItemBtn from './src/containers/saveItemBtn'
+import {Platform} from 'react-native'
+import Clipboard from '@react-native-clipboard/clipboard'
+import {View, TouchableWithoutFeedback} from 'react-native'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -69,13 +73,19 @@ const axiosInterceptor = (dispatch: IDispatch) => {
   )
 }
 
-const InnerApp = memo(() => {
+const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
 
   useEffect(() => {
     getRefreshToken(dispatch)
     axiosInterceptor(dispatch)
+    // if (Platform.OS === 'ios' || Platform.OS === 'android') {
+    //   const listener = Clipboard.addListener(clipboardListener);
+    //   return () => {
+    //     listener.remove();
+    //   }
+    // }
   }, [])
 
   return (
@@ -129,9 +139,42 @@ const InnerApp = memo(() => {
 })
 
 const App = () => {
+  const [copiedUrl, setCopiedUrl] = useState<string>('')
+  const [btnShow, setBtnShow] = useState<boolean>(false)
+
+  const clipboardListener = async () => {
+    const text = await Clipboard.getString()
+      if (text.indexOf('http') > -1) {
+        console.log('링크 감지 완료')
+        setCopiedUrl(text)
+        setBtnShow(true)
+      }
+  }
+
+  const btnShowHandler = () => {
+    if (btnShow) {
+      // setCopiedUrl('')
+      setBtnShow(false)
+    }
+  }
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      const listener = Clipboard.addListener(clipboardListener);
+      return () => {
+        listener.remove();
+      }
+    }
+  }, [])
+
   return (
     <Provider store={store}>
       <InnerApp />
+      {btnShow ? <SaveItemBtn
+        copiedUrl={copiedUrl}
+        setCopiedUrl={(text: string) => setCopiedUrl(text)}
+        btnShowHandler={() => btnShowHandler()}
+      /> : null}
     </Provider>
   )
 }
