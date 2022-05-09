@@ -19,6 +19,8 @@ function Profile() {
   useEffect(() => {
     dispatch(getProfile({userId}))
     dispatch(getUserCollectionList())
+
+    return () => {}
   })
 
   return (

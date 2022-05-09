@@ -26,7 +26,6 @@ import ProfileStack from './src/pages/profile'
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
 
-
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
@@ -103,9 +102,9 @@ const InnerApp = memo(({}) => {
 
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      const listener = Clipboard.addListener(clipboardListener);
+      const listener = Clipboard.addListener(clipboardListener)
       return () => {
-        listener.remove();
+        listener.remove()
       }
     }
   }, [])
@@ -143,7 +142,7 @@ const InnerApp = memo(({}) => {
             <Tab.Screen
               name="Item"
               component={Item}
-              options={{title:'아이템', headerShown: false}}
+              options={{title: '아이템', headerShown: false}}
             />
             {/* <Tab.Screen
               name="EventPage"
@@ -172,20 +171,21 @@ const InnerApp = memo(({}) => {
         )}
       </NavigationContainer>
       {/* 전역 버튼, 모달 */}
-      {btnShow ? <SaveItemBtn
-        copiedUrl={copiedUrl}
-        setCopiedUrl={(text: string) => setCopiedUrl(text)}
-        btnShowHandler={() => btnShowHandler()}
-      /> : null}
+      {btnShow ? (
+        <SaveItemBtn
+          copiedUrl={copiedUrl}
+          setCopiedUrl={(text: string) => setCopiedUrl(text)}
+          btnShowHandler={() => btnShowHandler()}
+        />
+      ) : null}
       <Text onPress={() => setModalVisible(true)}>모달열기</Text>
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible)
-        }}
-      >
+        }}>
         <ChooseCollectionModal></ChooseCollectionModal>
       </Modal>
     </View>

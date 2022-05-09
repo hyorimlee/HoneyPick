@@ -4,34 +4,42 @@ import {View} from 'react-native'
 
 import BaseButton from '../../components/button/base'
 import {itemToCollection} from '../../store/slices/item/asyncThunk'
-import { useAppSelector } from '../../store/types'
+import {useAppSelector} from '../../store/types'
 
-import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group'
+import RadioGroup, {RadioButtonProps} from 'react-native-radio-buttons-group'
 
-import {CenteredView, ModalView, RadioContainer, NormalText, BoldText, PriceText} from './styles'
+import {
+  CenteredView,
+  ModalView,
+  RadioContainer,
+  NormalText,
+  BoldText,
+  PriceText,
+} from './styles'
 
 const radioButtonsData: RadioButtonProps[] = [
   {
     id: '1', //string이어야 함
     label: '새 컬렉션 만들기ㅇㄹㅇㄹㅇㄹㅇㄹ',
     value: 'option 1',
-    color: '#F9C12E'
+    color: '#F9C12E',
   },
   {
     id: '2',
     label: '왜',
     value: 'option 2',
-    color: '#F9C12E'
+    color: '#F9C12E',
   },
 ]
 
 function ChooseCollectionModal() {
   const {itemId, saveCollection} = useAppSelector(state => state.item)
-  const [radioButtons, setRadioButtons] = useState<RadioButtonProps[]>(radioButtonsData)
+  const [radioButtons, setRadioButtons] =
+    useState<RadioButtonProps[]>(radioButtonsData)
   const [selectedValue, setSelectedValue] = useState<string>('')
 
   const onPressRadioButton = (radioButtonsArray: RadioButtonProps[]) => {
-    setRadioButtons(radioButtonsArray);
+    setRadioButtons(radioButtonsArray)
   }
 
   useEffect(() => {
@@ -50,16 +58,15 @@ function ChooseCollectionModal() {
         <RadioContainer>
           <RadioGroup
             radioButtons={radioButtons}
-            onPress={onPressRadioButton}
-          ></RadioGroup>
+            onPress={onPressRadioButton}></RadioGroup>
         </RadioContainer>
-          <BaseButton
-            text={'선택된 컬렉션에 아이템 추가하기'}
-            onPress={() => itemToCollection({itemId})}
-            borderRadius={25}
-            marginVertical={10}
-            paddingVertical={15}
-          />
+        <BaseButton
+          text={'선택된 컬렉션에 아이템 추가하기'}
+          onPress={() => itemToCollection({itemId})}
+          borderRadius={25}
+          marginVertical={10}
+          paddingVertical={15}
+        />
       </ModalView>
     </CenteredView>
   )
