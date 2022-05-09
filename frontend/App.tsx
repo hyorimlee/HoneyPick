@@ -177,6 +177,7 @@ const InnerApp = memo(({}) => {
         setCopiedUrl={(text: string) => setCopiedUrl(text)}
         btnShowHandler={() => btnShowHandler()}
       /> : null}
+      <Text onPress={() => setModalVisible(true)}>모달열기</Text>
       <Modal
         animationType='slide'
         transparent={true}

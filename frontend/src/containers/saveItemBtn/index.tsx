@@ -15,7 +15,7 @@ function saveItemBtn({copiedUrl, setCopiedUrl, btnShowHandler}: IComponentProps)
 
   const submitItem = (text: string) => {
     dispatch(saveItem(text))
-    dispatch(setSaveCollection('yet'))
+    // dispatch(setSaveCollection('yet'))
     console.log('아이템 등록')
     setCopiedUrl('')
   }
