@@ -1,8 +1,30 @@
 const { Router } = require('express')
 const voteRouter = Router()
 const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
-const { Vote, Collection, User } = require('../models')
+const { Vote, Collection, User, Follow } = require('../models')
 const { authAccessToken } = require('./auth')
+
+// 팔로워인지 검증
+async function isFollower(accountId, userId) {
+  const followId = await User.findById(accountId).followId
+  let followers = await Follow.findById(followId).followers
+  if (!followers) {
+    followers = []
+  }
+  if (followers.includes(userId)) {
+    return true
+  }
+  return false
+}
+
+// 전체 페이지 수
+function getTotalPages(length) {
+  if (length % 3) {
+    return (parseInt(length / 3) + 1)
+  } else {
+    return (length / 3)
+  }
+}
 
 // 투표 생성
 voteRouter.post('/', authAccessToken, async (req, res) => {
@@ -28,30 +50,51 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
   }
 })
 
-// 투표 목록 조회 (투표는 전체공개)
+// 투표 목록 조회
 voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
   try {
-    // 투표 목록: 페이지네이션. page 1부터 시작. 3개씩 보여줌
     let { page=1 } = req.query
     page = parseInt(page)
     const { accountId } = req.params
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
-
     const account = await User.findById(accountId)
-    const votes =
-      await account.votes
-        .sort((a,b) => {
-          if (a.updatedAt > b.updatedAt) {
-            return -1
-          } else if (a.updatedAt < b.updatedAt) {
-            return 1
-          }
-          return 0
-        })
-        .slice((page-1)*3, page*3)
-    return res.status(200).send({ votes })
+
+    // 투표 목록: 페이지네이션. 최신 생성순. page 1부터 시작. 3개씩 보여줌
+    // 팔로워 혹은 본인이면 모든 투표 조회, 아니라면 public 투표만 조회
+    if (await isFollower(accountId, userId) === true || accountId == userId ) {
+      const [allVotes, totalPages] = await Promise.all([
+        account.votes
+          .sort((a,b) => {
+            if (a. createdAt > b. createdAt) {
+              return -1
+            } else if (a. createdAt < b. createdAt) {
+              return 1
+            }
+            return 0
+          })
+          .slice((page-1)*3, page*3),
+        getTotalPages(account.votes.length)
+      ])
+      return res.status(200).send({ totalPages, page, votes: allVotes })
+    } else {
+      const unsortedVotes = await account.votes.filter(vote => vote['isPublic'] == true)
+      const [publicVotes, totalPages] = await Promise.all([
+        unsortedVotes
+          .sort((a,b) => {
+            if (a.createdAt > b.createdAt) {
+              return -1
+            } else if (a.createdAt < b.createdAt) {
+              return 1
+            }
+            return 0
+          })
+          .slice((page-1)*3, page*3),
+        getTotalPages(unsortedVotes.length)
+      ])
+      return res.status(200).send({ totalPages, page, votes: publicVotes })
+    }
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
