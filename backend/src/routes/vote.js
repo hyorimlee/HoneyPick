@@ -8,13 +8,15 @@ const { authAccessToken } = require('./auth')
 voteRouter.post('/', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    const { collectionId } = req.body
+    const { collectionId, title, isPublic } = req.body
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
+    if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
+    if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
 
     // 투표 만들기 & 프로필의 투표 목록에 추가
     const collection = await Collection.findById(collectionId)
-    const vote = new Vote({ collectionId, result: collection.items })
+    const vote = new Vote({ collectionId, title, result: collection.items, isPublic })
     await Promise.all([
       vote.save(),
       User.updateOne({ _id: userId }, { $push: { votes: vote } })
