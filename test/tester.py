@@ -1,8 +1,8 @@
 import requests
 import json
 
-SERVER_URL = 'http://localhost:8000/api/v1'
-# SERVER_URL = 'http://k6a3021.p.ssafy.io:8000/api/v1'
+# SERVER_URL = 'http://localhost:8000/api/v1'
+SERVER_URL = 'http://k6a302.p.ssafy.io:8000/api/v1'
 
 headers = {u'content-type': u'application/json'}
 
@@ -23,8 +23,6 @@ def request_server(method, url, headers=None, data=None):
 def get_response(t):
     return json.loads(t['response'])
     
-
-# 테스터 기능단위로 통합, 정리
 
 ############## 회원가입 테스트 ##############
 def signup_test(username, password, nickname, phone):
@@ -52,7 +50,6 @@ def phone_create_test(phoneNumber):
         'phoneNumber': phoneNumber,
     }
     return get_response(request_server('post', SERVER_URL+'/phone/', headers=headers, data=datas))
-
 
 def phone_check_test(phoneId, verficiatonCode):
     datas = {
@@ -86,8 +83,6 @@ def collection_create_test(title, description, isPublic):
         'isPublic': isPublic,
     }
     return get_response(request_server('post', SERVER_URL+'/collection', headers=headers, data=datas))
-
-# collectionId = collection_create_test()['collection']['_id']
 
 
 ############## 아이템 컬렉션에 추가 테스트 ##############
@@ -131,14 +126,16 @@ def review_update_test(itemId, reviewId, isRecommend, stickers):
 
     return get_response(request_server('patch', SERVER_URL+'/item/{}/review/{}'.format(itemId, reviewId), headers=headers, data=datas))
 
+
+# 효림 크롤러 테스트
 def server_on_test():
-    # 효림 크롤러 테스트
     SERVER_URL = 'http://k6a3021.p.ssafy.io:8081'
     datas = {
         'item_id': '627281b225482e0f35dcdc25',
         'url': 'https://smartstore.naver.com/happyribbonsociety/products/6581418818?NaPm=ct%3Dl2rmjb80%7Cci%3D22fcb87d3c8cc1969ca6e89a8a58dc054c6c7648%7Ctr%3Dslsl%7Csn%3D1133950%7Chk%3D1ad0025dcb5e6d8b91fde60bd55720148900fff6'
     }
     print(request_server('post', SERVER_URL+'/item', headers=headers, data=datas))
+
 
 if __name__ == '__main__':
     # # 핸드폰 인증, 회원가입
@@ -150,42 +147,36 @@ if __name__ == '__main__':
     accessToken = login_test('sosiny', 'test1234!@')['accessToken']
     headers['Authorization'] = "Bearer " + accessToken
 
-    # 아이템 생성
-    url = 'https://smartstore.naver.com/figurefarm/products/4616329700?n_media=27758&n_query=%EB%A1%9C%EC%9A%B0%ED%94%BC%EA%B7%9C%EC%96%B4&n_rank=2&n_ad_group=grp-a001-02-000000024445879&n_ad=nad-a001-02-000000162218527&n_campaign_type=2&n_mall_id=power90000&n_mall_pid=4616329700&n_ad_group_type=2&NaPm=ct%3Dl2u9anv4%7Cci%3D0B40001gVRfwrqrGM0Z1%7Ctr%3Dpla%7Chk%3D43080bca771e5d8adb9c072636e509b1c06917db'
-    itemId = item_create_test(url)['_id']
-    print('아이템 필터 - { _id: ObjectId("%s") }'%itemId)
+    # # 아이템 생성
+    # url = 'https://smartstore.naver.com/playpickstore/products/4644103607?NaPm=ct%3Dl2y1r4mo%7Cci%3D1abfc71ab6832f5147e979b95150c6ccb7f0c7ab%7Ctr%3Dsls%7Csn%3D843396%7Chk%3D5515ff4b0bd45c4037b92fef93345182016de835'
+    # itemId = item_create_test(url)['_id']
+    # print('아이템 필터 - { _id: ObjectId("%s") }'%itemId)
     
     # # 아이템 조회
     # userId = '6270e1db1a7512b38548c911'
     # item_get_result = item_get_test(userId, itemId)
 
-    # 컬렉션 생성
-    collectionId = collection_create_test('테스트 제목 2', '테스트 테스트', True)['collection']['_id']
-    print('컬렉션 필터 - { _id: ObjectId("%s") }'%collectionId)
+    # # 컬렉션 생성
+    # collectionId = collection_create_test('테스트 제목 2', '테스트 테스트', True)['collection']['_id']
+    # print('컬렉션 필터 - { _id: ObjectId("%s") }'%collectionId)
 
 
     # collectionId = '6274e1aea32525908809f60c'
     # originalCollectionId = '626b4cc0c7a03021da4fd6c8'
 
-    # # 아이템 - 컬렉션
-    add_item_to_collection_test(itemId, collectionId)
-    # remove_item_to_collection_test(itemId, originalCollectionId)
-    # move_item_to_collection_test(itemId, originalCollectionId, collectionId)
+    # # # 아이템 - 컬렉션
+    # add_item_to_collection_test(itemId, collectionId)
+    # # remove_item_to_collection_test(itemId, originalCollectionId)
+    # # move_item_to_collection_test(itemId, originalCollectionId, collectionId)
 
-    # # 리뷰
-    isRecommend = 1
-    stickers = [1, 3, 6]
-    reviewId = review_create_test(itemId, isRecommend, stickers)['review']['_id']
-    print('리뷰 필터 - { _id: ObjectId("%s") }'%reviewId)
+    # # # 리뷰
+    # isRecommend = 1
+    # stickers = [1, 3, 6]
+    # reviewId = review_create_test(itemId, isRecommend, stickers)['review']['_id']
+    # print('리뷰 필터 - { _id: ObjectId("%s") }'%reviewId)
 
     # review_update_test(itemId, reviewId, 1, [2,3,4])
 
 
     # 서버 온 테스트
     # server_on_test()
-
-
-
-
-
-
