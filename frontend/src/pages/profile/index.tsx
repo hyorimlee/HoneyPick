@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator()
 
 function ProfileStack() {
   const userId = useAppSelector(state => state.user.userId)
-
+  
   return (
     <Stack.Navigator>
       <Stack.Screen

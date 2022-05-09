@@ -7,6 +7,7 @@ import {ProfileStackParamList} from '../../../../types/navigation'
 import ProfileInfo from '../../../containers/profileInfo'
 import {getProfile} from '../../../store/slices/profile/asyncThunk'
 import {useAppDispatch} from '../../../store/types'
+import {getUserCollectionList} from '../../../store/slices/user/asyncThunk'
 
 const paddingHorizontal = 30
 
@@ -17,7 +18,8 @@ function Profile() {
 
   useEffect(() => {
     dispatch(getProfile({userId}))
-  }, [])
+    dispatch(getUserCollectionList())
+  })
 
   return (
     <KeyboardAwareScrollView style={{paddingHorizontal}}>

@@ -3,7 +3,7 @@ import {memo, useCallback, useRef, useState} from 'react'
 import {Text, View} from 'react-native'
 import BaseTextInput from '../../../components/textInput/base/index'
 import BaseButton from '../../../components/button/base/index'
-import {useAppDispatch} from '../../../store/types'
+import {useAppDispatch, useAppSelector} from '../../../store/types'
 import { createCollection } from '../../../store/slices/collection/asyncThunk'
 import { useNavigation } from '@react-navigation/native'
 import { ProfileNavigationProp } from '../../../containers/profileInfo/types'
@@ -11,6 +11,7 @@ import { ProfileNavigationProp } from '../../../containers/profileInfo/types'
 function CreateCollection() {
   const navigation = useNavigation<ProfileNavigationProp>()
   const dispatch = useAppDispatch()
+  const userId = useAppSelector(state => state.user.userId)
   const [collectionName, setCollectionName] = useState('')
   const [collectionDescription, setCollectionDescription] = useState('')
 
@@ -30,7 +31,7 @@ function CreateCollection() {
 
   const createNewCollection = useCallback(async () => {
     await dispatch(createCollection({title: collectionName, description: collectionDescription, isPublic: true}))
-    navigation.push('Default')
+    navigation.push('Default', {userId})
   }, [collectionName, collectionDescription])
 
   return (
