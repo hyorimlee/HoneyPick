@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn","main:app","--reload","--port=8081"]
+CMD ["uvicorn","main:app","--reload","--port=8081","--host=crawler"]

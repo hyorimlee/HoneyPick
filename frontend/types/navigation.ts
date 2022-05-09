@@ -8,7 +8,7 @@ export type BottomTabParamList = {
 }
 
 export type ProfileStackParamList = {
-  Default: undefined
+  Default: {userId: string}
   EditProfile: undefined
 }
 
