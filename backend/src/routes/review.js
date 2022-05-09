@@ -1,15 +1,17 @@
 const { Router } = require('express')
-const reviewRouter = Router()
+const reviewRouter = Router({ mergeParams: true })
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { User, Item, Review } = require('../models')
+const { User, Item, Review, Collection } = require('../models')
 
 const { authAccessToken } = require('./auth')
 
+
+// 리뷰 생성, 수정 시 collection에 담겨있는 내용도 같이 수정해야함
 reviewRouter.post('/', authAccessToken, async (req, res) => {
   try {
       const { itemId } = req.params
-      if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
+      if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
       const userId = req.userId
 
       const [user, item] = await Promise.all([
@@ -17,20 +19,21 @@ reviewRouter.post('/', authAccessToken, async (req, res) => {
         Item.findById(itemId)
       ])
 
-      if(!user) res.status(400).send({ err: "user does not exist" })
-      if(!item) res.status(400).send({ err: "item does not exist" })
+      if(!user) res.status(400).send({ err: "유저 정보가 존재하지 않습니다." })
+      if(!item) res.status(400).send({ err: "아이템 정보가 존재하지 않습니다." })
 
       const { isRecommend, stickers } = req.body      
-      if (typeof isRecommend !== 'number') return res.status(400).send({ err: "isRecommend is required"});
-      if (typeof stickers !== 'array') return res.status(400).send({ err: "stickers is required"});
+      if (typeof isRecommend !== 'number') return res.status(400).send({ err: "추천 정도는 필수값입니다."});
+      if (!Array.isArray(stickers)) return res.status(400).send({ err: "스티커는 필수값입니다."});
 
-      review = new Review({ user, item, ...req.body })
-
+      const review = new Review({ user, item, ...req.body })
+      
       const changedStickers = calStickers([], stickers)
 
       await Promise.all([
         review.save(),
-        item.updateOne({ $inc : changedStickers })
+        item.updateOne({ $inc : changedStickers }),
+        Collection.findOneAndUpdate({ 'user._id': userId, 'items._id': itemId }, { 'items.$.recommend': isRecommend })
       ])
 
       return res.status(200).send({ review })
@@ -43,16 +46,21 @@ reviewRouter.post('/', authAccessToken, async (req, res) => {
 reviewRouter.patch('/:reviewId', authAccessToken, async (req, res) => {
   try {
     const { itemId, reviewId } = req.params
-    if(!isValidObjectId(reviewId)) return res.status(400).send({ err: "invalid itemId" })
+    if(!isValidObjectId(reviewId)) return res.status(400).send({ err: "잘못된 reviewId" })
+    const userId = req.userId
 
     const { isRecommend, stickers } = req.body      
-    if (typeof isRecommend !== 'number') return res.status(400).send({ err: "isRecommend is required"});
-    if (typeof stickers !== 'array') return res.status(400).send({ err: "stickers is required"});
+    if (typeof isRecommend !== 'number') return res.status(400).send({ err: "추천 정도는 필수값입니다."});
+    if (!Array.isArray(stickers)) return res.status(400).send({ err: "스티커는 필수값입니다."});
 
     const review = await Review.findByIdAndUpdate(reviewId, { $set: { isRecommend, stickers } })
 
     const changedStickers = calStickers(review.stickers, stickers)
-    await Item.updateOne({ _id: itemId }, { $inc: changedStickers })
+
+    await Promise.all([
+      Item.updateOne({ _id: itemId }, { $inc: changedStickers }),
+      Collection.findOneAndUpdate({ 'user._id': userId, 'items._id': itemId }, { 'items.$.recommend': isRecommend })
+    ])
 
     return res.status(200).send({ message: "success" })
 } catch (error) {

@@ -35,17 +35,21 @@ class Store:
     def etc_get_data(self, res):
         sp = BeautifulSoup(res, 'html.parser')
         title = sp.select_one('title').text
-        price = re.search('[0-9\,]*원', res)
+        price = re.search('[0-9\,]+원', res)
         # brand 정보
 
         return {
             'title': title,
-            'price': price,
+            'priceBefore': price.group(0) if price else None,
         }
     
     def crawl(self, url):
         r = requests.get(url)
         store_type = None
+
+        # url 저장
+        with open('./urls', 'a') as f:
+            f.write(url+'\n')
         
         # 스토어 타입 구분
         if 'smartstore' in r.url:

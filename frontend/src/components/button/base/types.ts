@@ -18,6 +18,9 @@ export interface IComponentProps {
   borderColor?: ColorValue
   flex?: number
   disabled?: boolean
+  position?: 'relative' | 'absolute'
+  bottom?: number | string
+  width?: number | string
 }
 
 export interface IStyleProps {
@@ -34,4 +37,7 @@ export interface IStyleProps {
   borderColor?: ColorValue
   flex?: number
   disabled?: boolean
+  position?: 'relative' | 'absolute'
+  bottom?: number | string
+  width?: number | string
 }

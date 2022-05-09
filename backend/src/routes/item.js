@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const itemRouter = Router()
 const mongoose = require('mongoose')
-const { isValidObjectId } = require('mongoose')
+const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
 const { Item, Review, Collection } = require('../models')
 
 const { authAccessToken } = require('./auth')
@@ -41,11 +41,11 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
                 }).then(() => {
                     console.log('item crawl success')
                 }).catch(({response}) => {
-                    console.log(response.data.detail)
+                    console.log(response)
                 })
             }
         }
-        return res.status(201).send({ item })
+        return res.status(201).send({ _id: item._id })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -55,15 +55,18 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
 itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
-        const { userId } = req.query
-        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
-        if(!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
+        // query에 userId가 없을 경우 본인의 리뷰 가져오기
+        var { userId } = req.query
+        if(!userId) userId = req.userId
+        
+        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
+        if(!isValidObjectId(userId)) return res.status(400).send({ err: "잘못된 userId" })
 
         const [item, review] = await Promise.all([
             Item.findById(itemId),
             Review.findOne({ user: userId, item: itemId })
         ])
-        if(!item) res.status(400).send({ err: "item does not exist" })
+        if(!item) res.status(400).send({ err: "아이템이 존재하지 않습니다." })
 
         return res.status(200).send({ item, review })
     } catch (error) {
@@ -72,20 +75,37 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
     }
 })
 
-// 아이템 - 컬렉션 관리
-// 아이템 컬렉션에서 삭제
-// 아이템
 itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
-        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId" })
-        const { collectionId } = req.body
-        if(!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
-        
+        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
         const item = await Item.findById(itemId)
-        if(!item) return res.status(400).send({ err: "item does not exist" })
+        if(!item) return res.status(400).send({ err: "아이템이 존재하지 않습니다." })
+        
+        const userId = req.userId
 
-        await Collection.findByIdAndUpdate(collectionId, { $push: { items: [item] } })
+        const { originalCollectionId, collectionId } = req.body
+
+        var promises = []
+        if(originalCollectionId) {
+            if(!isValidObjectId(originalCollectionId)) return res.status(400).send({ err: "잘못된 originalCollectionId" })
+            // collection 주인 여부 체크
+            // findbyid후에 callback으로 처리
+            // Collection.findById(originalCollectionId, (err, doc) => {
+            //     if(doc.user._id == userId){
+            //         doc.$pull()
+            //     }
+            // })
+            promises.push(Collection.findByIdAndUpdate(originalCollectionId, { $pull: { items: { _id: ObjectId(itemId) } } }))
+        }
+        if(collectionId) {
+            if(!isValidObjectId(collectionId)) return res.status(400).send({ err: "잘못된 collectionId" })
+            const review = await Review.findOne({ user: userId, item: itemId })
+            const recommend = review?.isRecommend
+            promises.push(Collection.findByIdAndUpdate(collectionId, { $push: { items: { _id: ObjectId(itemId), recommend } } }))
+        }
+
+        await Promise.all(promises)
 
         return res.status(200).send({ message: 'success' })
     } catch (error) {

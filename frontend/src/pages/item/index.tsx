@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, createRef, useEffect} from 'react'
-import {Alert, SafeAreaView, StatusBar, Text, TouchableOpacity} from 'react-native'
+import {memo, createRef} from 'react'
+import {Alert, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native'
 import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, NormalText, BoldText, PriceText, DashedBorder} from './styles'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
@@ -8,17 +8,22 @@ import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import RecommendBar from '../../containers/recommendBar'
 import BaseButton from '../../components/button/base'
 import ActionSheet from "react-native-actions-sheet"
+import {useAppSelector, useAppDispatch} from '../../store/types'
+import {getItem} from '../../store/slices/item'
 
 function Item() {
+  const dispatch = useAppDispatch()
   const actionSheetRef = createRef<ActionSheet>()
+  const {itemId, item, review} = useAppSelector(state => state.item)
 
   const openSheet = () => {
     actionSheetRef.current?.show()
   }
 
-  // const closeSheet = () => {
-  //   actionSheetRef.current?.show()
-  // }
+  const getItemInfo = (itemId: string) => {
+    dispatch(getItem(itemId))
+    console.log('아이템 정보 가져오기')
+  }
 
   const goToSite = () => {
     Alert.alert('사이트로 이동하기')
@@ -56,7 +61,7 @@ function Item() {
       </ActionSheet>
       <Container>
         <ImageContainer
-          source={require('../../assets/images/sampleimage1.jpg')}
+          source={item.thumbnail ? {uri: item.thumbnail} : require('../../assets/images/sampleimage1.jpg')}
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,
@@ -64,9 +69,9 @@ function Item() {
         />
         <InfoContainer>
           <TextContainer>
-            <NormalText>사이트명</NormalText>
-            <BoldText>아이템 이름</BoldText>
-            <PriceText>가격</PriceText>
+            <NormalText>{item.brand}</NormalText>
+            <BoldText>{item.title}</BoldText>
+            <PriceText>{item.priceBefore}</PriceText>
             <NormalText>컬렉션 이름</NormalText>
           </TextContainer>
           <TouchableOpacity onPress={openSheet}>
@@ -86,6 +91,13 @@ function Item() {
         <BaseButton
           text={'사이트로 이동하기'}
           onPress={goToSite}
+          borderRadius={25}
+          marginVertical={10}
+          paddingVertical={15}
+        />
+        <BaseButton
+          text={'아이템 가져오기 테스트'}
+          onPress={() => getItemInfo(itemId)}
           borderRadius={25}
           marginVertical={10}
           paddingVertical={15}

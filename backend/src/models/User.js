@@ -11,7 +11,7 @@ const UserSchema = new Schema({
     image: {type: String, default: process.env.DEFAULT_PROFILE_IMG},
     description: {type: String},
     followingCount: {type: Number, default: 0},
-    follwerCount: {type: Number, default: 0},
+    followerCount: {type: Number, default: 0},
     collections: [CollectionSchema],
     votes: [VoteSchema],
     follow: {
