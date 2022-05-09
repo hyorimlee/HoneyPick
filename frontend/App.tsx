@@ -26,7 +26,6 @@ import ProfileStack from './src/pages/profile'
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
 
-
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
@@ -170,24 +169,24 @@ const InnerApp = memo(({}) => {
             />
           </Stack.Navigator>
         )}
+        {/* 전역 버튼, 모달 */}
+        {btnShow ? <SaveItemBtn
+          copiedUrl={copiedUrl}
+          setCopiedUrl={(text: string) => setCopiedUrl(text)}
+          btnShowHandler={() => btnShowHandler()}
+          /> : null}
+        <Text onPress={() => setModalVisible(true)}>모달열기</Text>
+        <Modal
+          animationType='slide'
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible)
+          }}
+          >
+          <ChooseCollectionModal></ChooseCollectionModal>
+        </Modal>
       </NavigationContainer>
-      {/* 전역 버튼, 모달 */}
-      {btnShow ? <SaveItemBtn
-        copiedUrl={copiedUrl}
-        setCopiedUrl={(text: string) => setCopiedUrl(text)}
-        btnShowHandler={() => btnShowHandler()}
-      /> : null}
-      <Text onPress={() => setModalVisible(true)}>모달열기</Text>
-      <Modal
-        animationType='slide'
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible)
-        }}
-      >
-        <ChooseCollectionModal></ChooseCollectionModal>
-      </Modal>
     </View>
   )
 })
