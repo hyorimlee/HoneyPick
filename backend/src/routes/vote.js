@@ -104,9 +104,18 @@ voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
 // 투표 상세 조회
 voteRouter.get('/:accountId/:voteId', authAccessToken, async (req, res) => {
   try {
-    const { voteId } = req.params
+    const { accountId, voteId } = req.params
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
     if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
+
     const vote = await Vote.findById(voteId)
+    if (vote.isPublic === false) {
+      if (await isFollower(accountId, userId) == false && accountId !== userId) {
+        return res.status(400).send({ err: "private vote"})
+      }
+    }
     return res.status(200).send({ vote })
   } catch (error) {
     console.log(error)
