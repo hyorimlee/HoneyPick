@@ -9,19 +9,18 @@ import {useAppSelector} from '../../store/types'
 
 function ProfileInfo() {
   const navigation = useNavigation<ProfileNavigationProp>()
-  const {username, description, profileImage} = useAppSelector(state => {
-    const {username, description, profileImage} = state.user
-    return {username, description, profileImage}
-  })
+  const {nickname, profileImage, description, following, follower} =
+    useAppSelector(state => state.profile)
+
   const editProfile = useCallback(() => {
-    navigation.push('EditProfile')
+    navigation.navigate('EditProfile')
   }, [])
 
   return (
     <Container>
       <InfoContainer>
-        <Image
-          source={require('../../assets/images/honeybee.png')}
+        {/* <Image
+          source={{uri: profileImage}}
           style={{
             width: 64,
             height: 64,
@@ -29,13 +28,13 @@ function ProfileInfo() {
             borderRadius: 100,
             backgroundColor: 'black',
           }}
-        />
+        /> */}
         <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
-          {username}
+          {nickname}
         </Text>
         <Text style={{fontSize: 10, color: '#000000'}}>{description}</Text>
         <Text style={{fontSize: 10, color: '#000000'}}>
-          100팔로잉 200팔로워
+          {following}팔로잉 {follower}팔로워
         </Text>
       </InfoContainer>
       <EditContainer>
