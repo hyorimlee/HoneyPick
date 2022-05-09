@@ -93,13 +93,6 @@ const InnerApp = memo(({}) => {
     }
   }
 
-  const btnShowHandler = () => {
-    if (btnShow) {
-      // setCopiedUrl('')
-      setBtnShow(false)
-    }
-  }
-
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
       const listener = Clipboard.addListener(clipboardListener);
@@ -109,12 +102,22 @@ const InnerApp = memo(({}) => {
     }
   }, [])
 
+  const btnShowHandler = () => {
+    if (btnShow) {
+      setBtnShow(false)
+    }
+  }
+
   useEffect(() => {
     if (saveCollection === 'yet') {
       setModalVisible(true)
+    } else if (saveCollection === 'done') {
+      Clipboard.setString('')
+      setModalVisible(false)
     } else {
       setModalVisible(false)
     }
+    setBtnShow(false)
   }, [saveCollection])
 
   useEffect(() => {
@@ -175,7 +178,6 @@ const InnerApp = memo(({}) => {
           setCopiedUrl={(text: string) => setCopiedUrl(text)}
           btnShowHandler={() => btnShowHandler()}
           /> : null}
-        <Text onPress={() => setModalVisible(true)}>모달열기</Text>
         <Modal
           animationType='slide'
           transparent={true}

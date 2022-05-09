@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {memo, useState, useEffect} from 'react'
-import {View} from 'react-native'
 
 import BaseButton from '../../components/button/base'
 import {useAppSelector, useAppDispatch} from '../../store/types'
@@ -27,7 +26,7 @@ const radioButtonsData: RadioButtonProps[] = [
 function ChooseCollectionModal() {
   const dispatch = useAppDispatch()
   const {collections} = useAppSelector(state => state.user)
-  const {itemId, saveCollection} = useAppSelector(state => state.item)
+  const {itemId} = useAppSelector(state => state.item)
   
   const [radioButtons, setRadioButtons] = useState<RadioButtonProps[]>(radioButtonsData)
   const [selectedValue, setSelectedValue] = useState<string>('')
@@ -35,41 +34,27 @@ function ChooseCollectionModal() {
 
   useEffect(() => {
     dispatch(getUserCollectionList())
-  }, [])
-
-  useEffect(() => {
-    console.log('실행되나요???')
-    dispatch(getUserCollectionList())
-    setSelectedValue('')
+    .unwrap()
+    .then(res => {
+      const newButtonData = collections.map((collection: CollectionState) => ({
+        id: collection._id,
+        label: collection.title,
+        value: collection._id,
+        color: '#F9C12E'
+      }))
+      const ButtonData = radioButtonsData.concat(newButtonData)
+      setRadioButtons(ButtonData)
+    })
   }, [openCreationForm])
 
-  useEffect(() => {
-    const newButtonData = collections.map((collection: CollectionState) => ({
-      id: collection._id,
-      label: collection.title,
-      value: collection._id,
-      color: '#F9C12E'
-    }))
-    const ButtonData = radioButtonsData.concat(newButtonData)
-    setRadioButtons(ButtonData)
-  }, [collections])
-
-  useEffect(() => {
-    const selected = radioButtons.filter(button => button.selected === true)
-    if (selected.length > 0) {
+  const onPressRadioButton = (radioButtonsArray: RadioButtonProps[]) => {
+    setRadioButtons(radioButtonsArray)
+    const selected = radioButtonsArray.filter(button => button.selected === true)
+    if (selected[0].id === 'new') {
+      setOpenCreationForm(true)
+    } else {
       setSelectedValue(selected[0].id)
     }
-  }, [radioButtons])
-
-  useEffect(() => {
-    if (selectedValue === 'new') {
-      setOpenCreationForm(true)
-    }
-  }, [selectedValue])
-
-  const onPressRadioButton = (radioButtonsArray: RadioButtonProps[]) => {
-    console.log(radioButtonsArray)
-    setRadioButtons(radioButtonsArray)
   }
 
   const submitItemToCollection = () => {
