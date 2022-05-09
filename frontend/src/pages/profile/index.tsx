@@ -2,6 +2,7 @@ import * as React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import EditProfile from './editProfile/index'
 import Profile from './default'
+import CreateCollection from './createCollection'
 import {useAppSelector} from '../../store/types'
 
 const Stack = createNativeStackNavigator()
@@ -20,6 +21,11 @@ function ProfileStack() {
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CreateCollection"
+        component={CreateCollection}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

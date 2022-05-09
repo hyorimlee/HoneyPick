@@ -64,8 +64,10 @@ export const itemToCollection = createAsyncThunk<any, IItemToCollectionParameter
           authorization: `Bearer ${accessToken}`
         }
       })
+      console.log(response.data)
       return response.data
     } catch (err: any) {
+      console.log(err.response.data)
       return thunkAPI.rejectWithValue(err.response.data)
     }
   }
