@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const collectionRouter = Router()
-const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
+const { isValidObjectId } = require('mongoose')
 const { User, Collection, Follow } = require('../models')
 const { authAccessToken } = require('./auth')
 

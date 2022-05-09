@@ -2,6 +2,16 @@ const { Router } = require('express')
 const likeRouter = Router()
 const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
 const { User, Collection } = require('../models')
+const { authAccessToken } = require('./auth')
+
+// 전체 페이지 수
+function getTotalPages(length) {
+  if (length % 12) {
+    return (parseInt(length / 12) + 1)
+  } else {
+    return (length / 12)
+  }
+}
 
 // 컬렉션 찜 설정/해제
 likeRouter.post('/', authAccessToken, async (req, res) => {
@@ -49,7 +59,7 @@ likeRouter.get('/', authAccessToken, async (req, res) => {
         .slice((page-1)*12, page*12),
       getTotalPages(user.likes.length)
     ])
-    return res.status(200).send({ totalPages, page, likes})
+    return res.status(200).send({ totalPages, page, likes })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
