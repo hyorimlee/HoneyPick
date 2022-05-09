@@ -114,7 +114,7 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
   try {
     const { accountId, collectionId } = req.params
     const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(400).send({ err: "invalid userId" })
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
 
