@@ -6,12 +6,15 @@ const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
 async function isFollower(accountId, userId) {
-  const followId = await User.findById(accountId).followId
-  let followers = await Follow.findById(followId).followers
-  if (!followers) {
-    followers = []
+  const account = await User.findById(accountId)
+  let follow = await Follow.findById(account.follow)
+  console.log(follow.followers)
+  if (!follow.followers) {
+    follow.followers = []
+    follow.save()
+    return false
   }
-  if (followers.includes(userId)) {
+  if (follow.followers.includes(userId)) {
     return true
   }
   return false
