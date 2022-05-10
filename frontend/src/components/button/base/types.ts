@@ -7,6 +7,7 @@ export interface IComponentProps {
   onPressOut?: () => void
   marginHorizontal?: string | number
   marginVertical?: string | number
+  marginLeft?: string | number
   paddingHorizontal?: string | number
   paddingVertical?: string | number
   color?: ColorValue
@@ -26,6 +27,7 @@ export interface IComponentProps {
 export interface IStyleProps {
   marginHorizontal?: string | number
   marginVertical?: string | number
+  marginLeft?: string | number
   paddingHorizontal?: string | number
   paddingVertical?: string | number
   color?: ColorValue
