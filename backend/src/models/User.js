@@ -13,6 +13,7 @@ const UserSchema = new Schema({
     followingCount: {type: Number, default: 0},
     followerCount: {type: Number, default: 0},
     collections: [CollectionSchema],
+    likes: [CollectionSchema],
     votes: [VoteSchema],
     follow: {
         type:Schema.Types.ObjectId,
