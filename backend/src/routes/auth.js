@@ -96,7 +96,6 @@ authRouter.post('/refresh',async (req,res)=>{
             const {userId} = jwt.verify(refreshToken,process.env.JWT_REFRESH_KEY)
             const accessToken = jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACCESS_EXPIRESIN})
             const user = await User.findById(userId)
-            console.log(user.username)
             if(user.withdraw==true) return res.status(400).send({err:`${await user.usename}는 탈퇴되었습니다.`})
             return res.status(201).send({msg:"새로운 메세지",userId:userId,accessToken:accessToken,refreshToken:refreshToken,userId:user._id})
         } catch (err) {
