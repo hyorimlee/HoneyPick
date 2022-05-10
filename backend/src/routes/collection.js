@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const collectionRouter = Router()
 const { isValidObjectId } = require('mongoose')
-const { User, Collection, Item, Follow } = require('../models')
+const { User, Collection, Follow } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
