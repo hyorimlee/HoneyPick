@@ -2,7 +2,7 @@ import * as React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import Collection from './default'
 import EditCollection from './editCollection'
-import Item from '../item'
+import Item from '../item/default'
 
 const Stack = createNativeStackNavigator()
 

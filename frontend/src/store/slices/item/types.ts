@@ -1,5 +1,6 @@
 export interface ItemState {
   itemId: string
+  collectionId: string
   saveCollection: 'no' | 'yet' | 'done'
   item: {
     _id: string
@@ -30,12 +31,12 @@ export interface IItemToCollectionParameter {
 export interface ISaveReviewParameter {
   itemId: string
   isRecommend: 0 | 1 | 2
-  stickers: number[]
+  stickers: string[]
 }
 
 export interface IEditReviewParameter {
   itemId: string
   reviewId: string
   isRecommend?: 0 | 1 | 2
-  stickers?: number[]
+  stickers?: string[]
 }
