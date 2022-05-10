@@ -6,6 +6,10 @@ const { User } = require('../models')
 const bcrypt = require('bcrypt')
 const { authAccessToken } = require('./auth')
 
+const { v4: uuid } = require("uuid")
+const mime = require("mime-types")
+const { getSignedUrl } = require('../aws')
+
 profileRouter.get('/:userId', authAccessToken,async (req, res) => {
     try {
         if(!isValidObjectId(req.userId)) return res.status(400).send({ err: "유효하지 않은 user id" })
