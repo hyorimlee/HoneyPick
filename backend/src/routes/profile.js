@@ -21,7 +21,8 @@ profileRouter.get('/:userId', authAccessToken,async (req, res) => {
 profileRouter.patch('/',authAccessToken, async (req, res) => {
     try {
         let user = await User.findById(req.userId)
-        const {username,nickname,profileImage,description,phone} = req.body
+        const {username,nickname,imageType,description,phone} = req.body
+        let profileImage
         if(username){
             if(typeof username!=="string") return res.status(400).send({err:"username 형식이 잘못되었습니다."})
             if(await User.findOne({username:username})) return res.status(400).send({err:"이미 존재하는 username입니다"})
@@ -37,16 +38,21 @@ profileRouter.patch('/',authAccessToken, async (req, res) => {
             if(typeof phone!=="string") return res.status(400).send({err:"phone 형식이 잘못되었습니다."})
             user.phone = phone
         }
-        if(profileImage) {
-            if(typeof profileImage!=="string") return res.status(400).send({err:"profileImage 형식이 잘못되었습니다."})
-            user.profileImage = profileImage
+        if(imageType) {
+            if(typeof imageType!=="string") return res.status(400).send({err:"imgaeType 형식이 잘못되었습니다."})
+            const imageKey = `${uuid()}.${mime.extension(imageType) ? mime.extension(imageType) : 'jpg'}`
+            const key = `raw/${imageKey}`
+            const presigned = await getSignedUrl({ key })
+            user.profileImage = imageKey
+            profileImage = presigned
+            
         }
         if(description){
             if(typeof description!=="string") return res.status(400).send({err:"description의 형식이 잘못되었습니다."})
             user.description = description
         }
         await user.save()
-        return res.status(200).send({msg:"DONE",username:user.username,nickname:user.nickname,profileImage:user.profileImage,description:user.description,following:user.followingCount,follower:user.followerCount })
+        return res.status(200).send({msg:"DONE",username:user.username,nickname:user.nickname,profileImage:profileImage,description:user.description,following:user.followingCount,follower:user.followerCount })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
