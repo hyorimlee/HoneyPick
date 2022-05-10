@@ -75,6 +75,16 @@ followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
         .slice((page-1)*6, page*6),
       getTotalPages(follow.followers.length)
     ])
+    for (let i=0; i < followers.length; i++) {
+      let user = await User.findById(followers[i]._id)
+      let myFollowing = await Follow.findOne({ _id: user.follow, 'followers._id': userId})
+      if (myFollowing) {
+        followers[i].myFollow = true
+      } else {
+        followers[i].myFollow = false
+      }
+    }
+    follow.save()
     return res.status(200).send({ totalPages, page, followers })
   } catch (error) {
     console.log(error)
@@ -107,6 +117,16 @@ followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => 
         .slice((page-1)*6, page*6),
       getTotalPages(follow.followings.length)
     ])
+    for (let i=0; i < followings.length; i++) {
+      let user = await User.findById(followings[i]._id)
+      let myFollowing = await Follow.findOne({ _id: user.follow, 'followers._id': userId})
+      if (myFollowing) {
+        followings[i].myFollow = true
+      } else {
+        followings[i].myFollow = false
+      }
+    }
+    follow.save()
     return res.status(200).send({ totalPages, page, followings })
   } catch (error) {
     console.log(error)
