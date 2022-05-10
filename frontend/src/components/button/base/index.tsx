@@ -13,6 +13,7 @@ function BaseButton({
   onPressOut,
   marginHorizontal,
   marginVertical,
+  marginLeft,
   paddingHorizontal,
   paddingVertical,
   color = '#ffffff',
@@ -63,6 +64,7 @@ function BaseButton({
       pressRetentionOffset={0}
       marginHorizontal={marginHorizontal}
       marginVertical={marginVertical}
+      marginLeft={marginLeft}
       paddingHorizontal={paddingHorizontal}
       paddingVertical={paddingVertical}
       backgroundColor={

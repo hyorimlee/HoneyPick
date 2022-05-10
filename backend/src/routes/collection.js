@@ -1,17 +1,14 @@
 const { Router } = require('express')
 const collectionRouter = Router()
 const { isValidObjectId } = require('mongoose')
-const { User, Collection, Item, Follow } = require('../models')
+const { User, Collection, Follow } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
 async function isFollower(accountId, userId) {
-  const followId = await User.findById(accountId).followId
-  let followers = await Follow.findById(followId).followers
-  if (!followers) {
-    followers = []
-  }
-  if (followers.includes(userId)) {
+  const account = await User.findById(accountId)
+  const isFollow = await Follow.findOne({ _id: account.follow, 'followers._id': userId })
+  if (isFollow) {
     return true
   }
   return false

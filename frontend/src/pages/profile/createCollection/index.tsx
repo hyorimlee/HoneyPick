@@ -8,7 +8,7 @@ import { createCollection } from '../../../store/slices/collection/asyncThunk'
 import { useNavigation } from '@react-navigation/native'
 import { ProfileNavigationProp } from '../../../containers/profileInfo/types'
 
-function CreateCollection() {
+function CreateCollection({isModal, setOpenCreationForm}: {isModal?: boolean, setOpenCreationForm?: React.Dispatch<React.SetStateAction<boolean>>}) {
   const navigation = useNavigation<ProfileNavigationProp>()
   const dispatch = useAppDispatch()
   const userId = useAppSelector(state => state.user.userId)
@@ -31,7 +31,11 @@ function CreateCollection() {
 
   const createNewCollection = useCallback(async () => {
     await dispatch(createCollection({title: collectionName, description: collectionDescription, isPublic: true}))
-    navigation.push('Default', {userId})
+    if (isModal && setOpenCreationForm) {
+      setOpenCreationForm(false)
+    } else {
+      navigation.push('Default', {userId})
+    }
   }, [collectionName, collectionDescription])
 
   return (
@@ -60,6 +64,13 @@ function CreateCollection() {
         borderRadius={5}
         disabled={!collectionName}
       />
+      {isModal && setOpenCreationForm ? <BaseButton
+        text={'돌아가기'}
+        onPress={() => setOpenCreationForm(false)}
+        marginVertical={10}
+        paddingVertical={10}
+        borderRadius={5}
+      /> : null}
     </View>
   )
 }

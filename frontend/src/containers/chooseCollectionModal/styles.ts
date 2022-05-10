@@ -7,34 +7,30 @@ export const CenteredView = styled.View`
   background-color: rgba(0,0,0,0.5);
 `
 
+export const Background = styled.Pressable`
+  width: 100%;  
+  height: 100%;
+  position: absolute;
+`
+
 export const ModalView = styled.View`
   width: 80%;
   height: 70%;
   border-radius: 20px;
   background-color: white;
   padding-vertical: 15px;
-  padding-horizontal: 15px;
+  padding-horizontal: 20px;
   justify-content: space-between;
 `
 
 export const RadioContainer = styled.View`
+  height: 70%;
   align-items: flex-start;
+  margin-vertical: 10px;
+  background-color: palegreen;
 `
 
 export const NormalText = styled.Text`
   color: #000000;
-  margin-top: 5px;
-`
-
-export const BoldText = styled.Text`
-  color: #000000;
-  margin-top: 5px;
-  font-weight: bold;
-`
-
-export const PriceText = styled.Text`
-  color: #F9C12E;
-  font-size: 18px;
-  font-weight: bold;
   margin-top: 5px;
 `

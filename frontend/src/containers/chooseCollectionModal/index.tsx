@@ -1,59 +1,81 @@
 import * as React from 'react'
 import {memo, useState, useEffect} from 'react'
-import {View} from 'react-native'
 
 import BaseButton from '../../components/button/base'
+import {useAppSelector, useAppDispatch} from '../../store/types'
 import {itemToCollection} from '../../store/slices/item/asyncThunk'
-import {useAppSelector} from '../../store/types'
+import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
+import {CollectionState} from '../../store/slices/collection/types'
+import {setCollectionId, setSaveCollection} from '../../store/slices/item'
+import {ChooseCollectionNavigationProp} from './types'
 
+import {useNavigation} from '@react-navigation/native'
 import RadioGroup, {RadioButtonProps} from 'react-native-radio-buttons-group'
 
-import {
-  CenteredView,
-  ModalView,
-  RadioContainer,
-  NormalText,
-  BoldText,
-  PriceText,
-} from './styles'
+import {CenteredView, Background, ModalView, RadioContainer, NormalText} from './styles'
+import CreateCollection from '../../pages/profile/createCollection'
 
 const radioButtonsData: RadioButtonProps[] = [
   {
-    id: '1', //string이어야 함
-    label: '새 컬렉션 만들기ㅇㄹㅇㄹㅇㄹㅇㄹ',
-    value: 'option 1',
-    color: '#F9C12E',
-  },
-  {
-    id: '2',
-    label: '왜',
-    value: 'option 2',
-    color: '#F9C12E',
-  },
+    id: 'new', //string
+    label: '새 컬렉션 만들기',
+    value: 'newCollection',
+    selected: false,
+    color: '#F9C12E'
+  }
 ]
 
-function ChooseCollectionModal() {
-  const {itemId, saveCollection} = useAppSelector(state => state.item)
-  const [radioButtons, setRadioButtons] =
-    useState<RadioButtonProps[]>(radioButtonsData)
+function ChooseCollectionModal({setModalVisible}: {setModalVisible: React.Dispatch<React.SetStateAction<boolean>>}) {
+  const dispatch = useAppDispatch()
+  const navigation = useNavigation<ChooseCollectionNavigationProp>()
+  const {collections} = useAppSelector(state => state.user)
+  const {itemId} = useAppSelector(state => state.item)
+  
+  const [radioButtons, setRadioButtons] = useState<RadioButtonProps[]>(radioButtonsData)
   const [selectedValue, setSelectedValue] = useState<string>('')
+  const [openCreationForm, setOpenCreationForm] = useState<boolean>(false)
+
+  useEffect(() => {
+    dispatch(getUserCollectionList())
+    .unwrap()
+    .then(res => {
+      const newButtonData = collections.map((collection: CollectionState) => ({
+        id: collection._id,
+        label: collection.title,
+        value: collection._id,
+        color: '#F9C12E'
+      }))
+      const ButtonData = radioButtonsData.concat(newButtonData)
+      setRadioButtons(ButtonData)
+    })
+  }, [openCreationForm])
 
   const onPressRadioButton = (radioButtonsArray: RadioButtonProps[]) => {
     setRadioButtons(radioButtonsArray)
-  }
-
-  useEffect(() => {
-    // console.log(radioButtons)
-    const selected = radioButtons.filter(button => button.selected === true)
-    console.log(selected)
-    if (selected.length > 0) {
+    const selected = radioButtonsArray.filter(button => button.selected === true)
+    if (selected[0].id === 'new') {
+      setOpenCreationForm(true)
+    } else {
       setSelectedValue(selected[0].id)
     }
-  }, [radioButtons])
+  }
+
+  const submitItemToCollection = () => {
+    const data = {
+      itemId,
+      collectionId: selectedValue
+    }
+    dispatch(itemToCollection(data))
+    dispatch(setSaveCollection('done'))
+    dispatch(setCollectionId(selectedValue))
+    navigation.navigate('Item', data)
+  }
 
   return (
     <CenteredView>
+      <Background onPress={() => setModalVisible(false)}/>
       <ModalView>
+<<<<<<< HEAD
         <NormalText>아이템을 저장할 컬렉션을 선택해주세요.</NormalText>
         <RadioContainer>
           <RadioGroup
@@ -67,6 +89,26 @@ function ChooseCollectionModal() {
           marginVertical={10}
           paddingVertical={15}
         />
+=======
+        {openCreationForm ? <CreateCollection isModal setOpenCreationForm={setOpenCreationForm}></CreateCollection> :
+        <>
+          <NormalText>아이템을 저장할 컬렉션을 선택해주세요.</NormalText>
+          <RadioContainer>
+            <RadioGroup
+              radioButtons={radioButtons}
+              onPress={onPressRadioButton}
+            ></RadioGroup>
+          </RadioContainer>
+          <BaseButton
+            text={'선택된 컬렉션에 아이템 추가하기'}
+            onPress={() => submitItemToCollection()}
+            borderRadius={25}
+            marginVertical={10}
+            paddingVertical={15}
+          />
+        </>
+        }
+>>>>>>> e37e4b5b22bdc766337ea725028517b09ecd39e0
       </ModalView>
     </CenteredView>
   )

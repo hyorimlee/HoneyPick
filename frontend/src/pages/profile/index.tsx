@@ -2,6 +2,7 @@ import * as React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import EditProfile from './editProfile/index'
 import Profile from './default'
+import CreateCollection from './createCollection'
 import {useAppSelector} from '../../store/types'
 import follow from './follow'
 
@@ -26,6 +27,11 @@ function ProfileStack() {
       <Stack.Screen
         name="Follow"
         component={follow}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CreateCollection"
+        component={CreateCollection}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

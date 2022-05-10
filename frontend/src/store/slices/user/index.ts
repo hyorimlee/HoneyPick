@@ -6,6 +6,7 @@ import {
   requestPhoneVerifyCheck,
   requestSignIn,
   requestSignUp,
+  getUserCollectionList,
 } from './asyncThunk'
 
 const initialState = {
@@ -56,6 +57,9 @@ const userSlice = createSlice({
       })
       .addCase(requestPhoneVerifyCheck.rejected, (state, action) => {
         console.log(action)
+      })
+      .addCase(getUserCollectionList.fulfilled, (state, action) => {
+        state.collections = action.payload.collections
       })
   },
 })
