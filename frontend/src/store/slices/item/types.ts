@@ -18,7 +18,7 @@ export interface ItemState {
     user: string
     item: string
     isRecommend: 0 | 1 | 2
-    stickers: number[]
+    stickers: string[]
   }
 }
 

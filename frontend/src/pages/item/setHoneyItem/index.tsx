@@ -19,12 +19,16 @@ function SetHoneyItem() {
   const [stickers, setStickers] = useState<string[]>([])
 
   const saveHoneyItem = () => {
-    const data = {
-      itemId,
-      isRecommend: recommend,
-      stickers: stickers,
+    if (recommend !== 0 && stickers) {
+      const data = {
+        itemId,
+        isRecommend: recommend,
+        stickers: stickers,
+      }
+      dispatch(saveReview(data))
+    } else {
+      Alert.alert('추천 정도와 스티커를 선택해주세요!')
     }
-    dispatch(saveReview(data))
   }
 
   const recommendHandler = (num: 0 | 1 | 2) => {
