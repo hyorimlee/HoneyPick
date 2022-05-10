@@ -30,7 +30,7 @@ export interface ICollectionListQuery {
 
 export interface ICollectionQuery {
   accountId: string,
-  collectionId: number,
+  collectionId: string,
 }
 
 export interface IEditCollectionQuery extends ICollectionQuery{
