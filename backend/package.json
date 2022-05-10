@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1130.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
@@ -21,9 +22,11 @@
     "express-session": "^1.17.2",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
+    "mime-types": "^2.1.29",
     "mongoose": "^6.3.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
-    "passport": "^0.5.2"
+    "passport": "^0.5.2",
+    "uuid": "^8.3.2"
   }
 }

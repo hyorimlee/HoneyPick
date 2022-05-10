@@ -5,36 +5,56 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import BaseTextInput from '../../../components/textInput/base'
 import BaseButton from '../../../components/button/base'
 import PhoneForm from '../../../containers/submitForm/phoneForm'
-import {specialCharacterAlert, usernameValid} from '../../../modules/valid'
-import {useAppSelector} from '../../../store/types'
-import {imagePath} from '../../../modules/condition'
+import {nicknameAlert, nicknameValid} from '../../../modules/valid'
+import {useAppDispatch, useAppSelector} from '../../../store/types'
+import ImagePicker from 'react-native-image-crop-picker'
+import {
+  setProfile,
+  setProfileImageToServer,
+} from '../../../store/slices/profile/asyncThunk'
+import {useNavigation} from '@react-navigation/native'
+import {ProfileNavigationProp} from './types'
 
 const paddingHorizontal = 30
 
 function EditProfile() {
-  const {initUsername, initDescription, initProfileImage} = useAppSelector(
-    state => {
-      const {username, description, profileImage} = state.user
+  const dispatch = useAppDispatch()
+  const navigation = useNavigation<ProfileNavigationProp>()
+  const {initNickname, initDescription, initProfileImage, userId} =
+    useAppSelector(state => {
+      const {nickname, description, profileImage, userId} = state.profile
       return {
-        initUsername: username,
+        initNickname: nickname,
         initDescription: description,
         initProfileImage: profileImage,
+        userId,
       }
-    },
-  )
-  const [username, setUsername] = useState(initUsername)
+    })
+  const [nickname, setNickname] = useState(initNickname)
   const [description, setDescription] = useState(initDescription)
   const [profileImage, setProfileImage] = useState(initProfileImage)
   const [phone, setPhone] = useState('')
   const [isPhoneChange, setIsPhoneChange] = useState(false)
   const descriptionRef = useRef<TextInput | null>(null)
 
-  const usernameChanged = useCallback(
+  const profileImageChanged = useCallback(() => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+    }).then(image => {
+      console.log(image)
+      setProfileImage(image.path)
+    })
+  }, [])
+
+  const nicknameChanged = useCallback(
     (text: string) => {
-      setUsername(usernameValid(text))
+      setNickname(nicknameValid(text))
     },
-    [username],
+    [nickname],
   )
+
   const descriptionChanged = useCallback(
     (text: string) => {
       setDescription(text)
@@ -56,19 +76,25 @@ function EditProfile() {
   }, [isPhoneChange])
 
   const setProfileChange = useCallback(() => {
-    Alert.alert(
-      `name : ${username} | phone : ${phone} | Image : ${profileImage} | des : ${description.slice(
-        5,
-      )}..`,
-    )
-  }, [username, description, phone, profileImage])
+    phone.length > 0
+      ? dispatch(setProfile({nickname, description, phone}))
+      : dispatch(setProfile({nickname, description}))
+          .unwrap()
+          .then(response => {
+            navigation.navigate('Default', {userId})
+            // dispatch(setProfileImageToServer())
+          })
+          .catch(error => {
+            console.log(error)
+          })
+  }, [nickname, description, phone, profileImage])
 
   return (
     <KeyboardAwareScrollView style={{paddingHorizontal}}>
-      <Pressable onPress={() => Alert.alert('이미지 변경 로직')}>
-        <Image
+      <Pressable onPress={profileImageChanged}>
+        {/* <Image
           source={{
-            uri: 'https://www.pngfind.com/pngs/m/387-3877350_kakao-friends-ryan-png-kakao-friends-ryan-icon.png',
+            uri: profileImage,
           }}
           style={{
             width: 128,
@@ -79,18 +105,15 @@ function EditProfile() {
             alignSelf: 'center',
             marginVertical: 30,
           }}
-        />
+        /> */}
       </Pressable>
       <BaseTextInput
-        value={username}
-        defaultValue={initUsername}
-        onChangeText={usernameChanged}
+        value={nickname}
+        defaultValue={initNickname}
+        onChangeText={nicknameChanged}
         onSubmitEditing={focusDescription}
-        onKeyPress={specialCharacterAlert}
-        placeholder={'아이디'}
-        importantForAutofill={'auto'} // Android
-        autoComplete={'username'} // Android
-        textContentType={'username'} // ios
+        onKeyPress={nicknameAlert}
+        placeholder={'별명'}
         returnKeyType={'next'}
         maxLength={10}
       />
