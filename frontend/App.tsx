@@ -25,6 +25,7 @@ import Item from './src/pages/item'
 import ProfileStack from './src/pages/profile'
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
+import follow from './src/pages/profile/follow'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()

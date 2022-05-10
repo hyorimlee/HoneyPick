@@ -8,12 +8,13 @@ import PhoneForm from '../../../containers/submitForm/phoneForm'
 import {nicknameAlert, nicknameValid} from '../../../modules/valid'
 import {useAppDispatch, useAppSelector} from '../../../store/types'
 import ImagePicker from 'react-native-image-crop-picker'
+import ImageResizer from 'react-native-image-resizer'
 import {
   setProfile,
   setProfileImageToServer,
 } from '../../../store/slices/profile/asyncThunk'
 import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp} from './types'
+import {ProfileNavigationProp, TProfileImage} from './types'
 
 const paddingHorizontal = 30
 
@@ -33,19 +34,33 @@ function EditProfile() {
   const [nickname, setNickname] = useState(initNickname)
   const [description, setDescription] = useState(initDescription)
   const [profileImage, setProfileImage] = useState(initProfileImage)
+  const [changedImage, setChangedImage] = useState({})
   const [phone, setPhone] = useState('')
   const [isPhoneChange, setIsPhoneChange] = useState(false)
+  const [imageType, setImageType] = useState('')
   const descriptionRef = useRef<TextInput | null>(null)
 
   const profileImageChanged = useCallback(() => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-    }).then(image => {
-      console.log(image)
-      setProfileImage(image.path)
-    })
+    ImagePicker.openPicker({width: 200, height: 200, cropping: true}).then(
+      image => {
+        setImageType(image.mime)
+
+        ImageResizer.createResizedImage(
+          image.path,
+          200,
+          200,
+          image.mime.includes('jpeg') ? 'JPEG' : 'PNG',
+          100,
+          0,
+        ).then(resizedImage => {
+          setChangedImage({
+            uri: resizedImage.uri,
+            name: resizedImage.name,
+            type: image.mime,
+          })
+        })
+      },
+    )
   }, [])
 
   const nicknameChanged = useCallback(
@@ -76,23 +91,13 @@ function EditProfile() {
   }, [isPhoneChange])
 
   const setProfileChange = useCallback(() => {
-    phone.length > 0
-      ? dispatch(setProfile({nickname, description, phone}))
-      : dispatch(setProfile({nickname, description}))
-          .unwrap()
-          .then(response => {
-            navigation.navigate('Default', {userId})
-            // dispatch(setProfileImageToServer())
-          })
-          .catch(error => {
-            console.log(error)
-          })
+    dispatch(setProfile({nickname, description, phone, imageType}))
   }, [nickname, description, phone, profileImage])
 
   return (
     <KeyboardAwareScrollView style={{paddingHorizontal}}>
       <Pressable onPress={profileImageChanged}>
-        {/* <Image
+        <Image
           source={{
             uri: profileImage,
           }}
@@ -105,7 +110,7 @@ function EditProfile() {
             alignSelf: 'center',
             marginVertical: 30,
           }}
-        /> */}
+        />
       </Pressable>
       <BaseTextInput
         value={nickname}

@@ -5,7 +5,7 @@ import {IProps} from './types'
 
 function HorizontalList({data}: IProps) {
   const renderItem = ({item}: {item: any}) => {
-    return <Text>test</Text>
+    return <Text>{item.id}</Text>
   }
 
   return (
