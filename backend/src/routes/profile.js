@@ -39,13 +39,12 @@ profileRouter.patch('/',authAccessToken, async (req, res) => {
             user.phone = phone
         }
         if(imageType) {
-            if(typeof imageType!=="string") return res.status(400).send({err:"imgaeType 형식이 잘못되었습니다."})
+            if(typeof imageType!=="string") return res.status(400).send({err:"imageType 형식이 잘못되었습니다."})
             const imageKey = `${uuid()}.${mime.extension(imageType) ? mime.extension(imageType) : 'jpg'}`
             const key = `raw/${imageKey}`
             const presigned = await getSignedUrl({ key })
             user.profileImage = imageKey
             profileImage = presigned
-            
         }
         if(description){
             if(typeof description!=="string") return res.status(400).send({err:"description의 형식이 잘못되었습니다."})
