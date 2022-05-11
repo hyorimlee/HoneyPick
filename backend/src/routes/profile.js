@@ -15,7 +15,7 @@ profileRouter.get('/:userId', authAccessToken,async (req, res) => {
         if(!isValidObjectId(req.userId)) return res.status(400).send({ err: "유효하지 않은 user id" })
         const user = await User.findById(req.params.userId)
         if(user.withdraw) return res.status(400).send({msg:"탈퇴한 회원의 정보를 조회하려 하고 있습니다"})
-        return res.status(200).send({userId:req.params.userId,username:user.username,nickname:user.nickname,description:user.description,profileImage:user.image,following:user.followingCount,follower:user.followerCount})
+        return res.status(200).send({userId:req.params.userId,username:user.username,nickname:user.nickname,description:user.description,profileImage:user.profileImage,following:user.followingCount,follower:user.followerCount})
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
