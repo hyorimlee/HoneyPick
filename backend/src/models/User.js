@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     password: { type: String, required: true},
     nickname: { type: String, required: true , maxlength:10},
     phone:{ type: String, required: true},
-    image: {type: String, default: process.env.DEFAULT_PROFILE_IMG},
+    profileImage: {type: String, default: process.env.DEFAULT_PROFILE_IMG},
     description: {type: String, default: ""},
     followingCount: {type: Number, default: 0},
     followerCount: {type: Number, default: 0},
