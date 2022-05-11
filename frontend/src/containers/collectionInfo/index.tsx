@@ -19,7 +19,7 @@ import { ProfileNavigationProp } from '../profileInfo/types'
 function CollectionInfo() {
   const navigation = useNavigation<ProfileNavigationProp>()
   const route = useRoute<RouteProp<ProfileStackParamList>>()
-  const collection = route.params.collection
+  const collection = useAppSelector(state => state.collection.currentCollection)
   const dispatch = useAppDispatch()
 
   const [isVoting, setIsVoting] = useState(false)
@@ -33,7 +33,7 @@ function CollectionInfo() {
   }
 
   const editCollection = useCallback(() => {
-    navigation.push('EditCollection', collection)
+    navigation.push('EditCollection')
   }, [])
 
   const deleteCurrentCollection = useCallback(async () => {
