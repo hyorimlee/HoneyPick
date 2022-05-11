@@ -7,7 +7,6 @@ import {ProfileStackParamList} from '../../../../types/navigation'
 import ProfileInfo from '../../../containers/profileInfo'
 import {getLists, getProfile} from '../../../store/slices/profile/asyncThunk'
 import {useAppDispatch, useAppSelector} from '../../../store/types'
-import {getUserCollectionList} from '../../../store/slices/user/asyncThunk'
 import HorizontalList from '../../../components/flatList/horizontalList'
 
 const paddingHorizontal = 30

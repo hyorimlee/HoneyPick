@@ -78,6 +78,7 @@ const axiosInterceptor = (dispatch: IDispatch) => {
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
+  const {userId} = useAppSelector(state => state.user)
   const {saveCollection} = useAppSelector(state => state.item)
 
   const [copiedUrl, setCopiedUrl] = useState<string>('')
@@ -109,7 +110,7 @@ const InnerApp = memo(({}) => {
   }
 
   useEffect(() => {
-    console.log(saveCollection)
+    // console.log(saveCollection)
     if (saveCollection === 'yet') {
       setModalVisible(true)
     } else if (saveCollection === 'done') {
