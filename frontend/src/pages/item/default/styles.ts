@@ -33,6 +33,10 @@ export const StickerContainer = styled.View`
   margin-top: 5px;
 `
 
+export const PriceContainer = styled.View`
+  flex-direction: row;
+`
+
 export const NormalText = styled.Text`
   color: #000000;
   margin-top: 5px;
@@ -49,9 +53,19 @@ export const PriceText = styled.Text`
   font-size: 18px;
   font-weight: bold;
   margin-top: 5px;
+  margin-right: 3px;
 `
 
-export const DashedBorder = styled.View`
+export const PriceTextGray = styled.Text`
+  color: #8C8C8C;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-right: 3px;
+  text-decoration: line-through
+  `
+  
+  export const DashedBorder = styled.View`
   border-style: dashed;
   border-bottom-width: 1px;
 `

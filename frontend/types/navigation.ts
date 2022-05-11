@@ -20,11 +20,7 @@ export type CollectionStackParamList = {
   ItemPage: undefined
 }
 
-export type ChooseCollectionStackParamList = {
-  Item: {itemId: string, collectionId: string}
-}
-
 export type ItemStackParamList = {
-  Default: undefined
+  Default: {itemId: string, collectionId: string}
   SetHoneyItem: undefined
 }

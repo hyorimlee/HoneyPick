@@ -83,7 +83,7 @@ function ChooseCollectionModal({
     dispatch(itemToCollection(data))
     dispatch(setSaveCollection('done'))
     dispatch(setCollectionId(selectedValue))
-    navigation.navigate('Item', data)
+    navigation.navigate('Default', data)
   }
 
   return (
