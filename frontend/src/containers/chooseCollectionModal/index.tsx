@@ -68,7 +68,7 @@ function ChooseCollectionModal({setModalVisible}: {setModalVisible: React.Dispat
     dispatch(itemToCollection(data))
     dispatch(setSaveCollection('done'))
     dispatch(setCollectionId(selectedValue))
-    navigation.navigate('Item', data)
+    navigation.navigate('Default', data)
   }
 
   return (
