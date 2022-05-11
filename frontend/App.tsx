@@ -85,6 +85,8 @@ const InnerApp = memo(({}) => {
   const [btnShow, setBtnShow] = useState<boolean>(false)
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
+  console.log(modalVisible)
+
   const clipboardListener = async () => {
     const text = await Clipboard.getString()
     if (text.indexOf('http') > -1) {
@@ -110,7 +112,7 @@ const InnerApp = memo(({}) => {
   }
 
   useEffect(() => {
-    // console.log(saveCollection)
+    console.log(saveCollection)
     if (saveCollection === 'yet') {
       setModalVisible(true)
     } else if (saveCollection === 'done') {
@@ -119,7 +121,6 @@ const InnerApp = memo(({}) => {
     } else {
       setModalVisible(false)
     }
-    setBtnShow(false)
   }, [saveCollection])
 
   useEffect(() => {
@@ -170,7 +171,7 @@ const InnerApp = memo(({}) => {
               />
             ) : null}
             <Modal
-              animationType="slide"
+              animationType="fade"
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {

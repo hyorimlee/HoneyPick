@@ -27,7 +27,6 @@ export const RadioContainer = styled.View`
   height: 70%;
   align-items: flex-start;
   margin-vertical: 10px;
-  background-color: palegreen;
 `
 
 export const NormalText = styled.Text`

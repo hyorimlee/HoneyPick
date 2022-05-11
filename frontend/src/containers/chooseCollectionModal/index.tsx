@@ -61,7 +61,7 @@ function ChooseCollectionModal({
         const ButtonData = radioButtonsData.concat(newButtonData)
         setRadioButtons(ButtonData)
       })
-  }, [openCreationForm])
+  }, [])
 
   const onPressRadioButton = (radioButtonsArray: RadioButtonProps[]) => {
     setRadioButtons(radioButtonsArray)
@@ -86,9 +86,14 @@ function ChooseCollectionModal({
     navigation.navigate('Default', data)
   }
 
+  const onPressBackground = () => {
+    setSaveCollection('no')
+    setModalVisible(false)
+  }
+
   return (
     <CenteredView>
-      <Background onPress={() => setModalVisible(false)} />
+      <Background onPress={onPressBackground} />
       <ModalView>
         {openCreationForm ? (
           <CreateCollection
@@ -100,7 +105,9 @@ function ChooseCollectionModal({
             <RadioContainer>
               <RadioGroup
                 radioButtons={radioButtons}
-                onPress={onPressRadioButton}></RadioGroup>
+                onPress={onPressRadioButton}
+                containerStyle={{alignItems: 'flex-start'}}
+              ></RadioGroup>
             </RadioContainer>
             <BaseButton
               text={'선택된 컬렉션에 아이템 추가하기'}

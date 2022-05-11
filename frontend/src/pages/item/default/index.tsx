@@ -13,7 +13,7 @@ import {
 import {STICKERS} from '../../../modules/stickers'
 import RecommendBar from '../../../containers/recommendBar'
 import BaseButton from '../../../components/button/base'
-import {getItem} from '../../../store/slices/item/asyncThunk'
+import {getItem, itemToCollection} from '../../../store/slices/item/asyncThunk'
 import {ItemNavigationProp} from './types'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 
@@ -53,19 +53,25 @@ function Item() {
     }
   }, [itemId, isFocused])
 
-  // 유효한 주소인데도 유효하지 않다고 뜸
+  // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
   const goToSite = useCallback(async () => {
-    console.log(item.url)
-    const supported = await Linking.canOpenURL(item.url)
-    if (supported) {
-      await Linking.openURL(item.url)
-    } else {
-      Alert.alert('유효하지 않은 주소입니다.')
-    }
+    await Linking.openURL(item.url)
+    // const supported = await Linking.canOpenURL(item.url)
+    // if (supported) {
+    //   await Linking.openURL(item.url)
+    // } else {
+    //   Alert.alert('유효하지 않은 주소입니다.')
+    // }
   }, [item.url])
 
   const deleteItem = () => {
     Alert.alert('컬렉션에서 삭제하기')
+    const data = {
+      itemId,
+      originalCollectionId: collectionId
+    }
+    dispatch(itemToCollection(data))
+    // 컬렉션에서 삭제하면 프로필로 이동?
   }
 
   const setHoneyItem = () => {
