@@ -90,7 +90,7 @@ followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
         .slice((page-1)*6, page*6),
       getTotalPages(follow.followers.length)
     ])
-    return res.status(200).send({ totalPages, page, sortedFollowers })
+    return res.status(200).send({ totalPages, page, followers: sortedFollowers })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -137,7 +137,7 @@ followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => 
         .slice((page-1)*6, page*6),
       getTotalPages(follow.followings.length)
     ])
-    return res.status(200).send({ totalPages, page, sortedFollowings })
+    return res.status(200).send({ totalPages, page, followings: sortedFollowings })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
