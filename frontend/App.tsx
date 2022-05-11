@@ -95,9 +95,9 @@ const InnerApp = memo(({}) => {
 
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      const listener = Clipboard.addListener(clipboardListener);
+      const listener = Clipboard.addListener(clipboardListener)
       return () => {
-        listener.remove();
+        listener.remove()
       }
     }
   }, [])
@@ -147,7 +147,7 @@ const InnerApp = memo(({}) => {
               <Tab.Screen
                 name="Item"
                 component={ItemStack}
-                options={{title:'아이템', headerShown: false}}
+                options={{title: '아이템', headerShown: false}}
               />
               {/* <Tab.Screen
                 name="EventPage"
@@ -161,20 +161,22 @@ const InnerApp = memo(({}) => {
               /> */}
             </Tab.Navigator>
             {/* 전역 버튼, 모달 */}
-            {btnShow ? <SaveItemBtn
-              copiedUrl={copiedUrl}
-              setCopiedUrl={(text: string) => setCopiedUrl(text)}
-              btnShowHandler={() => btnShowHandler()}
-              /> : null}
+            {btnShow ? (
+              <SaveItemBtn
+                copiedUrl={copiedUrl}
+                setCopiedUrl={(text: string) => setCopiedUrl(text)}
+                btnShowHandler={() => btnShowHandler()}
+              />
+            ) : null}
             <Modal
-              animationType='slide'
+              animationType="slide"
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
                 setModalVisible(false)
-              }}
-              >
-              <ChooseCollectionModal setModalVisible={setModalVisible}></ChooseCollectionModal>
+              }}>
+              <ChooseCollectionModal
+                setModalVisible={setModalVisible}></ChooseCollectionModal>
             </Modal>
           </>
         ) : (
