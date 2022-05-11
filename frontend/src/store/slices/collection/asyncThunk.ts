@@ -4,7 +4,7 @@ import {createAsyncThunk} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
 import {ICollectionListQuery, ICollectionQuery, IEditCollectionQuery, ICollectionInfo} from './types'
 
-export const getCollectionList = createAsyncThunk<string, ICollectionListQuery, {state: RootState}>(
+export const getCollectionList = createAsyncThunk<any, ICollectionListQuery, {state: RootState}>(
   'collection/getCollectionList',
   async ({accountId, page}, thunkAPI) => {
     try {
@@ -45,7 +45,7 @@ export const createCollection = createAsyncThunk<any, ICollectionInfo, {state: R
   }
 )
 
-export const getCollection = createAsyncThunk<string, ICollectionQuery, {state: RootState}>(
+export const getCollection = createAsyncThunk<any, ICollectionQuery, {state: RootState}>(
   'collection/getCollection',
   async ({accountId, collectionId}, thunkAPI) => {
     try {
@@ -64,7 +64,7 @@ export const getCollection = createAsyncThunk<string, ICollectionQuery, {state: 
   }
 )
 
-export const editCollection = createAsyncThunk<string, IEditCollectionQuery, {state: RootState}>(
+export const editCollection = createAsyncThunk<any, IEditCollectionQuery, {state: RootState}>(
   'collection/editCollection',
   async ({accountId, collectionId, collectionInfo}, thunkAPI) => {
     try {
@@ -72,7 +72,7 @@ export const editCollection = createAsyncThunk<string, IEditCollectionQuery, {st
       const response = await axios({
         method: 'PATCH',
         url: `${Config.API_BASE_URL}/collection/${accountId}/${collectionId}`,
-        data: {collectionInfo},
+        data: collectionInfo,
         headers: {
           authorization: `Bearer ${accessToken}`
         }
@@ -84,7 +84,7 @@ export const editCollection = createAsyncThunk<string, IEditCollectionQuery, {st
   }
 )
 
-export const deleteCollection = createAsyncThunk<string, ICollectionQuery, {state: RootState}>(
+export const deleteCollection = createAsyncThunk<any, ICollectionQuery, {state: RootState}>(
   'collection/deleteCollection',
   async ({accountId, collectionId}, thunkAPI) => {
     try {
@@ -96,8 +96,10 @@ export const deleteCollection = createAsyncThunk<string, ICollectionQuery, {stat
           authorization: `Bearer ${accessToken}`
         }
       })
+
       return response.data
     } catch (err: any) {
+
       return thunkAPI.rejectWithValue(err.response.data)
     }
   }

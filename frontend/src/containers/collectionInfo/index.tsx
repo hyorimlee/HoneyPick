@@ -4,32 +4,42 @@ import {Image, Text, TouchableOpacity} from 'react-native'
 import BaseButton from '../../components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {Container, InfoTextContainer, ButtonContainer, InfoContainer, MenuButtonContainer, MenuContainer} from './styles'
-import {CollectionNavigationProp} from '../../pages/collection/types'
-import {useAppSelector} from '../../store/types'
+import {useAppSelector, useAppDispatch} from '../../store/types'
 import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {CollectionState} from '../../store/slices/collection/types'
+import { useRoute, RouteProp } from '@react-navigation/native'
+import { CollectionStackParamList } from '../../../types/navigation'
+import { ProfileStackParamList } from '../../../types/navigation'
+import { deleteCollection } from '../../store/slices/collection/asyncThunk'
+import { ProfileNavigationProp } from '../profileInfo/types'
 
-function CollectionInfo(collection: CollectionState) {
-  const navigation = useNavigation<CollectionNavigationProp>()
+function CollectionInfo() {
+  const navigation = useNavigation<ProfileNavigationProp>()
+  const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const collection = route.params.collection
+  const dispatch = useAppDispatch()
+
   const [isVoting, setIsVoting] = useState(false)
   const [isMyList, setIsMyList] = useState(true)
   const [voteResult, setVoteResult] = useState('')
   const actionSheetRef = createRef<ActionSheet>()
   const username = collection?.user?.username ? collection.user.username : 'No name'
+
   const openSheet = () => {
     actionSheetRef.current?.show()
   }
 
   const editCollection = useCallback(() => {
-    navigation.push('EditCollection')
+    navigation.push('EditCollection', collection)
   }, [])
 
-  const deleteCollection = useCallback(() => {
-    // 컬렉션 삭제를 요청하는 로직
-    // 삭제 후 Profile로 push
+  const deleteCurrentCollection = useCallback(async () => {
+    await dispatch(deleteCollection({accountId: collection!.user!._id, collectionId: collection!._id}))
+    openSheet()
+    navigation.navigate('Profile')
   }, [])
 
   const voteHandler = useCallback(() => {
@@ -54,8 +64,8 @@ function CollectionInfo(collection: CollectionState) {
     <Container>
       <InfoContainer>
         <InfoTextContainer>
-          <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>{collection.title}</Text>
-          <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>{collection.description}</Text>
+          <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>{collection?.title ? collection.title : 'Notitle'}</Text>
+          <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>{collection?.description ? collection.description : 'Notitle'}</Text>
         </InfoTextContainer>
         <Image
           source={require('../../assets/images/honeybee.png')}
@@ -115,7 +125,7 @@ function CollectionInfo(collection: CollectionState) {
           />
           <BaseButton
             text={'이 컬렉션 삭제하기'}
-            onPress={deleteCollection}
+            onPress={deleteCurrentCollection}
             borderRadius={25}
             marginVertical={5}
             paddingVertical={15}
