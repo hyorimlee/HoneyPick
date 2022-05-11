@@ -29,7 +29,7 @@ export type ChooseCollectionStackParamList = {
 }
 
 export type ItemStackParamList = {
-  Default: undefined
+  Default: {itemId: string; collectionId: string}
   SetHoneyItem: undefined
 }
 

@@ -1,14 +1,28 @@
 import * as React from 'react'
-import {memo} from 'react'
+import {memo, useState, useEffect} from 'react'
+
+import {STICKERS} from '../../modules/stickers'
+import {IStickersProp} from './types'
 import GaugeBar from '../../components/gaugeBar'
+
 import {Container} from './styles'
 
-function RecommendBar() {
+function RecommendBar({stickers}: IStickersProp) {
+
+  const voteSum = stickers.reduce((prev, cur) => prev + cur[1], 0)
+
+  const bars = stickers.map(sticker => {
+    const bar = STICKERS.map(s => {
+      if (s.id === sticker[0]) {
+        return <GaugeBar key={s.id} emoji={s.emoji} text={s.label} votes={sticker[1]} sum={voteSum}></GaugeBar>
+      }
+    })
+    return bar
+  })
+
   return (
     <Container>
-      <GaugeBar emoji='🎁' text='선물하기 좋아요' votes={222}></GaugeBar>
-      <GaugeBar emoji='👔' text='재질이 부드러워요' votes={13}></GaugeBar>
-      <GaugeBar emoji='⛏' text='내구성이 좋아요' votes={5}></GaugeBar>
+      {bars}
     </Container>
   )
 }
