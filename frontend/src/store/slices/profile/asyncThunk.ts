@@ -141,3 +141,26 @@ export const getFollowList = createAsyncThunk<
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
+
+export const setFollow = createAsyncThunk<
+  any,
+  {userId: string},
+  {state: RootState}
+>('profile/setFollow', async ({userId}, thunkAPI) => {
+  try {
+    const {accessToken} = thunkAPI.getState().user
+
+    const response = await axios({
+      method: 'POST',
+      url: `${Config.API_BASE_URL}/follow`,
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      data: {accountId: userId},
+    })
+
+    return response.data
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data)
+  }
+})

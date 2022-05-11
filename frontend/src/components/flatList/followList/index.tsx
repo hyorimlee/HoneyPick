@@ -4,18 +4,22 @@ import {View, Text, Image} from 'react-native'
 import {CustomFlatList, HorizontalContainer} from './styles'
 import {IProps} from './types'
 import BaseButton from '../../button/base'
+import Config from 'react-native-config'
 
 function FollowList({data}: IProps) {
-  const followChange = useCallback(() => {
-    // 팔로우 로직
-  }, [])
+  const followChange = useCallback(
+    (accountId: string) => () => {
+      console.log(accountId)
+    },
+    [],
+  )
 
   const renderItem = ({item}: {item: any}) => {
     const {_id, image, nickname, description} = item
 
     return (
       <HorizontalContainer>
-        <Image source={{uri: image}}></Image>
+        <Image source={{uri: `${Config.IMAGE_BASE_URL}/raw/${image}`}}></Image>
         <View>
           <Text>{nickname}</Text>
           <Text>{description}</Text>
@@ -24,7 +28,7 @@ function FollowList({data}: IProps) {
           text={item.isFollow === true ? '언팔로우' : '팔로우'}
           backgroundColor={item.isFollow === true ? '#C4C4C4' : '#F9C12E'}
           color={item.isFollow === true ? 'black' : 'white'}
-          onPress={followChange}
+          onPress={followChange(_id)}
         />
       </HorizontalContainer>
     )

@@ -1,6 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {getCollection} from '../collection/asyncThunk'
-import {getFollowList, getLists, getProfile, setProfile} from './asyncThunk'
+import {
+  getFollowList,
+  getLists,
+  getProfile,
+  setFollow,
+  setProfile,
+} from './asyncThunk'
 
 // 조회한 유저의 정보
 const initialState = {
@@ -50,6 +56,12 @@ const profileSlice = createSlice({
       .addCase(getFollowList.fulfilled, (state, action) => {
         state.followingList = action.payload[0].followings
         state.followerList = action.payload[1].followers
+      })
+      .addCase(getFollowList.rejected, (state, action) => {
+        console.log(action.payload)
+      })
+      .addCase(setFollow.fulfilled, (state, action) => {
+        console.log(action)
       })
   },
 })

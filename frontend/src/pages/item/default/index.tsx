@@ -1,7 +1,14 @@
 import * as React from 'react'
 import Config from 'react-native-config'
 import {memo, createRef, useState, useEffect, useCallback} from 'react'
-import {Alert, SafeAreaView, StatusBar, TouchableOpacity, Modal, Linking} from 'react-native'
+import {
+  Alert,
+  SafeAreaView,
+  StatusBar,
+  TouchableOpacity,
+  Modal,
+  Linking,
+} from 'react-native'
 
 import RecommendBar from '../../../containers/recommendBar'
 import BaseButton from '../../../components/button/base'
@@ -9,12 +16,24 @@ import {getItem} from '../../../store/slices/item/asyncThunk'
 import {ItemNavigationProp} from './types'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 
-import ActionSheet from "react-native-actions-sheet"
+import ActionSheet from 'react-native-actions-sheet'
 import {useNavigation} from '@react-navigation/native'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
-import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, StickerContainer, NormalText, BoldText, PriceText, DashedBorder, EmojiText} from './styles'
+import {
+  Container,
+  ImageContainer,
+  InfoContainer,
+  TextContainer,
+  MenuContainer,
+  StickerContainer,
+  NormalText,
+  BoldText,
+  PriceText,
+  DashedBorder,
+  EmojiText,
+} from './styles'
 
 // 중복 제거
 const STICKERS = [
@@ -31,7 +50,9 @@ function Item() {
   const navigation = useNavigation<ItemNavigationProp>()
   const actionSheetRef = createRef<ActionSheet>()
   const [modalVisible, setModalVisible] = useState(false)
-  const {itemId, collectionId, item, review} = useAppSelector(state => state.item)
+  const {itemId, collectionId, item, review} = useAppSelector(
+    state => state.item,
+  )
 
   const openSheet = () => {
     actionSheetRef.current?.show()
@@ -44,7 +65,7 @@ function Item() {
   }, [])
 
   // 유효한 주소인데도 유효하지 않다고 뜸
-  const goToSite = useCallback(async() => {
+  const goToSite = useCallback(async () => {
     console.log(item.url)
     const supported = await Linking.canOpenURL(item.url)
     if (supported) {
@@ -64,9 +85,7 @@ function Item() {
 
   const itemSticker = STICKERS.map(sticker => {
     if (review?.stickers.includes(sticker.id)) {
-      return (
-        <EmojiText>{sticker.emoji}</EmojiText>
-      )
+      return <EmojiText>{sticker.emoji}</EmojiText>
     }
   })
 
@@ -75,8 +94,7 @@ function Item() {
       {/* bottom sheet menu */}
       <ActionSheet
         ref={actionSheetRef}
-        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}
-      >
+        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
         <MenuContainer>
           <BaseButton
             text={'이 컬렉션에서 삭제하기'}
@@ -95,15 +113,17 @@ function Item() {
         </MenuContainer>
       </ActionSheet>
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
-      >
-      </Modal>
+        onRequestClose={() => setModalVisible(!modalVisible)}></Modal>
       <Container>
         <ImageContainer
-          source={item.thumbnail ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`} : require('../../../assets/images/sampleimage1.jpg')}
+          source={
+            item.thumbnail
+              ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`}
+              : require('../../../assets/images/sampleimage1.jpg')
+          }
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,
@@ -119,21 +139,21 @@ function Item() {
           <TouchableOpacity onPress={openSheet}>
             <FontAwesomeIcon
               icon={faEllipsisVertical as IconProp}
-              color='#C4C4C4'
+              color="#C4C4C4"
               size={24}
               style={{marginTop: 15}}
             />
           </TouchableOpacity>
         </InfoContainer>
         <DashedBorder />
-        {review ?
+        {review ? (
           <TextContainer>
             <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
-            <StickerContainer>
-              {itemSticker}
-            </StickerContainer>
+            <StickerContainer>{itemSticker}</StickerContainer>
           </TextContainer>
-        : ''}
+        ) : (
+          ''
+        )}
         <TextContainer>
           <NormalText>다른 허니비들이 이 아이템을 추천하는 이유</NormalText>
           <RecommendBar></RecommendBar>

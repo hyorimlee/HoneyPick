@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native'
 import {Container, EditContainer, InfoContainer} from './styles'
 import {ProfileNavigationProp} from './types'
 import {useAppSelector} from '../../store/types'
+import Config from 'react-native-config'
 
 function ProfileInfo() {
   const navigation = useNavigation<ProfileNavigationProp>()
@@ -24,7 +25,7 @@ function ProfileInfo() {
     <Container>
       <InfoContainer>
         <Image
-          source={{uri: profileImage}}
+          source={{uri: `${Config.IMAGE_BASE_URL}/raw/${profileImage}`}}
           style={{
             width: 64,
             height: 64,

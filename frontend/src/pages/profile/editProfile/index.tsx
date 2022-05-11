@@ -9,12 +9,11 @@ import {nicknameAlert, nicknameValid} from '../../../modules/valid'
 import {useAppDispatch, useAppSelector} from '../../../store/types'
 import ImagePicker from 'react-native-image-crop-picker'
 import ImageResizer from 'react-native-image-resizer'
-import {
-  setProfile,
-  setProfileImageToServer,
-} from '../../../store/slices/profile/asyncThunk'
+import {setProfile} from '../../../store/slices/profile/asyncThunk'
 import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp, TProfileImage} from './types'
+import {ProfileNavigationProp} from './types'
+import Config from 'react-native-config'
+import axios from 'axios'
 
 const paddingHorizontal = 30
 
@@ -33,8 +32,9 @@ function EditProfile() {
     })
   const [nickname, setNickname] = useState(initNickname)
   const [description, setDescription] = useState(initDescription)
-  const [profileImage, setProfileImage] = useState(initProfileImage)
-  const [changedImage, setChangedImage] = useState({})
+  const [profileImage, setProfileImage] = useState(
+    `${Config.IMAGE_BASE_URL}/raw/${initProfileImage}`,
+  )
   const [phone, setPhone] = useState('')
   const [isPhoneChange, setIsPhoneChange] = useState(false)
   const [imageType, setImageType] = useState('')
@@ -53,11 +53,7 @@ function EditProfile() {
           100,
           0,
         ).then(resizedImage => {
-          setChangedImage({
-            uri: resizedImage.uri,
-            name: resizedImage.name,
-            type: image.mime,
-          })
+          setProfileImage(resizedImage.uri)
         })
       },
     )
@@ -92,6 +88,29 @@ function EditProfile() {
 
   const setProfileChange = useCallback(() => {
     dispatch(setProfile({nickname, description, phone, imageType}))
+      .unwrap()
+      .then(response => {
+        if (response.profileImage !== undefined) {
+          const presigned = response.profileImage
+
+          const formData = new FormData()
+          for (const key in presigned.fields) {
+            formData.append(key, presigned.fields[key])
+          }
+          formData.append('Content-Type', imageType)
+          formData.append('file', {uri: profileImage, type: imageType})
+
+          fetch(presigned.url, {
+            method: 'POST',
+            body: formData,
+          })
+        }
+
+        navigation.navigate('Default', {userId})
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }, [nickname, description, phone, profileImage])
 
   return (

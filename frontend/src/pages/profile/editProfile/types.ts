@@ -10,5 +10,3 @@ export type ProfileNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'Profile'>,
   NativeStackNavigationProp<ProfileStackParamList, 'Default'>
 >
-
-export type ProfileImage = string | {uri: string; name: string; type: string}

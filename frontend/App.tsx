@@ -25,10 +25,6 @@ import ItemStack from './src/pages/item'
 import ProfileStack from './src/pages/profile'
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
-<<<<<<< HEAD
-import follow from './src/pages/profile/follow'
-=======
->>>>>>> e37e4b5b22bdc766337ea725028517b09ecd39e0
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -151,7 +147,7 @@ const InnerApp = memo(({}) => {
               <Tab.Screen
                 name="Item"
                 component={ItemStack}
-                options={{title:'아이템', headerShown: false}}
+                options={{title: '아이템', headerShown: false}}
               />
               {/* <Tab.Screen
                 name="EventPage"
@@ -165,20 +161,22 @@ const InnerApp = memo(({}) => {
               /> */}
             </Tab.Navigator>
             {/* 전역 버튼, 모달 */}
-            {btnShow ? <SaveItemBtn
-              copiedUrl={copiedUrl}
-              setCopiedUrl={(text: string) => setCopiedUrl(text)}
-              btnShowHandler={() => btnShowHandler()}
-              /> : null}
+            {btnShow ? (
+              <SaveItemBtn
+                copiedUrl={copiedUrl}
+                setCopiedUrl={(text: string) => setCopiedUrl(text)}
+                btnShowHandler={() => btnShowHandler()}
+              />
+            ) : null}
             <Modal
-              animationType='slide'
+              animationType="slide"
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
                 setModalVisible(false)
-              }}
-              >
-              <ChooseCollectionModal setModalVisible={setModalVisible}></ChooseCollectionModal>
+              }}>
+              <ChooseCollectionModal
+                setModalVisible={setModalVisible}></ChooseCollectionModal>
             </Modal>
           </>
         ) : (
