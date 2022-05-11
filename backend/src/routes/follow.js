@@ -4,12 +4,12 @@ const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
 const { Follow, User } = require('../models')
 const { authAccessToken } = require('./auth')
 
-// 전체 페이지 수 (한 페이지에 6개)
+// 전체 페이지 수 (한 페이지에 30개)
 function getTotalPages(length) {
-  if (length % 6) {
-    return (parseInt(length / 6) + 1)
+  if (length % 30) {
+    return (parseInt(length / 30) + 1)
   } else {
-    return (length / 6)
+    return (length / 30)
   }
 }
 
@@ -60,9 +60,24 @@ followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (!isValidObjectId(ObjectId(accountId))) return res.status(401).send({ err: "invalid accountId" })
 
-    // pagination: 최근 추가순. page는 1부터 시작. 6개씩 조회.
-    const follow = await Follow.findOne({ "user._id": accountId })
-    const [followers, totalPages] = await Promise.all([
+    let follow = await Follow.findOne({ "user._id": accountId })
+    const followers = follow.followers
+    const promises = []
+
+    // update myFollow
+    for (let i=0; i < followers.length; i++) {
+      let user = await User.findById(followers[i]._id)
+      let myFollowing = await Follow.findOne({ _id: user.follow, 'followers._id': userId})
+      if (myFollowing) {
+        promises.push(Follow.updateOne({ _id: follow._id, 'followers._id': followers[i]._id }, { $set: { 'followers.$.myFollow': true }}))
+      } else {
+        promises.push(Follow.updateOne({ _id: follow._id, 'followers._id': followers[i]._id }, { $set: { 'followers.$.myFollow': false }}))
+      }
+    }
+    await Promise.all(promises)
+    // pagination: 최근 추가순. page는 1부터 시작. 30개씩 조회.
+    follow = await Follow.findOne({ "user._id": accountId })
+    const [sortedFollowers, totalPages] = await Promise.all([
       follow.followers
         .sort((a,b) => {
           if (a.updatedAt > b.updatedAt) {
@@ -72,20 +87,10 @@ followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
           }
           return 0
         })
-        .slice((page-1)*6, page*6),
+        .slice((page-1)*30, page*30),
       getTotalPages(follow.followers.length)
     ])
-    for (let i=0; i < followers.length; i++) {
-      let user = await User.findById(followers[i]._id)
-      let myFollowing = await Follow.findOne({ _id: user.follow, 'followers._id': userId})
-      if (myFollowing) {
-        followers[i].myFollow = true
-      } else {
-        followers[i].myFollow = false
-      }
-    }
-    follow.update()
-    return res.status(200).send({ totalPages, page, followers })
+    return res.status(200).send({ totalPages, page, followers: sortedFollowers })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -102,9 +107,24 @@ followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => 
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (!isValidObjectId(ObjectId(accountId))) return res.status(401).send({ err: "invalid accountId" })
 
-    // pagination: user의 updatedAt 내림차순(→ 랜덤으로 보임). page는 1부터 시작. 6개씩 조회.
-    const follow = await Follow.findOne({ "user._id": accountId })
-    const [followings, totalPages] = await Promise.all([
+    let follow = await Follow.findOne({ "user._id": accountId })
+    const followings = follow.followings
+    const promises = []
+
+    // update myFollow
+    for (let i=0; i < followings.length; i++) {
+      let user = await User.findById(followings[i]._id)
+      let myFollowing = await Follow.findOne({ _id: user.follow, 'followers._id': userId})
+      if (myFollowing) {
+        promises.push(Follow.updateOne({ _id: follow._id, 'followings._id': followings[i]._id }, { $set: { 'followings.$.myFollow': true }}))
+      } else {
+        promises.push(Follow.updateOne({ _id: follow._id, 'followings._id': followings[i]._id }, { $set: { 'followings.$.myFollow': false }}))
+      }
+    }
+    await Promise.all(promises)
+    // sorting and pagination(user의 updatedAt 내림차순. page는 1부터 시작. 30개씩 조회.)
+    follow = await Follow.findOne({ "user._id": accountId })
+    const [sortedFollowings, totalPages] = await Promise.all([
       follow.followings
         .sort((a,b) => {
           if (a.updatedAt > b.updatedAt) {
@@ -114,20 +134,10 @@ followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => 
           }
           return 0
         })
-        .slice((page-1)*6, page*6),
+        .slice((page-1)*30, page*30),
       getTotalPages(follow.followings.length)
     ])
-    for (let i=0; i < followings.length; i++) {
-      let user = await User.findById(followings[i]._id)
-      let myFollowing = await Follow.findOne({ _id: user.follow, 'followers._id': userId})
-      if (myFollowing) {
-        followings[i].myFollow = true
-      } else {
-        followings[i].myFollow = false
-      }
-    }
-    follow.update()
-    return res.status(200).send({ totalPages, page, followings })
+    return res.status(200).send({ totalPages, page, followings: sortedFollowings })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
