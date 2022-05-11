@@ -1,20 +1,29 @@
 import * as React from 'react'
-import {memo, useCallback, useRef, useState, useMemo} from 'react'
+import {memo, useCallback, useRef, useState, useEffect, useMemo} from 'react'
 import {Text, View} from 'react-native'
 import BaseTextInput from '../../../components/textInput/base/index'
 import BaseButton from '../../../components/button/base/index'
 import {useAppDispatch} from '../../../store/types'
 import { editCollection } from '../../../store/slices/collection/asyncThunk'
-import { useNavigation } from '@react-navigation/native'
-import { CollectionNavigationProp } from '../types'
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import { useAppSelector } from '../../../store/types'
+import { ProfileStackParamList } from '../../../../types/navigation'
+import { ProfileNavigationProp } from '../../../containers/profileInfo/types'
 
 function EditCollection() {
-  const navigation = useNavigation<CollectionNavigationProp>()
+  const navigation = useNavigation<ProfileNavigationProp>()
+  const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const collection = route.params
+  const currentCollection = useAppSelector(state => state.collection)
   const dispatch = useAppDispatch()
-  const [collectionName, setCollectionName] = useState('')
-  const [collectionDescription, setCollectionDescription] = useState('')
+  const [collectionName, setCollectionName] = useState(collection!.title)
+  const [collectionDescription, setCollectionDescription] = useState(collection!.description)
   const {userId} = useAppSelector(state => state.user)
+
+  useEffect(() => {
+    console.log('갱신')
+    console.log(currentCollection)
+  },[currentCollection])
 
   const collectionNameChanged = useCallback(
     (text: string) => {
@@ -31,8 +40,9 @@ function EditCollection() {
   )
 
   const editCollectionInfo = useCallback(async () => {
-    await dispatch(editCollection({accountId: userId, collectionId:1 , collectionInfo: {title: collectionName, description: collectionDescription, isPublic: true}}))
-    navigation.push('Default')
+    await dispatch(editCollection({accountId: collection!.user!._id, collectionId: collection!._id , collectionInfo: {title: collectionName, description: collectionDescription, isPublic: true}}))
+    console.log(currentCollection)
+    // navigation.push('Collection', {collection: currentCollection})
   }, [collectionName, collectionDescription])
 
   return (
@@ -54,7 +64,7 @@ function EditCollection() {
         maxLength={50}
       />
       <BaseButton
-        text={'컬렉션 생성하기'}
+        text={'컬렉션 수정하기'}
         onPress={editCollectionInfo}
         marginVertical={10}
         paddingVertical={10}
