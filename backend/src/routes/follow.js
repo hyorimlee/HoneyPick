@@ -84,7 +84,7 @@ followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
         followers[i].myFollow = false
       }
     }
-    follow.save()
+    follow.update()
     return res.status(200).send({ totalPages, page, followers })
   } catch (error) {
     console.log(error)
@@ -126,7 +126,7 @@ followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => 
         followings[i].myFollow = false
       }
     }
-    follow.save()
+    follow.update()
     return res.status(200).send({ totalPages, page, followings })
   } catch (error) {
     console.log(error)
