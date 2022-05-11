@@ -10,7 +10,8 @@ import {
 } from './asyncThunk'
 
 const initialState: ItemState = {
-  itemId: '',
+  itemId: '627a0b84de9513b6d1309954',
+  collectionId: '',
   saveCollection: 'no',
   item: {
     _id: '',
@@ -36,7 +37,11 @@ const itemSlice = createSlice({
   name: 'item',
   initialState,
   reducers: {
+    setCollectionId(state, action) {
+      state.collectionId = action.payload
+    },
     setSaveCollection(state, action) {
+      console.log('setSavecollection', action.payload)
       state.saveCollection = action.payload
     },
   },
@@ -65,5 +70,5 @@ const itemSlice = createSlice({
   },
 })
 
-export const {setSaveCollection} = itemSlice.actions
+export const {setCollectionId, setSaveCollection} = itemSlice.actions
 export default itemSlice

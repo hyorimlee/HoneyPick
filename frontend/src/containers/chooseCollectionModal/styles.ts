@@ -7,6 +7,12 @@ export const CenteredView = styled.View`
   background-color: rgba(0,0,0,0.5);
 `
 
+export const Background = styled.Pressable`
+  width: 100%;  
+  height: 100%;
+  position: absolute;
+`
+
 export const ModalView = styled.View`
   width: 80%;
   height: 70%;

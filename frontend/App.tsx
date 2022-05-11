@@ -1,6 +1,6 @@
 import React, {memo, useEffect, useState} from 'react'
 import {Provider} from 'react-redux'
-import {Modal, Platform, Text, View} from 'react-native'
+import {Modal, Platform, Pressable, View} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
@@ -21,7 +21,7 @@ import {requestAccessToken} from './src/store/slices/user/asyncThunk'
 import store from './src/store'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
-import Item from './src/pages/item'
+import ItemStack from './src/pages/item'
 import ProfileStack from './src/pages/profile'
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
@@ -95,9 +95,9 @@ const InnerApp = memo(({}) => {
 
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      const listener = Clipboard.addListener(clipboardListener);
+      const listener = Clipboard.addListener(clipboardListener)
       return () => {
-        listener.remove();
+        listener.remove()
       }
     }
   }, [])
@@ -109,6 +109,7 @@ const InnerApp = memo(({}) => {
   }
 
   useEffect(() => {
+    console.log(saveCollection)
     if (saveCollection === 'yet') {
       setModalVisible(true)
     } else if (saveCollection === 'done') {
@@ -129,35 +130,55 @@ const InnerApp = memo(({}) => {
     <View style={{height: '100%'}}>
       <NavigationContainer>
         {isLoggined ? (
-          <Tab.Navigator
-            initialRouteName="Profile"
-            screenOptions={{
-              tabBarStyle: {
-                backgroundColor: '#FFD669',
-                borderTopLeftRadius: 30,
-              },
-            }}>
-            <Tab.Screen
-              name="Profile"
-              component={ProfileStack}
-              options={{title: '프로필', headerShown: false}}
-            />
-            <Tab.Screen
-              name="Item"
-              component={Item}
-              options={{title:'아이템', headerShown: false}}
-            />
-            {/* <Tab.Screen
-              name="EventPage"
-              component={}
-              options={{title: '이벤트'}}
-            />
-            <Tab.Screen
-              name="RecommandPage"
-              component={}
-              options={{title: '추천'}}
-            /> */}
-          </Tab.Navigator>
+          <>
+            <Tab.Navigator
+              initialRouteName="Profile"
+              screenOptions={{
+                tabBarStyle: {
+                  backgroundColor: '#FFD669',
+                  borderTopLeftRadius: 30,
+                },
+              }}>
+              <Tab.Screen
+                name="Profile"
+                component={ProfileStack}
+                options={{title: '프로필', headerShown: false}}
+              />
+              <Tab.Screen
+                name="Item"
+                component={ItemStack}
+                options={{title: '아이템', headerShown: false}}
+              />
+              {/* <Tab.Screen
+                name="EventPage"
+                component={}
+                options={{title: '이벤트'}}
+              />
+              <Tab.Screen
+                name="RecommandPage"
+                component={}
+                options={{title: '추천'}}
+              /> */}
+            </Tab.Navigator>
+            {/* 전역 버튼, 모달 */}
+            {btnShow ? (
+              <SaveItemBtn
+                copiedUrl={copiedUrl}
+                setCopiedUrl={(text: string) => setCopiedUrl(text)}
+                btnShowHandler={() => btnShowHandler()}
+              />
+            ) : null}
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(false)
+              }}>
+              <ChooseCollectionModal
+                setModalVisible={setModalVisible}></ChooseCollectionModal>
+            </Modal>
+          </>
         ) : (
           <Stack.Navigator initialRouteName="SignIn">
             <Stack.Screen
@@ -172,22 +193,6 @@ const InnerApp = memo(({}) => {
             />
           </Stack.Navigator>
         )}
-        {/* 전역 버튼, 모달 */}
-        {btnShow ? <SaveItemBtn
-          copiedUrl={copiedUrl}
-          setCopiedUrl={(text: string) => setCopiedUrl(text)}
-          btnShowHandler={() => btnShowHandler()}
-          /> : null}
-        <Modal
-          animationType='slide'
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible)
-          }}
-          >
-          <ChooseCollectionModal></ChooseCollectionModal>
-        </Modal>
       </NavigationContainer>
     </View>
   )

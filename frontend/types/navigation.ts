@@ -5,6 +5,7 @@ export type RootStackParamList = {
 
 export type BottomTabParamList = {
   Profile: undefined
+  Item: undefined
 }
 
 export type ProfileStackParamList = {
@@ -12,6 +13,7 @@ export type ProfileStackParamList = {
   EditProfile: undefined
   Collection: {collection: object} | undefined
   EditCollection: undefined
+  Follow: {userId: string}
 }
 
 export type CollectionStackParamList = {
@@ -20,7 +22,11 @@ export type CollectionStackParamList = {
   ItemPage: undefined
 }
 
-export type ChooseCollectionParamList = {
-  ChooseCollectionModal: undefined
-  CreateCollection: undefined
+export type ChooseCollectionStackParamList = {
+  Item: {itemId: string, collectionId: string}
+}
+
+export type ItemStackParamList = {
+  Default: undefined
+  SetHoneyItem: undefined
 }

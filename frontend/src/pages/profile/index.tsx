@@ -6,6 +6,8 @@ import CreateCollection from './createCollection'
 import {useAppSelector} from '../../store/types'
 import Collection from '../collection/default'
 import EditCollection from '../collection/editCollection'
+import follow from './follow'
+
 const Stack = createNativeStackNavigator()
 
 function ProfileStack() {
@@ -22,6 +24,11 @@ function ProfileStack() {
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Follow"
+        component={follow}
         options={{headerShown: false}}
       />
       <Stack.Screen
