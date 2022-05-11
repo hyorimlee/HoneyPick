@@ -60,7 +60,7 @@ authRouter.post('/signup', async (req, res) => {
             follow.save(),       
             user.save()
         ])
-        return res.status(201).send({userId:user._id,username:req.body.username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
+        return res.status(201).send({userId:user._id,username:req.body.username,description:"",profileImage:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -77,7 +77,7 @@ authRouter.post('/login', async (req, res) => {
             if(user.withdraw==true) return res.status(400).send({err:`${user.username}는 탈퇴되었습니다.`})
             if(await bcrypt.compare(password,user.password)==false) return res.status(400).send({err:'잘못된 비밀번호'})
             const {accessToken,refreshToken} = generateTokens(user._id)
-            return res.status(201).send({userId:user._id,username,description:"",profile:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
+            return res.status(201).send({userId:user._id,username,description:"",profileImage:user.profileImage,accessToken:accessToken,refreshToken:refreshToken})
         }catch(err){
             console.log(err)
             return res.status(400).send({err:'로그인 중 에러가 발생했습니다.'})
