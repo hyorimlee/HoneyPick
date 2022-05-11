@@ -6,16 +6,18 @@ import {useAppSelector, useAppDispatch} from '../../store/types'
 import {itemToCollection} from '../../store/slices/item/asyncThunk'
 import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
 import {CollectionState} from '../../store/slices/collection/types'
-import {setSaveCollection} from '../../store/slices/item'
+import {setCollectionId, setSaveCollection} from '../../store/slices/item'
+import {ChooseCollectionNavigationProp} from './types'
 
+import {useNavigation} from '@react-navigation/native'
 import RadioGroup, {RadioButtonProps} from 'react-native-radio-buttons-group'
 
-import {CenteredView, ModalView, RadioContainer, NormalText} from './styles'
+import {CenteredView, Background, ModalView, RadioContainer, NormalText} from './styles'
 import CreateCollection from '../../pages/profile/createCollection'
 
 const radioButtonsData: RadioButtonProps[] = [
   {
-    id: 'new', //string이어야 함
+    id: 'new', //string
     label: '새 컬렉션 만들기',
     value: 'newCollection',
     selected: false,
@@ -23,8 +25,9 @@ const radioButtonsData: RadioButtonProps[] = [
   }
 ]
 
-function ChooseCollectionModal() {
+function ChooseCollectionModal({setModalVisible}: {setModalVisible: React.Dispatch<React.SetStateAction<boolean>>}) {
   const dispatch = useAppDispatch()
+  const navigation = useNavigation<ChooseCollectionNavigationProp>()
   const {collections} = useAppSelector(state => state.user)
   const {itemId} = useAppSelector(state => state.item)
   
@@ -64,10 +67,13 @@ function ChooseCollectionModal() {
     }
     dispatch(itemToCollection(data))
     dispatch(setSaveCollection('done'))
+    dispatch(setCollectionId(selectedValue))
+    navigation.navigate('Item', data)
   }
 
   return (
     <CenteredView>
+      <Background onPress={() => setModalVisible(false)}/>
       <ModalView>
         {openCreationForm ? <CreateCollection isModal setOpenCreationForm={setOpenCreationForm}></CreateCollection> :
         <>
