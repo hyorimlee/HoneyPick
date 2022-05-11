@@ -4,12 +4,12 @@ const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
 const { Follow, User } = require('../models')
 const { authAccessToken } = require('./auth')
 
-// 전체 페이지 수 (한 페이지에 6개)
+// 전체 페이지 수 (한 페이지에 30개)
 function getTotalPages(length) {
-  if (length % 6) {
-    return (parseInt(length / 6) + 1)
+  if (length % 30) {
+    return (parseInt(length / 30) + 1)
   } else {
-    return (length / 6)
+    return (length / 30)
   }
 }
 
@@ -75,7 +75,7 @@ followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
       }
     }
     await Promise.all(promises)
-    // pagination: 최근 추가순. page는 1부터 시작. 6개씩 조회.
+    // pagination: 최근 추가순. page는 1부터 시작. 30개씩 조회.
     follow = await Follow.findOne({ "user._id": accountId })
     const [sortedFollowers, totalPages] = await Promise.all([
       follow.followers
@@ -87,7 +87,7 @@ followRouter.get('/:accountId/followers', authAccessToken, async (req, res) => {
           }
           return 0
         })
-        .slice((page-1)*6, page*6),
+        .slice((page-1)*30, page*30),
       getTotalPages(follow.followers.length)
     ])
     return res.status(200).send({ totalPages, page, followers: sortedFollowers })
@@ -122,7 +122,7 @@ followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => 
       }
     }
     await Promise.all(promises)
-    // sorting and pagination(user의 updatedAt 내림차순. page는 1부터 시작. 6개씩 조회.)
+    // sorting and pagination(user의 updatedAt 내림차순. page는 1부터 시작. 30개씩 조회.)
     follow = await Follow.findOne({ "user._id": accountId })
     const [sortedFollowings, totalPages] = await Promise.all([
       follow.followings
@@ -134,7 +134,7 @@ followRouter.get('/:accountId/followings', authAccessToken, async (req, res) => 
           }
           return 0
         })
-        .slice((page-1)*6, page*6),
+        .slice((page-1)*30, page*30),
       getTotalPages(follow.followings.length)
     ])
     return res.status(200).send({ totalPages, page, followings: sortedFollowings })
