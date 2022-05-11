@@ -2,7 +2,6 @@ import styled from 'styled-components/native'
 
 export const Container = styled.View`
   flex-direction: row;
-  background-color: yellow;
 `
 export const InfoContainer = styled.View`
   flex: 2;

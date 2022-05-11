@@ -1,7 +1,14 @@
 import * as React from 'react'
 import Config from 'react-native-config'
 import {memo, createRef, useState, useEffect, useCallback} from 'react'
-import {Alert, SafeAreaView, StatusBar, TouchableOpacity, Modal, Linking} from 'react-native'
+import {
+  Alert,
+  SafeAreaView,
+  StatusBar,
+  TouchableOpacity,
+  Modal,
+  Linking,
+} from 'react-native'
 
 import {STICKERS} from '../../../modules/stickers'
 import RecommendBar from '../../../containers/recommendBar'
@@ -47,7 +54,7 @@ function Item() {
   }, [itemId, isFocused])
 
   // 유효한 주소인데도 유효하지 않다고 뜸
-  const goToSite = useCallback(async() => {
+  const goToSite = useCallback(async () => {
     console.log(item.url)
     const supported = await Linking.canOpenURL(item.url)
     if (supported) {
@@ -78,8 +85,7 @@ function Item() {
       {/* bottom sheet menu */}
       <ActionSheet
         ref={actionSheetRef}
-        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}
-      >
+        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
         <MenuContainer>
           <BaseButton
             text={'이 컬렉션에서 삭제하기'}
@@ -98,15 +104,17 @@ function Item() {
         </MenuContainer>
       </ActionSheet>
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
-      >
-      </Modal>
+        onRequestClose={() => setModalVisible(!modalVisible)}></Modal>
       <Container>
         <ImageContainer
-          source={item.thumbnail ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`} : require('../../../assets/images/sampleimage1.jpg')}
+          source={
+            item.thumbnail
+              ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`}
+              : require('../../../assets/images/sampleimage1.jpg')
+          }
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,
@@ -132,7 +140,7 @@ function Item() {
           <TouchableOpacity onPress={openSheet}>
             <FontAwesomeIcon
               icon={faEllipsisVertical as IconProp}
-              color='#C4C4C4'
+              color="#C4C4C4"
               size={24}
               style={{marginTop: 15}}
             />
@@ -142,9 +150,7 @@ function Item() {
         {review ?
           <TextContainer>
             <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
-            <StickerContainer>
-              {itemSticker}
-            </StickerContainer>
+            <StickerContainer>{itemSticker}</StickerContainer>
           </TextContainer>
         : null}
         {filteredStickers.length > 0 ?
