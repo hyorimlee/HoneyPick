@@ -8,7 +8,7 @@ import StickerBtn from '../../../containers/stickerBtn'
 import {saveReview} from '../../../store/slices/item/asyncThunk'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 
-import {Container, ImageContainer, InfoContainer, TextContainer, NormalText, BoldText, PriceText, DashedBorder} from '../default/styles'
+import {Container, ImageContainer, InfoContainer, TextContainer, NormalText, BoldText, PriceText, DashedBorder, PriceContainer, PriceTextGray} from '../default/styles'
 import {ButtonContainer} from './styles'
 
 function SetHoneyItem() {
@@ -49,7 +49,17 @@ function SetHoneyItem() {
           <TextContainer>
             <NormalText>{item.brand}</NormalText>
             <BoldText>{item.title}</BoldText>
-            <PriceText>{item.priceBefore}</PriceText>
+            {item.priceAfter !== 0 ?
+              <PriceContainer>
+                <PriceText>￦</PriceText>
+                <PriceText>{item.priceBefore}</PriceText>
+              </PriceContainer>
+            : <PriceContainer>
+                <PriceText>￦</PriceText>
+                <PriceTextGray>{item.priceBefore}</PriceTextGray>
+                <PriceText>{item.priceAfter}</PriceText>
+              </PriceContainer>
+            }
             <NormalText>컬렉션 이름</NormalText>
           </TextContainer>
         </InfoContainer>
