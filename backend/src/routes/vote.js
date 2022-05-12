@@ -35,6 +35,8 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
 
     // 투표 만들기 & 프로필의 투표 목록에 추가
     const collection = await Collection.findById(collectionId)
+    const accountId = collection.user._id
+    if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
     const vote = new Vote({ collectionId, title, result: collection.items, isPublic })
     await Promise.all([
       vote.save(),
