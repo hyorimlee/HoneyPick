@@ -16,6 +16,7 @@ export type ProfileStackParamList = {
   Default: {userId: string}
   EditProfile: undefined
   Follow: {userId: string}
+  CreateCollection: undefined
 }
 
 export type CollectionStackParamList = {
