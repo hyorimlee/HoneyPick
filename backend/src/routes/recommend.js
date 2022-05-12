@@ -43,7 +43,7 @@ recommendRouter.get('/', authAccessToken, async (req, res) => {
         const items = result.map((item, idx) => {
             return {
                 title: itemTitles[idx],
-                itemList: item[idx]
+                itemList: item
             }
         })
         
