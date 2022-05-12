@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, Types: { ObjectId } } = require('mongoose')
 const bcrypt = require('bcrypt')
 const { CollectionSchema } = require('./Collection')
 const { VoteSchema } = require('./Vote')
@@ -12,7 +12,11 @@ const UserSchema = new Schema({
     description: {type: String, default: ""},
     followingCount: {type: Number, default: 0},
     followerCount: {type: Number, default: 0},
-    collections: [CollectionSchema],
+    collections: [{
+      _id: { type: ObjectId, required: true, ref: 'collection' },
+      title: { type: String, required: false },
+      thumbnail: { type: String, required: false }
+    }],
     likes: [CollectionSchema],
     votes: [VoteSchema],
     follow: {

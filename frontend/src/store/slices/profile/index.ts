@@ -84,6 +84,7 @@ const profileSlice = createSlice({
         console.log(action.payload)
       })
       .addCase(getLists.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.collections = action.payload[0].collections
         state.votes = action.payload[1].votes
         state.likes = action.payload.length === 3 ? action.payload[2].likes : []
@@ -92,8 +93,6 @@ const profileSlice = createSlice({
         console.log(action.payload)
       })
       .addCase(getFollowList.fulfilled, (state, action) => {
-        console.log(action.payload[0])
-        console.log(action.payload[1])
         state.followingList = action.payload[0].followings
         state.followerList = action.payload[1].followers
       })
