@@ -11,24 +11,19 @@ import {
   deleteCollection
 } from './asyncThunk'
 
-const initialState: CollectionListState = {
-  totalPages: 0,
-  page: 0,
-  collections: [{
-    user: {
-      _id: '-1',
-      username: 'sample user'
-    },
-    title: 'My Collection',
-    description: 'Description of Collection',
-    isPublic: true,
-    _id: '1',
-    items: [],
-    createdAt: '2022-05-07',
-    updatedAt: '2022-05-07',
-    // __v 무슨값?
-    __v: 1,
-  }]
+const initialState = {
+  user: {
+    _id: '-1',
+    username: 'sample user'
+  },
+  title: 'My Collection',
+  description: 'Description of Collection',
+  isPublic: true,
+  _id: '1',
+  items: [],
+  createdAt: '2022-05-07',
+  updatedAt: '2022-05-07',
+  __v: 1,
 }
 
 const collectionSlice = createSlice({
@@ -38,14 +33,11 @@ const collectionSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(createCollection.fulfilled, (state, action) => {
-        state.collections.push(action.payload.collection)
-      })
-      .addCase(createCollection.rejected, (state, action) => {
-        console.log(action.payload)
-      })
       .addCase(editCollection.fulfilled, (state, action) => {
+        state = action.payload.collection
+        console.log('상태변화')
         console.log(action.payload)
+        console.log(initialState)
       })
       .addCase(editCollection.rejected, (state, action) => {
         console.log(action.payload)

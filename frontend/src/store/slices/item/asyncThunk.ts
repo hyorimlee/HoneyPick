@@ -57,7 +57,7 @@ export const itemToCollection = createAsyncThunk<any, IItemToCollectionParameter
     try {
       const {accessToken} = thunkAPI.getState().user
       const response = await axios({
-        method: 'POST',
+        method: 'PATCH',
         url: `${Config.API_BASE_URL}/item/${itemId}`,
         data: {originalCollectionId, collectionId},
         headers: {
@@ -86,8 +86,10 @@ export const saveReview = createAsyncThunk<any, ISaveReviewParameter, {state: Ro
           authorization: `Bearer ${accessToken}`
         }
       })
+      console.log(response.data)
       return response.data
     } catch (err: any) {
+      console.log(err.response.data)
       return thunkAPI.rejectWithValue(err.response.data)
     }
   }

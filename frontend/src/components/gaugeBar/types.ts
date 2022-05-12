@@ -4,6 +4,7 @@ export interface IComponentProps {
   emoji: string
   text: string
   votes: number
+  sum: number
   backgroundColor?: ColorValue
 }
 

@@ -77,7 +77,7 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
             Review.findOne({ user: userId, item: itemId })
         ])
         if(!item) res.status(400).send({ err: "아이템이 존재하지 않습니다." })
-
+        item.stickers = Object.entries(item.stickers).sort(([, a], [, b]) => b - a).slice(0, 3)
         return res.status(200).send({ item, review })
     } catch (error) {
         console.log(error)

@@ -11,7 +11,7 @@ const FollowSchema = new Schema(
       username: { type: String, required: true },
       nickname: { type: String, required: true },
       description: { type: String, required: false },
-      image: { type: String, required: false },
+      profileImage: { type: String, required: false },
       myFollow: { type: Boolean, required: false },
       updatedAt: { type: Date, required: false }
     }],
@@ -20,7 +20,7 @@ const FollowSchema = new Schema(
       username: { type: String, required: true },
       nickname: { type: String, required: true },
       description: { type: String, required: false },
-      image: { type: String, required: false },
+      profileImage: { type: String, required: false },
       myFollow: { type: Boolean, required: false },
       updatedAt: { type: Date, required: false }
     }]
