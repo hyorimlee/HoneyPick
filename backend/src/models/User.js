@@ -15,7 +15,8 @@ const UserSchema = new Schema({
     collections: [{
       _id: { type: ObjectId, required: true, ref: 'collection' },
       title: { type: String, required: false },
-      thumbnail: { type: String, required: false }
+      thumbnail: { type: String, required: false },
+      updatedAt: { type: Date, required: true, default: Date.now }
     }],
     likes: [CollectionSchema],
     votes: [VoteSchema],
