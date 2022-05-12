@@ -10,7 +10,7 @@ import {
 } from './asyncThunk'
 
 const initialState: ItemState = {
-  itemId: '627b44ad6ce3b0b4264389f7', //627b44ad6ce3b0b4264389f7
+  itemId: '', //627b44ad6ce3b0b4264389f7
   collectionId: '',
   saveCollection: 'no',
   item: {
