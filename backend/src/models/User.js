@@ -12,7 +12,11 @@ const UserSchema = new Schema({
     description: {type: String, default: ""},
     followingCount: {type: Number, default: 0},
     followerCount: {type: Number, default: 0},
-    collections: [CollectionSchema],
+    collections: [{
+      _id: { type: ObjectId, required: true, ref: 'collection' },
+      title: { type: String, required: false },
+      thumbnail: { type: String, required: false }
+    }],
     likes: [CollectionSchema],
     votes: [VoteSchema],
     follow: {
