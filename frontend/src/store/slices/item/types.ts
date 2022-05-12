@@ -11,7 +11,7 @@ export interface ItemState {
     priceBefore?: number
     priceAfter?: number
     discountRate?: number
-    stickers: object
+    stickers: [string, number][]
   },
   review?: {
     _id: string

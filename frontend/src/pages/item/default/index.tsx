@@ -1,8 +1,16 @@
 import * as React from 'react'
 import Config from 'react-native-config'
 import {memo, createRef, useState, useEffect, useCallback} from 'react'
-import {Alert, SafeAreaView, StatusBar, TouchableOpacity, Modal, Linking} from 'react-native'
+import {
+  Alert,
+  SafeAreaView,
+  StatusBar,
+  TouchableOpacity,
+  Modal,
+  Linking,
+} from 'react-native'
 
+import {STICKERS} from '../../../modules/stickers'
 import RecommendBar from '../../../containers/recommendBar'
 import BaseButton from '../../../components/button/base'
 import {getItem} from '../../../store/slices/item/asyncThunk'
@@ -10,41 +18,43 @@ import {ItemNavigationProp} from './types'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 
 import ActionSheet from "react-native-actions-sheet"
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useIsFocused} from '@react-navigation/native'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
-import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, StickerContainer, NormalText, BoldText, PriceText, DashedBorder, EmojiText} from './styles'
+import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, StickerContainer, PriceContainer, NormalText, BoldText, PriceText, DashedBorder, EmojiText, PriceTextGray} from './styles'
 
-// 중복 제거
-const STICKERS = [
-  {id: '1', label: '🎁 선물하기 좋아요', emoji: '🎁'},
-  {id: '2', label: '🔨 튼튼해요', emoji: '🔨'},
-  {id: '3', label: '💰 가격이 합리적이에요', emoji: '💰'},
-  {id: '4', label: '😋 맛있어요', emoji: '😋'},
-  {id: '5', label: '🧶 부드러워요', emoji: '🧶'},
-  {id: '6', label: '🎨 디자인이 예뻐요', emoji: '🎨'},
-]
-
+// itemId, collectionId}: {itemId: string, collectionId: string}
 function Item() {
   const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
   const navigation = useNavigation<ItemNavigationProp>()
   const actionSheetRef = createRef<ActionSheet>()
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const [filteredStickers, setFilteredStickers] = useState<[string, number][]>([])
   const {itemId, collectionId, item, review} = useAppSelector(state => state.item)
+  // const {item, review} = useAppSelector(state => state.item)
 
   const openSheet = () => {
+    console.log('메뉴창 열려라')
     actionSheetRef.current?.show()
   }
 
   useEffect(() => {
-    console.log(itemId)
-    dispatch(getItem(itemId))
-    console.log('아이템 정보 가져오기')
-  }, [])
+    const filtered = item.stickers.filter(s => s[1])
+    setFilteredStickers(filtered)
+    console.log(filtered)
+  }, [item.stickers])
+
+  useEffect(() => {
+    if (itemId && isFocused) {
+      dispatch(getItem(itemId))
+      console.log('아이템 정보 가져오기')
+    }
+  }, [itemId, isFocused])
 
   // 유효한 주소인데도 유효하지 않다고 뜸
-  const goToSite = useCallback(async() => {
+  const goToSite = useCallback(async () => {
     console.log(item.url)
     const supported = await Linking.canOpenURL(item.url)
     if (supported) {
@@ -65,7 +75,7 @@ function Item() {
   const itemSticker = STICKERS.map(sticker => {
     if (review?.stickers.includes(sticker.id)) {
       return (
-        <EmojiText>{sticker.emoji}</EmojiText>
+        <EmojiText key={sticker.id}>{sticker.emoji}</EmojiText>
       )
     }
   })
@@ -75,8 +85,7 @@ function Item() {
       {/* bottom sheet menu */}
       <ActionSheet
         ref={actionSheetRef}
-        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}
-      >
+        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
         <MenuContainer>
           <BaseButton
             text={'이 컬렉션에서 삭제하기'}
@@ -95,15 +104,17 @@ function Item() {
         </MenuContainer>
       </ActionSheet>
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
-      >
-      </Modal>
+        onRequestClose={() => setModalVisible(!modalVisible)}></Modal>
       <Container>
         <ImageContainer
-          source={item.thumbnail ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`} : require('../../../assets/images/sampleimage1.jpg')}
+          source={
+            item.thumbnail
+              ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`}
+              : require('../../../assets/images/sampleimage1.jpg')
+          }
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,
@@ -113,31 +124,41 @@ function Item() {
           <TextContainer>
             <NormalText>{item.brand}</NormalText>
             <BoldText>{item.title}</BoldText>
-            <PriceText>{item.priceBefore}</PriceText>
+            {item.priceAfter !== 0 ?
+              <PriceContainer>
+                <PriceText>￦</PriceText>
+                <PriceText>{item.priceBefore}</PriceText>
+              </PriceContainer>
+            : <PriceContainer>
+                <PriceText>￦</PriceText>
+                <PriceTextGray>{item.priceBefore}</PriceTextGray>
+                <PriceText>{item.priceAfter}</PriceText>
+              </PriceContainer>
+            }
             <NormalText>컬렉션 이름</NormalText>
           </TextContainer>
           <TouchableOpacity onPress={openSheet}>
             <FontAwesomeIcon
               icon={faEllipsisVertical as IconProp}
-              color='#C4C4C4'
+              color="#C4C4C4"
               size={24}
               style={{marginTop: 15}}
             />
           </TouchableOpacity>
         </InfoContainer>
-        <DashedBorder />
+        {review || filteredStickers.length > 0 ? <DashedBorder /> : null}
         {review ?
           <TextContainer>
             <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
-            <StickerContainer>
-              {itemSticker}
-            </StickerContainer>
+            <StickerContainer>{itemSticker}</StickerContainer>
           </TextContainer>
-        : ''}
-        <TextContainer>
-          <NormalText>다른 허니비들이 이 아이템을 추천하는 이유</NormalText>
-          <RecommendBar></RecommendBar>
-        </TextContainer>
+        : null}
+        {filteredStickers.length > 0 ?
+          <TextContainer>
+            <NormalText>다른 허니비들이 이 아이템을 추천하는 이유</NormalText>
+            <RecommendBar stickers={filteredStickers}></RecommendBar>
+          </TextContainer>
+        : null}
         <BaseButton
           text={'사이트로 이동하기'}
           onPress={goToSite}
@@ -145,13 +166,6 @@ function Item() {
           marginVertical={10}
           paddingVertical={15}
         />
-        {/* <BaseButton
-          text={'아이템 가져오기 테스트'}
-          onPress={() => getItemInfo(itemId)}
-          borderRadius={25}
-          marginVertical={10}
-          paddingVertical={15}
-        /> */}
       </Container>
     </SafeAreaView>
   )

@@ -30,6 +30,7 @@ function BaseButton({
   width,
 }: IComponentProps) {
   const [isPressing, setIsPressing] = useState(false)
+  const [isPressed, setIsPressed] = useState(false)
 
   const pressIn = useCallback(() => {
     setIsPressing(true)
@@ -43,10 +44,14 @@ function BaseButton({
     if (onPressOut) {
       onPressOut()
     }
-  }, [onPressOut])
+
+    if (isPressed === true) {
+      setIsPressed(true)
+      setIsPressing(false)
+    }
+  }, [onPressOut, isPressed])
 
   const press = useCallback(() => {
-    setIsPressing(false)
     onPress()
   }, [onPress])
 
@@ -76,8 +81,7 @@ function BaseButton({
       disabled={disabled}
       position={position}
       bottom={bottom}
-      width={width}
-      >
+      width={width}>
       <Text style={{textAlign, color, fontSize}}>{text}</Text>
     </CustomBaseButtonPressable>
   )

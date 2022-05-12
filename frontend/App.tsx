@@ -78,6 +78,7 @@ const axiosInterceptor = (dispatch: IDispatch) => {
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
+  const {userId} = useAppSelector(state => state.user)
   const {saveCollection} = useAppSelector(state => state.item)
 
   const [copiedUrl, setCopiedUrl] = useState<string>('')
@@ -95,9 +96,9 @@ const InnerApp = memo(({}) => {
 
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      const listener = Clipboard.addListener(clipboardListener);
+      const listener = Clipboard.addListener(clipboardListener)
       return () => {
-        listener.remove();
+        listener.remove()
       }
     }
   }, [])
@@ -109,7 +110,7 @@ const InnerApp = memo(({}) => {
   }
 
   useEffect(() => {
-    console.log(saveCollection)
+    // console.log(saveCollection)
     if (saveCollection === 'yet') {
       setModalVisible(true)
     } else if (saveCollection === 'done') {
@@ -147,7 +148,7 @@ const InnerApp = memo(({}) => {
               <Tab.Screen
                 name="Item"
                 component={ItemStack}
-                options={{title:'아이템', headerShown: false}}
+                options={{title: '아이템', headerShown: false}}
               />
               {/* <Tab.Screen
                 name="EventPage"
@@ -161,20 +162,22 @@ const InnerApp = memo(({}) => {
               /> */}
             </Tab.Navigator>
             {/* 전역 버튼, 모달 */}
-            {btnShow ? <SaveItemBtn
-              copiedUrl={copiedUrl}
-              setCopiedUrl={(text: string) => setCopiedUrl(text)}
-              btnShowHandler={() => btnShowHandler()}
-              /> : null}
+            {btnShow ? (
+              <SaveItemBtn
+                copiedUrl={copiedUrl}
+                setCopiedUrl={(text: string) => setCopiedUrl(text)}
+                btnShowHandler={() => btnShowHandler()}
+              />
+            ) : null}
             <Modal
-              animationType='slide'
+              animationType="slide"
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
                 setModalVisible(false)
-              }}
-              >
-              <ChooseCollectionModal setModalVisible={setModalVisible}></ChooseCollectionModal>
+              }}>
+              <ChooseCollectionModal
+                setModalVisible={setModalVisible}></ChooseCollectionModal>
             </Modal>
           </>
         ) : (
