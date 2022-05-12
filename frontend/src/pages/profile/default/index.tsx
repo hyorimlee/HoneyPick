@@ -11,6 +11,7 @@ import {getLists, getProfile} from '../../../store/slices/profile/asyncThunk'
 import {useAppDispatch, useAppSelector} from '../../../store/types'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import ProfileLists from '../../../containers/profileLists'
+import {Container} from './styles'
 
 const paddingHorizontal = 30
 
@@ -39,10 +40,12 @@ function Profile({navigation}: {navigation: ProfileNavigationProp}) {
 
   return (
     <SafeAreaView>
-      <KeyboardAwareScrollView style={{paddingHorizontal}}>
-        {isInfoDone ? <ProfileInfo></ProfileInfo> : null}
-        <ProfileLists></ProfileLists>
-      </KeyboardAwareScrollView>
+      <Container>
+        <KeyboardAwareScrollView>
+          {isInfoDone ? <ProfileInfo></ProfileInfo> : null}
+          <ProfileLists></ProfileLists>
+        </KeyboardAwareScrollView>
+      </Container>
     </SafeAreaView>
   )
 }
