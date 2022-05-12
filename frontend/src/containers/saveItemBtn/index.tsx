@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo} from 'react'
-import {useAppDispatch} from '../../store/types'
+import {useAppDispatch, useAppSelector} from '../../store/types'
 
 import BaseButton from '../../components/button/base'
 import {saveItem} from '../../store/slices/item/asyncThunk'
@@ -12,12 +12,14 @@ import {TouchableWithoutFeedback} from 'react-native'
 
 function saveItemBtn({copiedUrl, setCopiedUrl, btnShowHandler}: IComponentProps) {
   const dispatch = useAppDispatch()
+  const {userId} = useAppSelector(state => state.user)
 
-  const submitItem = (text: string) => {
-    dispatch(saveItem(text))
-    dispatch(setSaveCollection('yet'))
+  const submitItem = (url: string) => {
+    dispatch(saveItem(url))
+    dispatch(setSaveCollection('yet')) // 이게 안 될 때가 있음... 왜?!!
+    // setCopiedUrl('')
+    btnShowHandler()
     console.log('아이템 등록')
-    setCopiedUrl('')
   }
 
   return (
