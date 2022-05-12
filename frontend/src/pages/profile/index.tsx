@@ -5,6 +5,8 @@ import EditProfile from './editProfile/index'
 import Profile from './default'
 import CreateCollection from './createCollection'
 import {useAppSelector} from '../../store/types'
+import Collection from '../collection/default'
+import EditCollection from '../collection/editCollection'
 import follow from './follow'
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 import {
@@ -50,6 +52,16 @@ function ProfileStack({navigation}: {navigation: BottomTabProfileProp}) {
       <Stack.Screen
         name="CreateCollection"
         component={CreateCollection}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Collection"
+        component={Collection}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="EditCollection"
+        component={EditCollection}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

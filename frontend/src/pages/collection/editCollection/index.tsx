@@ -13,17 +13,11 @@ import { ProfileNavigationProp } from '../../../containers/profileInfo/types'
 function EditCollection() {
   const navigation = useNavigation<ProfileNavigationProp>()
   const route = useRoute<RouteProp<ProfileStackParamList>>()
-  const collection = route.params
-  const currentCollection = useAppSelector(state => state.collection)
+  const collection = useAppSelector(state => state.collection.currentCollection)
   const dispatch = useAppDispatch()
   const [collectionName, setCollectionName] = useState(collection!.title)
   const [collectionDescription, setCollectionDescription] = useState(collection!.description)
   const {userId} = useAppSelector(state => state.user)
-
-  useEffect(() => {
-    console.log('갱신')
-    console.log(currentCollection)
-  },[currentCollection])
 
   const collectionNameChanged = useCallback(
     (text: string) => {
@@ -39,10 +33,13 @@ function EditCollection() {
     [collectionDescription],
   )
 
-  const editCollectionInfo = useCallback(async () => {
-    await dispatch(editCollection({accountId: collection!.user!._id, collectionId: collection!._id , collectionInfo: {title: collectionName, description: collectionDescription, isPublic: true}}))
-    console.log(currentCollection)
-    // navigation.push('Collection', {collection: currentCollection})
+  const editCollectionInfo = useCallback(() => {
+    dispatch(editCollection({accountId: collection!.user!._id, collectionId: collection!._id , collectionInfo: {title: collectionName, description: collectionDescription, isPublic: true}}))
+    .unwrap()
+    .then((res) => {
+      navigation.push('Collection', {accountId: collection.user._id, collectionId: collection._id})
+    })
+
   }, [collectionName, collectionDescription])
 
   return (
