@@ -1,7 +1,7 @@
 export interface ItemState {
   itemId: string
   collectionId: string
-  saveCollection: 'no' | 'yet' | 'done'
+  saveCollection: 'no' | 'yet'
   item: {
     _id: string
     brand?: string
@@ -12,7 +12,7 @@ export interface ItemState {
     priceAfter?: number
     discountRate?: number
     stickers: [string, number][]
-  },
+  }
   review?: {
     _id: string
     user: string

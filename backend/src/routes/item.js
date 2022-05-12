@@ -1,8 +1,8 @@
 const { Router } = require('express')
 const itemRouter = Router()
 const mongoose = require('mongoose')
-const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
-const { Item, Review, Collection } = require('../models')
+const { isValidObjectId } = require('mongoose')
+const { User, Item, Review, Collection } = require('../models')
 
 const { v4: uuid } = require("uuid")
 const mime = require("mime-types")
@@ -85,34 +85,36 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
     }
 })
 
+// User 테이블에 있는 컬렉션의 items도 수정을해줘야함 -> thumbnail정도만 변경해주는걸로 하는게 나을듯
 itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
     try {
-        const { itemId } = req.params
-        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
-        const item = await Item.findById(itemId)
-        if(!item) return res.status(400).send({ err: "아이템이 존재하지 않습니다." })
-        
         const userId = req.userId
-
+        const { itemId } = req.params
         const { originalCollectionId, collectionId } = req.body
+        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
 
+        const [item, originalCollection] = await Promise.all([
+            Item.findById(itemId),
+            Collection.findById(originalCollectionId)
+        ])
+
+        if(!item) return res.status(400).send({ err: "아이템이 존재하지 않습니다." })
         var promises = []
         if(originalCollectionId) {
             if(!isValidObjectId(originalCollectionId)) return res.status(400).send({ err: "잘못된 originalCollectionId" })
-            // collection 주인 여부 체크
-            // findbyid후에 callback으로 처리
-            // Collection.findById(originalCollectionId, (err, doc) => {
-            //     if(doc.user._id == userId){
-            //         doc.$pull()
-            //     }
-            // })
-            promises.push(Collection.findByIdAndUpdate(originalCollectionId, { $pull: { items: { _id: ObjectId(itemId) } } }))
+            const idList = originalCollection.items.map(({_id}) => _id.toString())
+            const itemList = await Item.find({ _id: { $in: idList }})
+            const targetThumbnail = itemList.filter(({ _id }) => _id.toString() !== itemId ).slice(-1)[0]['thumbnail']
+            
+            promises.push(Collection.findOneAndUpdate({ _id: originalCollectionId, 'user._id': userId }, { $pull: { items: { _id: itemId } } }, { new: true }))
+            promises.push(User.updateOne({ _id: userId , 'collections._id': originalCollectionId }, { 'collections.$.thumbnail': targetThumbnail }))
         }
         if(collectionId) {
             if(!isValidObjectId(collectionId)) return res.status(400).send({ err: "잘못된 collectionId" })
             const review = await Review.findOne({ user: userId, item: itemId })
             const recommend = review?.isRecommend
-            promises.push(Collection.findByIdAndUpdate(collectionId, { $push: { items: { _id: ObjectId(itemId), recommend } } }))
+            promises.push(Collection.findOneAndUpdate({_id: collectionId, 'user._id': userId}, { $addToSet: { items: { _id: itemId, recommend } } }))
+            promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.thumbnail': item.thumbnail }))
         }
 
         await Promise.all(promises)

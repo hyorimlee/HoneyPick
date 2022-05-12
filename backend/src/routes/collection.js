@@ -1,8 +1,9 @@
 const { Router } = require('express')
 const collectionRouter = Router()
 const { isValidObjectId } = require('mongoose')
-const { User, Collection, Follow } = require('../models')
+const { User, Collection, Follow, Item } = require('../models')
 const { authAccessToken } = require('./auth')
+const { Types: { ObjectId } } = require('mongoose')
 
 // 팔로워인지 검증
 async function isFollower(accountId, userId) {
@@ -100,7 +101,13 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
         return res.status(400).send({ err: 'private collection'})
       }
     }
-    return res.status(200).send({ collection })
+    var idList = collection.items.map(({ _id }) => ObjectId(_id))
+    var itemList = await Item.find({ _id: { $in: idList }})
+    const items = itemList.map((item, idx) => {
+      return { ...item._doc, recommend: collection.items[idx].recommend }
+    })
+
+    return res.status(200).send({ collection, items })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -121,21 +128,25 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
 
-    const promises = []
+    const collectionUpdate = {}
+    const userUpdate = {}
+    
     if (title) {
-      promises.push(Collection.updateOne({ _id: collectionId }, { title }))
-      promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.title': title }))
+      collectionUpdate['title'] = title
+      userUpdate['collections.$.title'] = title
     }
     if (description) {
-      promises.push(Collection.updateOne({ _id: collectionId }, { description }))
-      promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.description': description }))
+      collectionUpdate['description'] = description
     }
     if (typeof isPublic !== 'undefined') {
-      promises.push(Collection.updateOne({ _id: collectionId }, { isPublic }))
-      promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.isPublic': isPublic }))
+      collectionUpdate['isPublic'] = isPublic
     }
-    await Promise.all(promises)
-    collection = await Collection.findById(collectionId)
+
+    [collection, _] = await Promise.all([
+      Collection.findByIdAndUpdate(collectionId, collectionUpdate, { new: true }),
+      User.updateOne({ _id: userId, 'collections._id': collectionId }, userUpdate)
+    ])
+
     return res.status(200).send({ collection })
   } catch (error) {
     console.log(error)
@@ -153,14 +164,10 @@ collectionRouter.delete('/:accountId/:collectionId', authAccessToken, async (req
     if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
     if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId"})
 
-    // 컬렉션 자체 삭제 & user의 컬렉션 목록에서 삭제
-    const collection = await Collection.findById(collectionId)
-    console.log(1, collection)
     await Promise.all([
-      Collection.deleteOne({ _id: collectionId }),
-      User.updateOne({ _id: accountId }, { $pull: { collections: { _id: collectionId }}})
+      Collection.findByIdAndDelete(collectionId),
+      User.findByIdAndUpdate(accountId, { $pull: { collections: { _id: collectionId }}})
     ])
-    console.log(2, collection)
     return res.status(204).send()
   } catch (error) {
     console.log(error)
