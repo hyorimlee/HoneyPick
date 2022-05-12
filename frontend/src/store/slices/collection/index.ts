@@ -12,18 +12,20 @@ import {
 } from './asyncThunk'
 
 const initialState = {
-  user: {
-    _id: '-1',
-    username: 'sample user'
-  },
-  title: 'My Collection',
-  description: 'Description of Collection',
-  isPublic: true,
-  _id: '1',
-  items: [],
-  createdAt: '2022-05-07',
-  updatedAt: '2022-05-07',
-  __v: 1,
+  currentCollection: {
+    user: {
+      _id: '-1',
+      username: 'sample user'
+    },
+    title: 'My Collection',
+    description: 'Description of Collection',
+    isPublic: true,
+    _id: '1',
+    items: [],
+    createdAt: '2022-05-07',
+    updatedAt: '2022-05-07',
+    __v: 1,
+  }
 }
 
 const collectionSlice = createSlice({
@@ -34,13 +36,19 @@ const collectionSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(editCollection.fulfilled, (state, action) => {
-        state = action.payload.collection
+        state.currentCollection = action.payload.collection
         console.log('상태변화')
         console.log(action.payload)
         console.log(initialState)
+        console.log(state.currentCollection)
       })
       .addCase(editCollection.rejected, (state, action) => {
         console.log(action.payload)
+      })
+      .addCase(getCollection.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.currentCollection = action.payload.collection
+        console.log(state)
       })
   },
 })

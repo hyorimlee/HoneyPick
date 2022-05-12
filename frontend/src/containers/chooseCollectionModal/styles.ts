@@ -23,11 +23,9 @@ export const ModalView = styled.View`
   justify-content: space-between;
 `
 
-export const RadioContainer = styled.View`
-  height: 70%;
-  align-items: flex-start;
+export const RadioContainer = styled.ScrollView`
   margin-vertical: 10px;
-  background-color: palegreen;
+  background-color: red;
 `
 
 export const NormalText = styled.Text`

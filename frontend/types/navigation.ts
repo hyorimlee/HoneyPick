@@ -15,12 +15,14 @@ export type BottomTabParamList = {
 export type ProfileStackParamList = {
   Default: {userId: string}
   EditProfile: undefined
+  Collection: {accountId: string, collectionId: string} | undefined
+  EditCollection: undefined
   Follow: {userId: string}
   CreateCollection: undefined
 }
 
 export type CollectionStackParamList = {
-  Default: undefined
+  Default: {collection: any}
   EditCollection: undefined
   ItemPage: undefined
 }
