@@ -47,7 +47,7 @@ function CollectionInfo() {
   }, [])
 
   const deleteCurrentCollection = useCallback(async () => {
-    await dispatch(deleteCollection({accountId: collection!.user!._id, collectionId: collection!._id}))
+    await dispatch(deleteCollection({accountId: accountId, collectionId: collectionId}))
     openSheet()
     navigation.navigate('Profile')
   }, [])
