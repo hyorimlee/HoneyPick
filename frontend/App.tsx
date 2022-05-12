@@ -64,7 +64,6 @@ const axiosInterceptor = (dispatch: IDispatch) => {
 
       // access token 기간 만료시
       if (status === 419) {
-        console.log('accessToken 기간만료! - accessToken 재요청')
         const refreshToken = await EncryptedStorage.getItem('refreshToken')
         const data = await dispatch(requestAccessToken({refreshToken}))
 

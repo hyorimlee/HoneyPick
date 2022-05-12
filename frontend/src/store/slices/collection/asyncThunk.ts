@@ -2,69 +2,81 @@ import axios from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
-import {ICollectionListQuery, ICollectionQuery, IEditCollectionQuery, ICollectionInfo} from './types'
+import {
+  ICollectionListQuery,
+  ICollectionQuery,
+  IEditCollectionQuery,
+  ICollectionInfo,
+} from './types'
 
-export const getCollectionList = createAsyncThunk<any, ICollectionListQuery, {state: RootState}>(
-  'collection/getCollectionList',
-  async ({accountId, page}, thunkAPI) => {
-    try {
-      const {accessToken} = thunkAPI.getState().user
-      const response = await axios({
-        method: 'GET',
-        url: `${Config.API_BASE_URL}/collection/${accountId}?page=${page}`,
-        headers: {
-          authorization: `Bearer ${accessToken}`
-        }
-      })
+export const getCollectionList = createAsyncThunk<
+  any,
+  ICollectionListQuery,
+  {state: RootState}
+>('collection/getCollectionList', async ({accountId, page}, thunkAPI) => {
+  try {
+    const {accessToken} = thunkAPI.getState().user
+    const response = await axios({
+      method: 'GET',
+      url: `${Config.API_BASE_URL}/collection/${accountId}?page=${page}`,
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
 
-      return response.data
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data)
-    }
+    return response.data
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response.data)
   }
-)
+})
 
-export const createCollection = createAsyncThunk<any, ICollectionInfo, {state: RootState}>(
-  'collection/createCollection',
-  async (collectionInfo, thunkAPI) => {
-    try {
-      const {accessToken} = thunkAPI.getState().user
-      const response = await axios({
-        method: 'POST',
-        url: `${Config.API_BASE_URL}/collection`,
-        data: collectionInfo,
-        headers: {
-          authorization: `Bearer ${accessToken}`
-        }
-      })
-      console.log(response.data)
-      return response.data
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data)
-    }
+export const createCollection = createAsyncThunk<
+  any,
+  ICollectionInfo,
+  {state: RootState}
+>('collection/createCollection', async (collectionInfo, thunkAPI) => {
+  try {
+    const {accessToken} = thunkAPI.getState().user
+    const response = await axios({
+      method: 'POST',
+      url: `${Config.API_BASE_URL}/collection`,
+      data: collectionInfo,
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    return response.data
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response.data)
   }
-)
+})
 
-export const getCollection = createAsyncThunk<any, ICollectionQuery, {state: RootState}>(
-  'collection/getCollection',
-  async ({accountId, collectionId}, thunkAPI) => {
-    try {
-      const {accessToken} = thunkAPI.getState().user
-      const response = await axios({
-        method: 'GET',
-        url: `${Config.API_BASE_URL}/collection/${accountId}/${collectionId}`,
-        headers: {
-          authorization: `Bearer ${accessToken}`
-        }
-      })
-      return response.data
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data)
-    }
+export const getCollection = createAsyncThunk<
+  any,
+  ICollectionQuery,
+  {state: RootState}
+>('collection/getCollection', async ({accountId, collectionId}, thunkAPI) => {
+  try {
+    const {accessToken} = thunkAPI.getState().user
+    const response = await axios({
+      method: 'GET',
+      url: `${Config.API_BASE_URL}/collection/${accountId}/${collectionId}`,
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+    return response.data
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response.data)
   }
-)
+})
 
-export const editCollection = createAsyncThunk<any, IEditCollectionQuery, {state: RootState}>(
+export const editCollection = createAsyncThunk<
+  any,
+  IEditCollectionQuery,
+  {state: RootState}
+>(
   'collection/editCollection',
   async ({accountId, collectionId, collectionInfo}, thunkAPI) => {
     try {
@@ -74,17 +86,21 @@ export const editCollection = createAsyncThunk<any, IEditCollectionQuery, {state
         url: `${Config.API_BASE_URL}/collection/${accountId}/${collectionId}`,
         data: collectionInfo,
         headers: {
-          authorization: `Bearer ${accessToken}`
-        }
+          authorization: `Bearer ${accessToken}`,
+        },
       })
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
     }
-  }
+  },
 )
 
-export const deleteCollection = createAsyncThunk<any, ICollectionQuery, {state: RootState}>(
+export const deleteCollection = createAsyncThunk<
+  any,
+  ICollectionQuery,
+  {state: RootState}
+>(
   'collection/deleteCollection',
   async ({accountId, collectionId}, thunkAPI) => {
     try {
@@ -93,14 +109,13 @@ export const deleteCollection = createAsyncThunk<any, ICollectionQuery, {state: 
         method: 'DELETE',
         url: `${Config.API_BASE_URL}/collection/${accountId}/${collectionId}`,
         headers: {
-          authorization: `Bearer ${accessToken}`
-        }
+          authorization: `Bearer ${accessToken}`,
+        },
       })
 
       return response.data
     } catch (err: any) {
-
       return thunkAPI.rejectWithValue(err.response.data)
     }
-  }
+  },
 )
