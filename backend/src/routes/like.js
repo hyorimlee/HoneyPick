@@ -4,15 +4,6 @@ const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
 const { User, Collection } = require('../models')
 const { authAccessToken } = require('./auth')
 
-// 전체 페이지 수
-function getTotalPages(length) {
-  if (length % 12) {
-    return (parseInt(length / 12) + 1)
-  } else {
-    return (length / 12)
-  }
-}
-
 // 컬렉션 찜 설정/해제
 likeRouter.post('/', authAccessToken, async (req, res) => {
   try {
@@ -39,27 +30,22 @@ likeRouter.post('/', authAccessToken, async (req, res) => {
   }
 })
 
-// 컬렉션 찜 목록 조회 (3*4=12개씩)
+// 컬렉션 찜 목록 조회
 likeRouter.get('/', authAccessToken, async (req, res) => {
   try {
     let { page=1 } = req.query
     page = parseInt(page)
     const { userId } = req
     const user = await User.findById(userId)
-    const [likes, totalPages] = await Promise.all([
-      user.likes
-        .sort((a,b) => {
-          if (a.updatedAt > b.updatedAt) {
-            return -1
-          } else if (a.updatedAt < b.updatedAt) {
-            return 1
-          }
-          return 0
-        })
-        .slice((page-1)*12, page*12),
-      getTotalPages(user.likes.length)
-    ])
-    return res.status(200).send({ totalPages, page, likes })
+    const likes = await user.likes.sort((a,b) => {
+      if (a.updatedAt > b.updatedAt) {
+        return -1
+      } else if (a.updatedAt < b.updatedAt) {
+        return 1
+      }
+      return 0
+    })
+    return res.status(200).send({ likes })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
