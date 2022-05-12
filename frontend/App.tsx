@@ -1,6 +1,6 @@
-import React, {memo, useEffect, useState} from 'react'
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react'
 import {Provider} from 'react-redux'
-import {Modal, Platform, Pressable, View} from 'react-native'
+import {Modal, View, AppState} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
@@ -27,6 +27,7 @@ import RecommendStack from './src/pages/recommend'
 
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
+import {setSaveCollection} from './src/store/slices/item'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -79,54 +80,41 @@ const axiosInterceptor = (dispatch: IDispatch) => {
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
-  const {userId} = useAppSelector(state => state.user)
   const {saveCollection} = useAppSelector(state => state.item)
-
-  const [copiedUrl, setCopiedUrl] = useState<string>('')
-  const [btnShow, setBtnShow] = useState<boolean>(false)
-  const [modalVisible, setModalVisible] = useState<boolean>(false)
-
-  console.log(modalVisible)
-
-  const clipboardListener = async () => {
-    const text = await Clipboard.getString()
-    if (text.indexOf('http') > -1) {
-      console.log('링크 감지 완료')
-      setCopiedUrl(text)
-      setBtnShow(true)
-    }
-  }
-
-  useEffect(() => {
-    if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      const listener = Clipboard.addListener(clipboardListener)
-      return () => {
-        listener.remove()
-      }
-    }
-  }, [])
-
-  const btnShowHandler = () => {
-    if (btnShow) {
-      setBtnShow(false)
-    }
-  }
-
-  useEffect(() => {
-    console.log(saveCollection)
-    if (saveCollection === 'yet') {
-      setModalVisible(true)
-    } else if (saveCollection === 'done') {
-      Clipboard.setString('')
-      setModalVisible(false)
-    } else {
-      setModalVisible(false)
-    }
-  }, [saveCollection])
+  const [copiedUrl, setCopiedUrl] = useState('')
+  const appState = useRef(AppState.currentState)
 
   useEffect(() => {
     getRefreshToken(dispatch)
     axiosInterceptor(dispatch)
+
+    const listener = AppState.addEventListener('change', nextAppState => {
+      const isNowInactive = appState.current.match(/inactive|background/)
+
+      if (isNowInactive && nextAppState === 'active') {
+        const getClipboard = async () => {
+          await Clipboard.hasString()
+          const text = await Clipboard.getString()
+
+          if (text.slice(0, 4) === 'http') {
+            setCopiedUrl(text)
+          }
+        }
+        getClipboard()
+      }
+
+      appState.current = nextAppState
+    })
+
+    return () => listener.remove()
+  }, [])
+
+  const btnShowHandler = useCallback(() => {
+    setCopiedUrl('')
+  }, [])
+
+  const modalClose = useCallback(() => {
+    dispatch(setSaveCollection('no'))
   }, [])
 
   return (
@@ -152,34 +140,24 @@ const InnerApp = memo(({}) => {
                 component={ItemStack}
                 options={{title: '아이템', headerShown: false}}
               />
-              {/* <Tab.Screen
-                name="EventPage"
-                component={}
-                options={{title: '이벤트'}}
-              /> */}
               <Tab.Screen
                 name="RecommandPage"
                 component={RecommendStack}
                 options={{title: '추천', headerShown: false}}
               />
             </Tab.Navigator>
-            {/* 전역 버튼, 모달 */}
-            {btnShow ? (
+            {copiedUrl ? (
               <SaveItemBtn
                 copiedUrl={copiedUrl}
-                setCopiedUrl={(text: string) => setCopiedUrl(text)}
-                btnShowHandler={() => btnShowHandler()}
+                btnShowHandler={btnShowHandler}
               />
             ) : null}
             <Modal
               animationType="fade"
               transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(false)
-              }}>
-              <ChooseCollectionModal
-                setModalVisible={setModalVisible}></ChooseCollectionModal>
+              visible={saveCollection === 'yet' ? true : false}
+              onRequestClose={modalClose}>
+              <ChooseCollectionModal />
             </Modal>
           </>
         ) : (

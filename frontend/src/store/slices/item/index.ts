@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {createSelector, createSlice} from '@reduxjs/toolkit'
 import {ItemState} from './types'
 import {
   saveItem,
@@ -9,7 +9,7 @@ import {
 } from './asyncThunk'
 
 const initialState: ItemState = {
-  itemId: '', //627b44ad6ce3b0b4264389f7
+  itemId: '',
   collectionId: '',
   saveCollection: 'no',
   item: {
@@ -46,7 +46,6 @@ const itemSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(saveItem.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.itemId = action.payload._id
       })
       .addCase(getItem.fulfilled, (state, action) => {
