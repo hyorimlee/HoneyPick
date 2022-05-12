@@ -101,9 +101,9 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
         return res.status(400).send({ err: 'private collection'})
       }
     }
-    var id_list = collection.items.map(({ _id }) => ObjectId(_id))
-    var items = await Item.find({ _id: { $in: id_list }})
-    items = items.map((item, idx) => {
+    var idList = collection.items.map(({ _id }) => ObjectId(_id))
+    var itemList = await Item.find({ _id: { $in: idList }})
+    const items = itemList.map((item, idx) => {
       return { ...item._doc, recommend: collection.items[idx].recommend }
     })
 
@@ -128,23 +128,23 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
 
-    const collection_update = {}
-    const user_update = {}
+    const collectionUpdate = {}
+    const userUpdate = {}
     
     if (title) {
-      collection_update['title'] = title
-      user_update['collections.$.title'] = title
+      collectionUpdate['title'] = title
+      userUpdate['collections.$.title'] = title
     }
     if (description) {
-      collection_update['description'] = description
+      collectionUpdate['description'] = description
     }
     if (typeof isPublic !== 'undefined') {
-      collection_update['isPublic'] = isPublic
+      collectionUpdate['isPublic'] = isPublic
     }
 
     [collection, _] = await Promise.all([
-      Collection.findByIdAndUpdate(collectionId, collection_update, { new: true }),
-      User.updateOne({ _id: userId, 'collections._id': collectionId }, user_update)
+      Collection.findByIdAndUpdate(collectionId, collectionUpdate, { new: true }),
+      User.updateOne({ _id: userId, 'collections._id': collectionId }, userUpdate)
     ])
 
     return res.status(200).send({ collection })
