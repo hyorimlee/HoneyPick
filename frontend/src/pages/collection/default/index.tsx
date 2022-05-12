@@ -4,8 +4,11 @@ import {Text, View} from 'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import CollectionInfo from '../../../containers/collectionInfo'
 import CollectionItems from '../../../containers/collectionItems'
+import { useRoute, RouteProp } from '@react-navigation/native'
+import { CollectionStackParamList } from '../../../../types/navigation'
 
 function Collection() {
+
   return (
     <KeyboardAwareScrollView style={{paddingHorizontal:20, marginTop:30}}>
       <CollectionInfo></CollectionInfo>
