@@ -1,9 +1,9 @@
 import styled from 'styled-components/native'
 
 export const CustomFlatList = styled.FlatList`
-  background-color: red;
   padding: 10px;
   height: 300px;
+  background-color: red;
 `
 
 export const HorizontalContainer = styled.View`
