@@ -1,6 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {ItemState} from './types'
-
 import {
   saveItem,
   getItem,
@@ -30,7 +29,7 @@ const initialState: ItemState = {
     item: '',
     isRecommend: 0,
     stickers: [],
-  }
+  },
 }
 
 const itemSlice = createSlice({

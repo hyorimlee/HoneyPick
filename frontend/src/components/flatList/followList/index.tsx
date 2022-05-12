@@ -33,7 +33,7 @@ function FollowList({data}: IProps) {
 
   const renderItem = ({item}: {item: any}) => {
     const {_id, profileImage, nickname, description, myFollow} = item
-    console.log(`${Config.IMAGE_BASE_URL}/raw/${profileImage}`)
+
     return (
       <HorizontalContainer>
         <View style={{flex: 1}}>
