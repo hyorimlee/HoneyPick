@@ -7,7 +7,11 @@ import {useAppSelector, useAppDispatch} from '../../store/types'
 import {itemToCollection} from '../../store/slices/item/asyncThunk'
 import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
 import {CollectionState} from '../../store/slices/collection/types'
-import {setCollectionId, setSaveCollection} from '../../store/slices/item'
+import {
+  collectionsItemId,
+  setCollectionId,
+  setSaveCollection,
+} from '../../store/slices/item'
 import {ChooseCollectionNavigationProp} from './types'
 
 import {useNavigation} from '@react-navigation/native'
@@ -32,37 +36,36 @@ const radioButtonsData: RadioButtonProps[] = [
   },
 ]
 
-function ChooseCollectionModal({
-  setModalVisible,
-}: {
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+function ChooseCollectionModal() {
   const dispatch = useAppDispatch()
-  const navigation = useNavigation<ChooseCollectionNavigationProp>()
   const {collections} = useAppSelector(state => state.user)
   const {itemId} = useAppSelector(state => state.item)
+  const navigation = useNavigation<ChooseCollectionNavigationProp>()
 
-  const [radioButtons, setRadioButtons] =
-    useState<RadioButtonProps[]>(radioButtonsData)
-  const [selectedValue, setSelectedValue] = useState<string>('')
-  const [openCreationForm, setOpenCreationForm] = useState<boolean>(false)
+  const [radioButtons, setRadioButtons] = useState<RadioButtonProps[]>([
+    {
+      ...radioButtonsData[0],
+    },
+  ])
+  const [selectedValue, setSelectedValue] = useState('')
+  const [openCreationForm, setOpenCreationForm] = useState(false)
 
   useEffect(() => {
-    dispatch(getUserCollectionList()) // 이거 바로바로 반영 안되는듯?
-      .unwrap()
-      .then(res => {
-        const newButtonData = collections.map(
-          (collection: CollectionState) => ({
-            id: collection._id,
-            label: collection.title,
-            value: collection._id,
-            color: '#F9C12E',
-          }),
-        )
-        const ButtonData = radioButtonsData.concat(newButtonData)
-        setRadioButtons(ButtonData)
-      })
+    dispatch(getUserCollectionList())
   }, [])
+
+  useEffect(() => {
+    if (openCreationForm === false && collections.length > 0) {
+      const newButtonData = collections.map((collection: CollectionState) => ({
+        id: collection._id,
+        label: collection.title,
+        value: collection._id,
+        color: '#F9C12E',
+      }))
+      const ButtonData = [{...radioButtonsData[0]}].concat(newButtonData)
+      setRadioButtons(ButtonData)
+    }
+  }, [openCreationForm, collections])
 
   const onPressRadioButton = (radioButtonsArray: RadioButtonProps[]) => {
     setRadioButtons(radioButtonsArray)
@@ -83,8 +86,9 @@ function ChooseCollectionModal({
         collectionId: selectedValue,
       }
       dispatch(itemToCollection(data))
-      dispatch(setSaveCollection('done'))
+      dispatch(setSaveCollection('no'))
       dispatch(setCollectionId(selectedValue))
+      Alert.alert('저장이 완료되었습니다.')
       navigation.navigate('Default', data)
     } else {
       Alert.alert('컬렉션을 선택해주세요.')
@@ -92,8 +96,7 @@ function ChooseCollectionModal({
   }
 
   const onPressBackground = () => {
-    setSaveCollection('no')
-    setModalVisible(false)
+    dispatch(setSaveCollection('no'))
   }
 
   return (
@@ -111,12 +114,11 @@ function ChooseCollectionModal({
               <RadioGroup
                 radioButtons={radioButtons}
                 onPress={onPressRadioButton}
-                containerStyle={{alignItems: 'flex-start'}}
-              ></RadioGroup>
+                containerStyle={{alignItems: 'flex-start'}}></RadioGroup>
             </RadioContainer>
             <BaseButton
               text={'선택된 컬렉션에 아이템 추가하기'}
-              onPress={() => submitItemToCollection()}
+              onPress={submitItemToCollection}
               borderRadius={25}
               marginVertical={10}
               paddingVertical={15}

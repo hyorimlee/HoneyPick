@@ -4,11 +4,18 @@ import {Text, View} from 'react-native'
 import BaseTextInput from '../../../components/textInput/base/index'
 import BaseButton from '../../../components/button/base/index'
 import {useAppDispatch, useAppSelector} from '../../../store/types'
-import { createCollection } from '../../../store/slices/collection/asyncThunk'
-import { useNavigation } from '@react-navigation/native'
-import { ProfileNavigationProp } from '../../../containers/profileInfo/types'
+import {createCollection} from '../../../store/slices/collection/asyncThunk'
+import {useNavigation} from '@react-navigation/native'
+import {ProfileNavigationProp} from '../../../containers/profileInfo/types'
+import {getUserCollectionList} from '../../../store/slices/user/asyncThunk'
 
-function CreateCollection({isModal, setOpenCreationForm}: {isModal?: boolean, setOpenCreationForm?: React.Dispatch<React.SetStateAction<boolean>>}) {
+function CreateCollection({
+  isModal,
+  setOpenCreationForm,
+}: {
+  isModal?: boolean
+  setOpenCreationForm?: React.Dispatch<React.SetStateAction<boolean>>
+}) {
   const navigation = useNavigation<ProfileNavigationProp>()
   const dispatch = useAppDispatch()
   const userId = useAppSelector(state => state.user.userId)
@@ -30,8 +37,15 @@ function CreateCollection({isModal, setOpenCreationForm}: {isModal?: boolean, se
   )
 
   const createNewCollection = useCallback(async () => {
-    await dispatch(createCollection({title: collectionName, description: collectionDescription, isPublic: true}))
+    await dispatch(
+      createCollection({
+        title: collectionName,
+        description: collectionDescription,
+        isPublic: true,
+      }),
+    )
     if (isModal && setOpenCreationForm) {
+      await dispatch(getUserCollectionList())
       setOpenCreationForm(false)
     } else {
       navigation.push('Default', {userId})
@@ -39,8 +53,10 @@ function CreateCollection({isModal, setOpenCreationForm}: {isModal?: boolean, se
   }, [collectionName, collectionDescription])
 
   return (
-    <View style={{paddingHorizontal:20}}>
-      <Text style={{fontWeight:'bold'}}>생성할 컬렉션의 이름을 적어주세요</Text>
+    <View style={{paddingHorizontal: 20}}>
+      <Text style={{fontWeight: 'bold'}}>
+        생성할 컬렉션의 이름을 적어주세요
+      </Text>
       <BaseTextInput
         value={collectionName}
         onChangeText={collectionNameChanged}
@@ -48,7 +64,7 @@ function CreateCollection({isModal, setOpenCreationForm}: {isModal?: boolean, se
         returnKeyType={'next'}
         maxLength={10}
       />
-      <Text style={{fontWeight:'bold'}}>컬렉션에 대한 설명이 있나요?</Text>
+      <Text style={{fontWeight: 'bold'}}>컬렉션에 대한 설명이 있나요?</Text>
       <BaseTextInput
         value={collectionDescription}
         onChangeText={collectionDescChanged}
@@ -64,13 +80,15 @@ function CreateCollection({isModal, setOpenCreationForm}: {isModal?: boolean, se
         borderRadius={5}
         disabled={!collectionName}
       />
-      {isModal && setOpenCreationForm ? <BaseButton
-        text={'돌아가기'}
-        onPress={() => setOpenCreationForm(false)}
-        marginVertical={10}
-        paddingVertical={10}
-        borderRadius={5}
-      /> : null}
+      {isModal && setOpenCreationForm ? (
+        <BaseButton
+          text={'돌아가기'}
+          onPress={() => setOpenCreationForm(false)}
+          marginVertical={10}
+          paddingVertical={10}
+          borderRadius={5}
+        />
+      ) : null}
     </View>
   )
 }

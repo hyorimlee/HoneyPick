@@ -13,16 +13,12 @@ function HorizontalList({data}: IProps) {
 
   const pressedList = useCallback(
     (id: string) => () => {
-      console.log(id)
-      console.log(userId)
       navigation.navigate('Collection', {accountId: userId, collectionId: id})
     },
     [userId],
   )
 
   const renderItem = ({item}: {item: any}) => {
-    console.log('-  ', item)
-
     return (
       <Pressable onPress={pressedList(item._id)}>
         <ListItem></ListItem>
