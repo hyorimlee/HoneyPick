@@ -23,6 +23,8 @@ import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
 import ItemStack from './src/pages/item'
 import ProfileStack from './src/pages/profile'
+import RecommendStack from './src/pages/recommend'
+
 import SaveItemBtn from './src/containers/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
 
@@ -155,12 +157,12 @@ const InnerApp = memo(({}) => {
                 name="EventPage"
                 component={}
                 options={{title: '이벤트'}}
-              />
+              /> */}
               <Tab.Screen
                 name="RecommandPage"
-                component={}
-                options={{title: '추천'}}
-              /> */}
+                component={RecommendStack}
+                options={{title: '추천', headerShown: false}}
+              />
             </Tab.Navigator>
             {/* 전역 버튼, 모달 */}
             {btnShow ? (
