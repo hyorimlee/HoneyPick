@@ -37,7 +37,7 @@ function EditCollection() {
     dispatch(editCollection({accountId: collection!.user!._id, collectionId: collection!._id , collectionInfo: {title: collectionName, description: collectionDescription, isPublic: true}}))
     .unwrap()
     .then((res) => {
-      navigation.push('Collection')
+      navigation.push('Collection', {accountId: collection.user._id, collectionId: collection._id})
     })
 
   }, [collectionName, collectionDescription])

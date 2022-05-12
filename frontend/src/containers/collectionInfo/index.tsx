@@ -13,24 +13,30 @@ import {CollectionState} from '../../store/slices/collection/types'
 import { useRoute, RouteProp } from '@react-navigation/native'
 import { CollectionStackParamList } from '../../../types/navigation'
 import { ProfileStackParamList } from '../../../types/navigation'
-import { deleteCollection, getCollectionList } from '../../store/slices/collection/asyncThunk'
+import { deleteCollection, getCollectionList, getCollection } from '../../store/slices/collection/asyncThunk'
 import { ProfileNavigationProp } from '../profileInfo/types'
 import { configureStore } from '@reduxjs/toolkit'
 
 function CollectionInfo() {
   const navigation = useNavigation<ProfileNavigationProp>()
   const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const {accountId, collectionId} = route.params
+  console.log(route.params)
   const {userId} = useAppSelector(state => state.user)
   const collection = useAppSelector(state => state.collection.currentCollection)
   const vote = useAppSelector(state => state.vote)
   const dispatch = useAppDispatch()
 
-  const [isVoting, setIsVoting] = useState(false)
+  const isVoting = vote!.isClosed
   const isMyList = (collection.user._id === userId)
   const [voteResult, setVoteResult] = useState('')
   const actionSheetRef = createRef<ActionSheet>()
   const username = collection?.user?.username ? collection.user.username : 'No name'
 
+  useEffect(() => {
+    console.log('컬렉션 마운트')
+    dispatch(getCollection({accountId: accountId, collectionId: collectionId}))
+  }, [])
 
   const openSheet = () => {
     actionSheetRef.current?.show()

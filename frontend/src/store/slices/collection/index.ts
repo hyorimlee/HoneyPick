@@ -45,6 +45,11 @@ const collectionSlice = createSlice({
       .addCase(editCollection.rejected, (state, action) => {
         console.log(action.payload)
       })
+      .addCase(getCollection.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.currentCollection = action.payload.collection
+        console.log(state)
+      })
   },
 })
 
