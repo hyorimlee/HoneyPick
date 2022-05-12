@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo} from 'react'
+import {memo, useCallback} from 'react'
 import {useAppDispatch, useAppSelector} from '../../store/types'
 
 import BaseButton from '../../components/button/base'
@@ -10,33 +10,30 @@ import {Container} from './styles'
 import {IComponentProps} from './types'
 import {TouchableWithoutFeedback} from 'react-native'
 
-function saveItemBtn({copiedUrl, setCopiedUrl, btnShowHandler}: IComponentProps) {
+function saveItemBtn({copiedUrl, btnShowHandler}: IComponentProps) {
   const dispatch = useAppDispatch()
-  const {userId} = useAppSelector(state => state.user)
 
-  const submitItem = (url: string) => {
-    dispatch(saveItem(url))
-    dispatch(setSaveCollection('yet')) // 이게 안 될 때가 있음... 왜?!!
-    // setCopiedUrl('')
+  const submitItem = useCallback(() => {
+    dispatch(saveItem(copiedUrl))
+    dispatch(setSaveCollection('yet'))
     btnShowHandler()
-    console.log('아이템 등록')
-  }
+  }, [copiedUrl])
 
   return (
     <TouchableWithoutFeedback onPress={btnShowHandler}>
-        <Container>
-          <BaseButton
-            text={'링크 복사된 아이템 추가하기'}
-            onPress={() => submitItem(copiedUrl)}
-            borderRadius={25}
-            marginVertical={10}
-            marginHorizontal={30}
-            paddingVertical={15}
-            position='absolute'
-            width='100%'
-            bottom='8%'
-          />
-        </Container>
+      <Container>
+        <BaseButton
+          text={'링크 복사된 아이템 추가하기'}
+          onPress={submitItem}
+          borderRadius={25}
+          marginVertical={10}
+          marginHorizontal={30}
+          paddingVertical={15}
+          position="absolute"
+          width="100%"
+          bottom="8%"
+        />
+      </Container>
     </TouchableWithoutFeedback>
   )
 }

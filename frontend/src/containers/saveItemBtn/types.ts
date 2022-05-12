@@ -1,5 +1,4 @@
 export interface IComponentProps {
-    copiedUrl: string
-    setCopiedUrl: (text: string) => void
-    btnShowHandler: () => void
-  }
+  copiedUrl: string
+  btnShowHandler: () => void
+}
