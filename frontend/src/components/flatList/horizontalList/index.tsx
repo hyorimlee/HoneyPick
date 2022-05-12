@@ -3,9 +3,9 @@ import {memo, useCallback} from 'react'
 import {FlatList, Pressable, Text} from 'react-native'
 import {ListItem} from './styles'
 import {IProps} from './types'
-import { ProfileNavigationProp } from '../../../containers/profileInfo/types'
-import { useNavigation } from '@react-navigation/native'
-import { useAppSelector } from '../../../store/types'
+import {ProfileNavigationProp} from '../../../containers/profileInfo/types'
+import {useNavigation} from '@react-navigation/native'
+import {useAppSelector} from '../../../store/types'
 
 function HorizontalList({data}: IProps) {
   const navigation = useNavigation<ProfileNavigationProp>()
@@ -21,7 +21,7 @@ function HorizontalList({data}: IProps) {
   )
 
   const renderItem = ({item}: {item: any}) => {
-    console.log(item)
+    console.log('-  ', item)
 
     return (
       <Pressable onPress={pressedList(item._id)}>
