@@ -8,4 +8,5 @@ router.use('/vote', require('./vote'))
 router.use('/phone', require('./phone'))
 router.use('/profile',require('./profile'))
 router.use('/like', require('./like'))
+router.use('/recommend', require('./recommend'))
 module.exports = router
