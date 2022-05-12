@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, Types: { ObjectId } } = require('mongoose')
 const bcrypt = require('bcrypt')
 const { CollectionSchema } = require('./Collection')
 const { VoteSchema } = require('./Vote')
