@@ -1,11 +1,26 @@
 import * as React from 'react'
-import {memo} from 'react'
-import {FlatList, Text} from 'react-native'
+import {memo, useCallback} from 'react'
+import {FlatList, Pressable, Text} from 'react-native'
+import {ListItem} from './styles'
 import {IProps} from './types'
 
 function HorizontalList({data}: IProps) {
+  const pressedList = useCallback(
+    (id: string, items: []) => () => {
+      console.log(id)
+      console.log(items)
+    },
+    [],
+  )
+
   const renderItem = ({item}: {item: any}) => {
-    return <Text>{item.id}</Text>
+    console.log(item)
+
+    return (
+      <Pressable onPress={pressedList(item._id, item.items)}>
+        <ListItem></ListItem>
+      </Pressable>
+    )
   }
 
   return (
