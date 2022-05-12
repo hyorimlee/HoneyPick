@@ -32,8 +32,9 @@ export const StickerContainer = styled.View`
   margin-top: 5px;
 `
 
-export const PriceContainer = styled.View`
+export const RowTextContainer = styled.View`
   flex-direction: row;
+  align-items: center;
 `
 
 export const NormalText = styled.Text`
@@ -72,4 +73,10 @@ export const PriceTextGray = styled.Text`
 export const EmojiText = styled.Text`
   font-size: 30px;
   margin-right: 5px;
+`
+
+export const Stamp = styled.Image`
+  width: 35px;
+  height: 35px;
+  margin-left: 3px;
 `

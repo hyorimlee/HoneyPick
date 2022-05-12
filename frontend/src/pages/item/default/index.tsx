@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
-  Modal,
   Linking,
 } from 'react-native'
 
@@ -22,7 +21,7 @@ import {useNavigation, useIsFocused} from '@react-navigation/native'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
-import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, StickerContainer, PriceContainer, NormalText, BoldText, PriceText, DashedBorder, EmojiText, PriceTextGray} from './styles'
+import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, StickerContainer, RowTextContainer, NormalText, BoldText, PriceText, DashedBorder, EmojiText, PriceTextGray, Stamp} from './styles'
 
 // itemId, collectionId}: {itemId: string, collectionId: string}
 function Item() {
@@ -109,11 +108,7 @@ function Item() {
           />
         </MenuContainer>
       </ActionSheet>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}></Modal>
+      {/* bottom sheet end */}
       <Container>
         <ImageContainer
           source={
@@ -131,15 +126,15 @@ function Item() {
             <NormalText>{item.brand}</NormalText>
             <BoldText>{item.title}</BoldText>
             {item.priceAfter !== 0 ?
-              <PriceContainer>
+              <RowTextContainer>
                 <PriceText>￦</PriceText>
                 <PriceText>{item.priceBefore}</PriceText>
-              </PriceContainer>
-            : <PriceContainer>
+              </RowTextContainer>
+            : <RowTextContainer>
                 <PriceText>￦</PriceText>
                 <PriceTextGray>{item.priceBefore}</PriceTextGray>
                 <PriceText>{item.priceAfter}</PriceText>
-              </PriceContainer>
+              </RowTextContainer>
             }
             <NormalText>컬렉션 이름</NormalText>
           </TextContainer>
@@ -155,7 +150,17 @@ function Item() {
         {review || filteredStickers.length > 0 ? <DashedBorder /> : null}
         {review ?
           <TextContainer>
-            <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
+            <RowTextContainer>
+              <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
+              <Stamp
+                source={
+                  review.isRecommend === 2 ?
+                  require('../../../assets/images/honeystamp.png') :
+                  require('../../../assets/images/goodstamp.png')
+                }
+                style={{resizeMode: 'contain'}}
+              ></Stamp>
+            </RowTextContainer>
             <StickerContainer>{itemSticker}</StickerContainer>
           </TextContainer>
         : null}
