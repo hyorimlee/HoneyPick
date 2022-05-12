@@ -12,6 +12,7 @@ function ProfileInfo() {
   const navigation = useNavigation<ProfileNavigationProp>()
   const {userId, nickname, profileImage, description, following, follower} =
     useAppSelector(state => state.profile)
+  const myUserId = useAppSelector(state => state.user.userId)
 
   const editProfile = useCallback(() => {
     navigation.navigate('EditProfile')
@@ -45,7 +46,9 @@ function ProfileInfo() {
         </Pressable>
       </InfoContainer>
       <EditContainer>
-        <BaseButton text={'프로필 수정'} onPress={editProfile}></BaseButton>
+        {myUserId === userId ? (
+          <BaseButton text={'프로필 수정'} onPress={editProfile}></BaseButton>
+        ) : null}
       </EditContainer>
     </Container>
   )

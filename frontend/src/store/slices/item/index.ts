@@ -1,6 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {ItemState} from './types'
-
 import {
   saveItem,
   getItem,
@@ -10,7 +9,7 @@ import {
 } from './asyncThunk'
 
 const initialState: ItemState = {
-  itemId: '627a0b84de9513b6d1309954',
+  itemId: '', //627b44ad6ce3b0b4264389f7
   collectionId: '',
   saveCollection: 'no',
   item: {
@@ -22,7 +21,7 @@ const initialState: ItemState = {
     priceBefore: 0,
     priceAfter: 0,
     discountRate: 0,
-    stickers: {},
+    stickers: [],
   },
   review: {
     _id: '',
@@ -30,7 +29,7 @@ const initialState: ItemState = {
     item: '',
     isRecommend: 0,
     stickers: [],
-  }
+  },
 }
 
 const itemSlice = createSlice({
@@ -41,7 +40,6 @@ const itemSlice = createSlice({
       state.collectionId = action.payload
     },
     setSaveCollection(state, action) {
-      console.log('setSavecollection', action.payload)
       state.saveCollection = action.payload
     },
   },
