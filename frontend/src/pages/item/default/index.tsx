@@ -6,14 +6,13 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
-  Modal,
   Linking,
 } from 'react-native'
 
 import {STICKERS} from '../../../modules/stickers'
 import RecommendBar from '../../../containers/recommendBar'
 import BaseButton from '../../../components/button/base'
-import {getItem} from '../../../store/slices/item/asyncThunk'
+import {getItem, itemToCollection} from '../../../store/slices/item/asyncThunk'
 import {ItemNavigationProp} from './types'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 
@@ -22,7 +21,7 @@ import {useNavigation, useIsFocused} from '@react-navigation/native'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
-import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, StickerContainer, PriceContainer, NormalText, BoldText, PriceText, DashedBorder, EmojiText, PriceTextGray} from './styles'
+import {Container, ImageContainer, InfoContainer, TextContainer, MenuContainer, StickerContainer, RowTextContainer, NormalText, BoldText, PriceText, DashedBorder, EmojiText, PriceTextGray, Stamp} from './styles'
 
 // itemId, collectionId}: {itemId: string, collectionId: string}
 function Item() {
@@ -53,19 +52,25 @@ function Item() {
     }
   }, [itemId, isFocused])
 
-  // 유효한 주소인데도 유효하지 않다고 뜸
+  // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
   const goToSite = useCallback(async () => {
-    console.log(item.url)
-    const supported = await Linking.canOpenURL(item.url)
-    if (supported) {
-      await Linking.openURL(item.url)
-    } else {
-      Alert.alert('유효하지 않은 주소입니다.')
-    }
+    await Linking.openURL(item.url)
+    // const supported = await Linking.canOpenURL(item.url)
+    // if (supported) {
+    //   await Linking.openURL(item.url)
+    // } else {
+    //   Alert.alert('유효하지 않은 주소입니다.')
+    // }
   }, [item.url])
 
   const deleteItem = () => {
     Alert.alert('컬렉션에서 삭제하기')
+    const data = {
+      itemId,
+      originalCollectionId: collectionId
+    }
+    dispatch(itemToCollection(data))
+    // 컬렉션에서 삭제하면 프로필로 이동?
   }
 
   const setHoneyItem = () => {
@@ -103,11 +108,7 @@ function Item() {
           />
         </MenuContainer>
       </ActionSheet>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}></Modal>
+      {/* bottom sheet end */}
       <Container>
         <ImageContainer
           source={
@@ -125,15 +126,15 @@ function Item() {
             <NormalText>{item.brand}</NormalText>
             <BoldText>{item.title}</BoldText>
             {item.priceAfter !== 0 ?
-              <PriceContainer>
+              <RowTextContainer>
                 <PriceText>￦</PriceText>
                 <PriceText>{item.priceBefore}</PriceText>
-              </PriceContainer>
-            : <PriceContainer>
+              </RowTextContainer>
+            : <RowTextContainer>
                 <PriceText>￦</PriceText>
                 <PriceTextGray>{item.priceBefore}</PriceTextGray>
                 <PriceText>{item.priceAfter}</PriceText>
-              </PriceContainer>
+              </RowTextContainer>
             }
             <NormalText>컬렉션 이름</NormalText>
           </TextContainer>
@@ -149,7 +150,17 @@ function Item() {
         {review || filteredStickers.length > 0 ? <DashedBorder /> : null}
         {review ?
           <TextContainer>
-            <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
+            <RowTextContainer>
+              <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
+              <Stamp
+                source={
+                  review.isRecommend === 2 ?
+                  require('../../../assets/images/honeystamp.png') :
+                  require('../../../assets/images/goodstamp.png')
+                }
+                style={{resizeMode: 'contain'}}
+              ></Stamp>
+            </RowTextContainer>
             <StickerContainer>{itemSticker}</StickerContainer>
           </TextContainer>
         : null}

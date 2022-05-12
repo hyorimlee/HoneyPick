@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useEffect} from 'react'
+import {Alert} from 'react-native'
 
 import BaseButton from '../../components/button/base'
 import {useAppSelector, useAppDispatch} from '../../store/types'
@@ -47,7 +48,7 @@ function ChooseCollectionModal({
   const [openCreationForm, setOpenCreationForm] = useState<boolean>(false)
 
   useEffect(() => {
-    dispatch(getUserCollectionList())
+    dispatch(getUserCollectionList()) // 이거 바로바로 반영 안되는듯?
       .unwrap()
       .then(res => {
         const newButtonData = collections.map(
@@ -61,7 +62,7 @@ function ChooseCollectionModal({
         const ButtonData = radioButtonsData.concat(newButtonData)
         setRadioButtons(ButtonData)
       })
-  }, [openCreationForm])
+  }, [])
 
   const onPressRadioButton = (radioButtonsArray: RadioButtonProps[]) => {
     setRadioButtons(radioButtonsArray)
@@ -76,19 +77,28 @@ function ChooseCollectionModal({
   }
 
   const submitItemToCollection = () => {
-    const data = {
-      itemId,
-      collectionId: selectedValue,
+    if (selectedValue) {
+      const data = {
+        itemId,
+        collectionId: selectedValue,
+      }
+      dispatch(itemToCollection(data))
+      dispatch(setSaveCollection('done'))
+      dispatch(setCollectionId(selectedValue))
+      navigation.navigate('Default', data)
+    } else {
+      Alert.alert('컬렉션을 선택해주세요.')
     }
-    dispatch(itemToCollection(data))
-    dispatch(setSaveCollection('done'))
-    dispatch(setCollectionId(selectedValue))
-    navigation.navigate('Default', data)
+  }
+
+  const onPressBackground = () => {
+    setSaveCollection('no')
+    setModalVisible(false)
   }
 
   return (
     <CenteredView>
-      <Background onPress={() => setModalVisible(false)} />
+      <Background onPress={onPressBackground} />
       <ModalView>
         {openCreationForm ? (
           <CreateCollection
@@ -100,7 +110,9 @@ function ChooseCollectionModal({
             <RadioContainer>
               <RadioGroup
                 radioButtons={radioButtons}
-                onPress={onPressRadioButton}></RadioGroup>
+                onPress={onPressRadioButton}
+                containerStyle={{alignItems: 'flex-start'}}
+              ></RadioGroup>
             </RadioContainer>
             <BaseButton
               text={'선택된 컬렉션에 아이템 추가하기'}
