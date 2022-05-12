@@ -5,16 +5,10 @@ import {ListItem} from './styles'
 import {IProps} from './types'
 
 function HorizontalList({data}: IProps) {
-  const pressedList = useCallback(
-    (id: string, items: []) => () => {
-      console.log(id)
-      console.log(items)
-    },
-    [],
-  )
+  const pressedList = useCallback((id: string, items: []) => () => {}, [])
 
   const renderItem = ({item}: {item: any}) => {
-    console.log(item)
+    console.log('-  ', item)
 
     return (
       <Pressable onPress={pressedList(item._id, item.items)}>
