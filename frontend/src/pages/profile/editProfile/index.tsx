@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {Alert, Image, Pressable, Text, TextInput, View} from 'react-native'
+import {Alert, ImageBackground, Pressable, Text, TextInput, View} from 'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import BaseTextInput from '../../../components/textInput/base'
 import BaseButton from '../../../components/button/base'
@@ -13,9 +13,13 @@ import {setProfile} from '../../../store/slices/profile/asyncThunk'
 import {useNavigation} from '@react-navigation/native'
 import {ProfileNavigationProp} from './types'
 import Config from 'react-native-config'
-import axios from 'axios'
 
-const paddingHorizontal = 30
+import {IconProp} from '@fortawesome/fontawesome-svg-core'
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
+import {faImage} from '@fortawesome/free-solid-svg-icons'
+import collectionInfo from '../../../containers/collectionInfo'
+
+import {ProfileImage, ChangeImage} from './styles'
 
 function EditProfile() {
   const dispatch = useAppDispatch()
@@ -114,23 +118,21 @@ function EditProfile() {
   }, [nickname, description, phone, profileImage])
 
   return (
-    <KeyboardAwareScrollView style={{paddingHorizontal}}>
-      <Pressable onPress={profileImageChanged}>
-        <Image
-          source={{
-            uri: profileImage,
-          }}
-          style={{
-            width: 128,
-            height: 128,
-            resizeMode: 'contain',
-            borderRadius: 100,
-            backgroundColor: 'black',
-            alignSelf: 'center',
-            marginVertical: 30,
-          }}
-        />
-      </Pressable>
+    <KeyboardAwareScrollView style={{padding: 30}}>
+      <ProfileImage
+        source={{uri: profileImage}}
+        resizeMode='contain'
+      >
+        <ChangeImage onPress={profileImageChanged}>
+          {/* justifyContent가 안 먹음 */}
+          {/* <FontAwesomeIcon
+            icon={faImage as IconProp}
+            color='#FFFFFF'
+            size={60}
+            style={{opacity: 30, backgroundColor:'red', alignSelf: 'center', justifyContent: 'center'}}
+          /> */}
+        </ChangeImage>
+      </ProfileImage>
       <BaseTextInput
         value={nickname}
         defaultValue={initNickname}
@@ -154,27 +156,33 @@ function EditProfile() {
       {isPhoneChange ? (
         <View>
           <PhoneForm setValidPhone={setValidPhone} />
+          <View style={{alignItems: 'center'}}>
+            <BaseButton
+              text={'번호 변경 취소'}
+              onPress={toggleIsPhoneChange}
+              marginVertical={10}
+              paddingVertical={10}
+              width='60%'
+            />
+          </View>
+        </View>
+      ) : (
+        <View style={{alignItems: 'center'}}>
           <BaseButton
-            text={'번호 변경 취소'}
+            text={'휴대전화 번호 변경'}
             onPress={toggleIsPhoneChange}
             marginVertical={10}
             paddingVertical={10}
+            width='60%'
           />
         </View>
-      ) : (
-        <BaseButton
-          text={'휴대전화 번호 변경'}
-          onPress={toggleIsPhoneChange}
-          marginVertical={10}
-          paddingVertical={10}
-        />
       )}
-
       <BaseButton
         text={'수정 완료'}
         onPress={setProfileChange}
-        marginVertical={30}
+        marginVertical={10}
         paddingVertical={10}
+        borderRadius={5}
       />
     </KeyboardAwareScrollView>
   )
