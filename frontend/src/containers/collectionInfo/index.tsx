@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useCallback, useState, createRef} from 'react'
+import {memo, useCallback, useState, useEffect, createRef} from 'react'
 import {Image, Text, TouchableOpacity} from 'react-native'
 import BaseButton from '../../components/button/base'
 import {useNavigation} from '@react-navigation/native'
@@ -13,20 +13,24 @@ import {CollectionState} from '../../store/slices/collection/types'
 import { useRoute, RouteProp } from '@react-navigation/native'
 import { CollectionStackParamList } from '../../../types/navigation'
 import { ProfileStackParamList } from '../../../types/navigation'
-import { deleteCollection } from '../../store/slices/collection/asyncThunk'
+import { deleteCollection, getCollectionList } from '../../store/slices/collection/asyncThunk'
 import { ProfileNavigationProp } from '../profileInfo/types'
+import { configureStore } from '@reduxjs/toolkit'
 
 function CollectionInfo() {
   const navigation = useNavigation<ProfileNavigationProp>()
   const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const {userId} = useAppSelector(state => state.user)
   const collection = useAppSelector(state => state.collection.currentCollection)
+  const vote = useAppSelector(state => state.vote)
   const dispatch = useAppDispatch()
 
   const [isVoting, setIsVoting] = useState(false)
-  const [isMyList, setIsMyList] = useState(true)
+  const isMyList = (collection.user._id === userId)
   const [voteResult, setVoteResult] = useState('')
   const actionSheetRef = createRef<ActionSheet>()
   const username = collection?.user?.username ? collection.user.username : 'No name'
+
 
   const openSheet = () => {
     actionSheetRef.current?.show()
