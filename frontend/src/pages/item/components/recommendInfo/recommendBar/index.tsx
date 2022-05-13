@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {memo, useState, useEffect} from 'react'
 
-import {STICKERS} from '../../../modules/stickers'
+import {STICKERS} from '~/modules/stickers'
 import {IStickersProp} from './types'
 import GaugeBar from '../gaugeBar'
 

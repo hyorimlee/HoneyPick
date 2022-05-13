@@ -29,7 +29,11 @@ function ProfileInfo() {
   }, [])
 
   const navigateFollow = () => {
-    followNavigation.push('Follow', {userId})
+    // followNavigation.push('Follow', {userId})
+    followNavigation.push('Item', {
+      itemId: '626b67ba8b35804ffbf0cd1f',
+      collectionId: '626f4a6a408ce2c0c81473f5',
+    })
   }
 
   return (

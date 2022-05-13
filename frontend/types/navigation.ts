@@ -2,7 +2,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
 export type RootStackParamList = {
   Home: undefined
-  Item: undefined
+  Item: {itemId: string; collectionId: string}
   Collection: {accountId: string; collectionId: string} | undefined
   CreateCollection: undefined
   Follow: {userId: string}
