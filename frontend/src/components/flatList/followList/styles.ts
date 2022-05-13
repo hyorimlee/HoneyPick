@@ -1,8 +1,8 @@
 import styled from 'styled-components/native'
 
 export const CustomFlatList = styled.FlatList`
-  padding: 10px;
-  height: 300px;
+  padding-horizontal: 10px;
+  margin-bottom: 20px;
 `
 
 export const HorizontalContainer = styled.View`
