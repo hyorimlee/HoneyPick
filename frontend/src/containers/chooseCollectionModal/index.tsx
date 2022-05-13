@@ -24,7 +24,7 @@ import {
   RadioContainer,
   NormalText,
 } from './styles'
-import CreateCollection from '../../pages/profile/createCollection'
+import CreateCollection from '../../pages/createCollection'
 
 const radioButtonsData: RadioButtonProps[] = [
   {
