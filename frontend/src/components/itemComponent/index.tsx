@@ -3,10 +3,12 @@ import {memo, useCallback, useState} from 'react'
 import {Text, Image} from 'react-native'
 import {IComponentProps} from './types'
 import {ItemComponentContainer} from './styles'
+import Config from 'react-native-config'
 
 function ItemComponent({
   text,
   price,
+  uri,
   onPress,
   onPressIn,
   onPressOut,
@@ -59,7 +61,7 @@ function ItemComponent({
     >
       <Image
         style={{width: 90, height:90, borderRadius, backgroundColor}}
-        source={require('../../assets/images/honeybee.png')}
+        source={{uri: `${Config.IMAGE_BASE_URL}/raw/${uri}`}}
         />
       <Text style={{fontSize, textAlign, color, fontWeight}}>{price}</Text>
       <Text style={{fontSize, textAlign, color, fontWeight}}>{text}</Text>

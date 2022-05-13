@@ -19,6 +19,7 @@ export type ProfileStackParamList = {
   EditCollection: undefined
   Follow: {userId: string}
   CreateCollection: undefined
+  CreateVote: undefined
 }
 
 export type CollectionStackParamList = {
