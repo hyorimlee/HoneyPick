@@ -1,14 +1,13 @@
 import * as React from 'react'
 import {memo, useCallback} from 'react'
-import {FlatList, Pressable, Text} from 'react-native'
 import {IProps} from './types'
-import {ProfileNavigationProp} from '../../../containers/profileInfo/types'
 import {useNavigation} from '@react-navigation/native'
 import {useAppSelector} from '../../../store/types'
 import {CustomFlatList, ItemContainer, ListItem, Title} from './styles'
+import {RootStackNavigationProp} from '~/../types/navigation'
 
 function HorizontalList({data}: IProps) {
-  const navigation = useNavigation<ProfileNavigationProp>()
+  const navigation = useNavigation<RootStackNavigationProp>()
   const {userId} = useAppSelector(state => state.profile)
 
   const pressedList = useCallback(
@@ -28,7 +27,10 @@ function HorizontalList({data}: IProps) {
   }
 
   return (
-    <CustomFlatList renderItem={renderItem} data={data} horizontal={true}></CustomFlatList>
+    <CustomFlatList
+      renderItem={renderItem}
+      data={data}
+      horizontal={true}></CustomFlatList>
   )
 }
 

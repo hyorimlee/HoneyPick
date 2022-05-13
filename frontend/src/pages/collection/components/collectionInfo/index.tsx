@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, useCallback, useState, useEffect, createRef} from 'react'
-import {Image, Text, TouchableOpacity, ViewPropTypes} from 'react-native'
+import {memo, useCallback, useState, createRef} from 'react'
+import {Image, Text, TouchableOpacity} from 'react-native'
 import BaseButton from '~/components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {

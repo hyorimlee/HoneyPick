@@ -1,36 +1,23 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {
-  Alert,
-  ImageBackground,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
+import {TextInput, View} from 'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import BaseTextInput from '../../../../components/textInput/base'
-import BaseButton from '../../../../components/button/base'
-import PhoneForm from '../../../../containers/submitForm/phoneForm'
-import {nicknameAlert, nicknameValid} from '../../../../modules/valid'
-import {useAppDispatch, useAppSelector} from '../../../../store/types'
+import BaseTextInput from '~/components/textInput/base'
+import BaseButton from '~/components/button/base'
+import PhoneForm from '~/containers/submitForm/phoneForm'
+import {nicknameAlert, nicknameValid} from '~/modules/valid'
+import {useAppDispatch, useAppSelector} from '~/store/types'
 import ImagePicker from 'react-native-image-crop-picker'
 import ImageResizer from 'react-native-image-resizer'
-import {setProfile} from '../../../../store/slices/profile/asyncThunk'
+import {setProfile} from '~/store/slices/profile/asyncThunk'
 import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp} from './types'
+import {ProfileEditNavigationProp} from './types'
 import Config from 'react-native-config'
-
-import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
-import {faImage} from '@fortawesome/free-solid-svg-icons'
-import collectionInfo from '../../../collection/components/collectionInfo'
-
 import {ProfileImage, ChangeImage} from './styles'
 
 function EditProfile() {
   const dispatch = useAppDispatch()
-  const navigation = useNavigation<ProfileNavigationProp>()
+  const navigation = useNavigation<ProfileEditNavigationProp>()
   const {initNickname, initDescription, initProfileImage, userId} =
     useAppSelector(state => {
       const {nickname, description, profileImage, userId} = state.profile

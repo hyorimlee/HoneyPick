@@ -1,31 +1,20 @@
 import * as React from 'react'
 import {memo} from 'react'
-import {View, Text} from 'react-native'
-import HorizontalList from '../../../../../components/flatList/horizontalList'
-import BaseButton from '../../../../../components/button/base'
-import {useAppSelector} from '../../../../../store/types'
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native'
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
-import {
-  BottomTabParamList,
-  ProfileStackParamList,
-} from '../../../../../../types/navigation'
-import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {View} from 'react-native'
+import HorizontalList from '~/components/flatList/horizontalList'
+import BaseButton from '~/components/button/base'
+import {useAppSelector} from '~/store/types'
+import {useNavigation} from '@react-navigation/native'
 import {
   CollectionHorizontalView,
   DivisionContainer,
   DivisionText,
 } from './styles'
+import {RootStackNavigationProp} from '~/../types/navigation'
 
 function ProfileLists() {
   const {collections, likes, votes} = useAppSelector(state => state.profile)
-  const navigation =
-    useNavigation<
-      CompositeNavigationProp<
-        BottomTabNavigationProp<BottomTabParamList, 'Profile'>,
-        NativeStackNavigationProp<ProfileStackParamList, 'CreateCollection'>
-      >
-    >()
+  const navigation = useNavigation<RootStackNavigationProp>()
 
   const addCollection = () => {
     navigation.navigate('CreateCollection')

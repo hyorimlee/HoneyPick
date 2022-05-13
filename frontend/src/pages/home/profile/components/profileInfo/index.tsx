@@ -1,25 +1,35 @@
 import * as React from 'react'
 import {memo, useCallback} from 'react'
-import {Image, Pressable, Text} from 'react-native'
+import {Pressable} from 'react-native'
 import BaseButton from '~/components/button/base'
 import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp} from './types'
 import {useAppSelector} from '~/store/types'
 import Config from 'react-native-config'
-import {Container, EditContainer, InfoContainer, FollowContainer, ProfileImage, Nickname, NormalText} from './styles'
+import {
+  Container,
+  EditContainer,
+  InfoContainer,
+  FollowContainer,
+  ProfileImage,
+  Nickname,
+  NormalText,
+} from './styles'
+import {RootStackNavigationProp} from '~/../types/navigation'
+import {ProfileDefaultNavigationProp} from '../../default/types'
 
 function ProfileInfo() {
-  const navigation = useNavigation<ProfileNavigationProp>()
+  const profileDefaultNavigation = useNavigation<ProfileDefaultNavigationProp>()
+  const followNavigation = useNavigation<RootStackNavigationProp>()
   const {userId, nickname, profileImage, description, following, follower} =
     useAppSelector(state => state.profile)
   const myUserId = useAppSelector(state => state.user.userId)
 
   const editProfile = useCallback(() => {
-    navigation.navigate('EditProfile')
+    profileDefaultNavigation.navigate('EditProfile')
   }, [])
 
   const navigateFollow = () => {
-    navigation.push('Follow', {userId})
+    followNavigation.push('Follow', {userId})
   }
 
   return (
@@ -32,25 +42,20 @@ function ProfileInfo() {
         <NormalText>{description}</NormalText>
         <FollowContainer>
           <Pressable onPress={navigateFollow}>
-            <NormalText>
-              {following} 팔로잉
-            </NormalText>
+            <NormalText>{following} 팔로잉</NormalText>
           </Pressable>
           <Pressable onPress={navigateFollow}>
-            <NormalText>
-              {follower} 팔로워
-            </NormalText>
+            <NormalText>{follower} 팔로워</NormalText>
           </Pressable>
         </FollowContainer>
       </InfoContainer>
       <EditContainer>
         {myUserId === userId ? (
           <BaseButton
-            text='프로필 수정'
+            text="프로필 수정"
             onPress={editProfile}
             paddingVertical={2}
-            fontSize={12}
-          ></BaseButton>
+            fontSize={12}></BaseButton>
         ) : null}
       </EditContainer>
     </Container>
