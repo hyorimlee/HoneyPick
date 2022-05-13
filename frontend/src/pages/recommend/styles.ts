@@ -84,11 +84,11 @@ const ImageContainer = styled.ImageBackground`
   aspect-ratio: 1;
 `
 
-const ItemPageContainer = styled.View`
+const ItemPageContainer = styled.ImageBackground`
   width: 100%;
-  background-color: #F7F7F7;
-  padding-top: 30px;
+  padding-top: 50px;
   margin-bottom: 20px;
+  overflow-x: hidden;
 `
 
 export {Container, CollectionContainer, SearchBarContainer, SlideContainer, ItemContainer, NormalText, BoldText, InfoContainer, ImageContainer, ItemBox, ItemPageContainer}

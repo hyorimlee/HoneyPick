@@ -14,9 +14,22 @@ import {Container, CollectionContainer, SearchBarContainer, ItemPageContainer, I
 
 import ViewSlider from 'react-native-view-slider'
 
+import {useNavigation} from '@react-navigation/native'
+import { RecommendNavigationProps } from './types'
+
 const { width, height } = Dimensions.get('window');
 
 function RecommendStack() {
+  const navigation = useNavigation<RecommendNavigationProps>()
+
+  const {userId} = useAppSelector(state => state.profile)
+
+  const pressedCollection = useCallback(
+    (id: String) => () => {
+      navigation.navigate('Collection', {accountId: userId, collectionId: id})
+    },
+    [userId],
+  )
 
   const dispatch = useAppDispatch()
   const getRecommendList = () => {
@@ -37,7 +50,8 @@ function RecommendStack() {
   )
 
   const goToCollection = (collectionId: String) => {
-    Alert.alert(`${collectionId} 컬렉션으로 이동하기`)
+    // Alert.alert(`${collectionId} 컬렉션으로 이동하기`)
+    pressedCollection(collectionId)
   }
   const goToItem = (itemId: String) => {
     Alert.alert(`${itemId} 아이템으로 이동하기`)
@@ -120,7 +134,10 @@ function RecommendStack() {
 
         </SearchBarContainer>
 
-        <ItemPageContainer>
+        <ItemPageContainer
+          source={require('../../assets/images/receipt_long.png')}
+          resizeMode='stretch'
+        >
           <ViewSlider 
             renderSlides = {
               <>
