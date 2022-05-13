@@ -58,12 +58,10 @@ export const itemToCollection = createAsyncThunk<
   {state: RootState}
 >(
   'item/itemToCollection',
-  async (
-    {itemId, originalCollectionId, collectionId}: IItemToCollectionParameter,
-    thunkAPI,
-  ) => {
+  async ({itemId, originalCollectionId, collectionId}, thunkAPI) => {
     try {
       const {accessToken} = thunkAPI.getState().user
+
       const response = await axios({
         method: 'PATCH',
         url: `${Config.API_BASE_URL}/item/${itemId}`,
@@ -72,10 +70,9 @@ export const itemToCollection = createAsyncThunk<
           authorization: `Bearer ${accessToken}`,
         },
       })
-      console.log(response.data)
+
       return response.data
     } catch (err: any) {
-      console.log(err.response.data)
       return thunkAPI.rejectWithValue(err.response.data)
     }
   },
@@ -85,27 +82,24 @@ export const saveReview = createAsyncThunk<
   any,
   ISaveReviewParameter,
   {state: RootState}
->(
-  'item/saveReview',
-  async ({itemId, isRecommend, stickers}: ISaveReviewParameter, thunkAPI) => {
-    try {
-      const {accessToken} = thunkAPI.getState().user
-      const response = await axios({
-        method: 'POST',
-        url: `${Config.API_BASE_URL}/item/${itemId}/review`,
-        data: {isRecommend, stickers},
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      })
-      console.log(response.data)
-      return response.data
-    } catch (err: any) {
-      console.log(err.response.data)
-      return thunkAPI.rejectWithValue(err.response.data)
-    }
-  },
-)
+>('item/saveReview', async ({itemId, isRecommend, stickers}, thunkAPI) => {
+  try {
+    const {accessToken} = thunkAPI.getState().user
+
+    const response = await axios({
+      method: 'POST',
+      url: `${Config.API_BASE_URL}/item/${itemId}/review`,
+      data: {isRecommend, stickers},
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    return response.data
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response.data)
+  }
+})
 
 export const editReview = createAsyncThunk<
   any,

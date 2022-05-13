@@ -1,4 +1,4 @@
-import { ColorValue, ViewProps } from 'react-native';
+import {ColorValue, ViewProps} from 'react-native'
 
 export interface IComponentProps {
   emoji: string

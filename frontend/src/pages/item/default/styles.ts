@@ -8,7 +8,7 @@ export const Container = styled.ScrollView`
 export const ImageContainer = styled.ImageBackground`
   width: 100%;
   aspect-ratio: 1;
-`;
+`
 
 export const InfoContainer = styled.View`
   flex-direction: row;
@@ -49,7 +49,7 @@ export const BoldText = styled.Text`
 `
 
 export const PriceText = styled.Text`
-  color: #F9C12E;
+  color: #f9c12e;
   font-size: 18px;
   font-weight: bold;
   margin-top: 5px;
@@ -57,15 +57,15 @@ export const PriceText = styled.Text`
 `
 
 export const PriceTextGray = styled.Text`
-  color: #8C8C8C;
+  color: #8c8c8c;
   font-size: 18px;
   font-weight: bold;
   margin-top: 5px;
   margin-right: 3px;
-  text-decoration: line-through
-  `
-  
-  export const DashedBorder = styled.View`
+  text-decoration: line-through;
+`
+
+export const DashedBorder = styled.View`
   border-style: dashed;
   border-bottom-width: 1px;
 `
