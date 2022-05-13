@@ -3,7 +3,7 @@ import {memo, useCallback} from 'react'
 import {Image, Pressable, Text, View} from 'react-native'
 import {SignInScreenProps} from './types'
 import {NavigateContainer} from './styles'
-import SignInForm from '../../containers/submitForm/signInForm'
+import SignInForm from './components/signInForm'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 const paddingHorizontal = 30

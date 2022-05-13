@@ -4,7 +4,7 @@ import {Image, Pressable, Text, View} from 'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {SignUpScreenProps} from './types'
 import {Container} from './styles'
-import SignUpForm from '../../containers/submitForm/signUpForm'
+import SignUpForm from './components/signUpForm'
 
 const paddingHorizontal = 30
 const color = 'black'
