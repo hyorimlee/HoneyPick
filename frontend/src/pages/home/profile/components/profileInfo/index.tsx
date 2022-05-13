@@ -1,9 +1,10 @@
 import * as React from 'react'
 import {memo, useCallback} from 'react'
 import {Image, Pressable, Text} from 'react-native'
-import BaseButton from '../../../../../components/button/base'
+import BaseButton from '~/components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {ProfileNavigationProp} from './types'
+import {useAppSelector} from '~/store/types'
 import Config from 'react-native-config'
 import {
   Container,

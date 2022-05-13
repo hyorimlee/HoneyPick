@@ -2,8 +2,8 @@ import * as React from 'react'
 import {memo, useState, useEffect, useCallback, useMemo} from 'react'
 import {View, Text, Pressable} from 'react-native'
 import FollowList from './components/followList'
-import {getFollowList} from '../../store/slices/profile/asyncThunk'
-import {useAppDispatch, useAppSelector} from '../../store/types'
+import {getFollowList} from '~/store/slices/profile/asyncThunk'
+import {useAppDispatch, useAppSelector} from '~/store/types'
 import {
   Container,
   Background,
@@ -39,7 +39,7 @@ function FollowStack() {
   return (
     <Container>
       <Background
-        source={require('../../assets/images/receipt_long.png')}
+        source={require('~/assets/images/receipt_long.png')}
         resizeMode="stretch">
         <>
           <HorizontalContainer>
