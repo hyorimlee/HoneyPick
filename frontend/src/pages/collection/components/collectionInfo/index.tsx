@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {memo, useCallback, useState, useEffect, createRef} from 'react'
 import {Image, Text, TouchableOpacity, ViewPropTypes} from 'react-native'
-import BaseButton from '../../../../components/button/base'
+import BaseButton from '~/components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {
   Container,
@@ -11,19 +11,19 @@ import {
   MenuButtonContainer,
   MenuContainer,
 } from './styles'
-import {useAppSelector, useAppDispatch} from '../../../../store/types'
+import {useAppSelector, useAppDispatch} from '~/store/types'
 import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {useRoute, RouteProp} from '@react-navigation/native'
-import {ProfileStackParamList} from '../../../../../types/navigation'
+import {ProfileStackParamList} from '~/../types/navigation'
 import {
   deleteCollection,
   getCollectionList,
   getCollection,
-} from '../../../../store/slices/collection/asyncThunk'
-import {createVote} from '../../../../store/slices/vote/asyncThunk'
+} from '~/store/slices/collection/asyncThunk'
+import {createVote} from '~/store/slices/vote/asyncThunk'
 import {ProfileNavigationProp} from '../profileInfo/types'
 import {configureStore} from '@reduxjs/toolkit'
 
@@ -96,7 +96,7 @@ function CollectionInfo() {
           </Text>
         </InfoTextContainer>
         <Image
-          source={require('../../assets/images/honeybee.png')}
+          source={require('~/assets/images/honeybee.png')}
           style={{
             width: 96,
             height: 96,

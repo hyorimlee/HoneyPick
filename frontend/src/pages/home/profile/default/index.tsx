@@ -6,7 +6,7 @@ import {
   ProfileNavigationProp,
   ProfileStackParamList,
 } from '../../../../../types/navigation'
-import ProfileInfo from '../../../../containers/profileInfo'
+import ProfileInfo from '../components/profileInfo'
 import {getLists, getProfile} from '../../../../store/slices/profile/asyncThunk'
 import {useAppDispatch, useAppSelector} from '../../../../store/types'
 import {SafeAreaView} from 'react-native-safe-area-context'
