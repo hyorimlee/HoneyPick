@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Config from 'react-native-config'
-import {memo, createRef, useState, useEffect, useCallback} from 'react'
+import {memo, useState, useEffect, useRef, useCallback} from 'react'
 import {
   Alert,
   SafeAreaView,
@@ -43,41 +43,18 @@ function Item() {
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const navigation = useNavigation<ItemNavigationProp>()
-  const actionSheetRef = createRef<ActionSheet>()
-  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const actionSheetRef = useRef<ActionSheet | null>(null)
   const [filteredStickers, setFilteredStickers] = useState<[string, number][]>(
     [],
   )
   const {itemId, collectionId, item, review} = useAppSelector(
     state => state.item,
   )
-  // const {item, review} = useAppSelector(state => state.item)
 
   const openSheet = () => {
     actionSheetRef.current?.show()
+    console.log(actionSheetRef.current)
   }
-
-  useEffect(() => {
-    const filtered = item.stickers.filter(s => s[1])
-    setFilteredStickers(filtered)
-  }, [item.stickers])
-
-  useEffect(() => {
-    if (itemId && isFocused) {
-      dispatch(getItem(itemId))
-    }
-  }, [itemId, isFocused])
-
-  // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
-  const goToSite = useCallback(async () => {
-    await Linking.openURL(item.url)
-    // const supported = await Linking.canOpenURL(item.url)
-    // if (supported) {
-    //   await Linking.openURL(item.url)
-    // } else {
-    //   Alert.alert('유효하지 않은 주소입니다.')
-    // }
-  }, [item.url])
 
   const deleteItem = () => {
     Alert.alert('컬렉션에서 삭제하기')
@@ -93,6 +70,29 @@ function Item() {
     navigation.navigate('SetHoneyItem')
   }
 
+  useEffect(() => {
+    const filtered = item.stickers.filter(s => s[1])
+    setFilteredStickers(filtered)
+  }, [item.stickers])
+
+  useEffect(() => {
+    if (itemId && isFocused) {
+      dispatch(getItem(itemId))
+    }
+  }, [itemId, isFocused])
+
+  // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
+  const goToSite = useCallback(async () => {
+    const supported = await Linking.canOpenURL(item.url)
+    // if (supported) {
+    //   await Linking.openURL(item.url)
+    // } else {
+    //   Alert.alert(
+    //     '죄송합니다. 잘못된 주소이거나 오류로 이동이 불가능합니다. 다시 시도해주세요.',
+    //   )
+    // }
+  }, [item.url])
+
   const itemSticker = STICKERS.map(sticker => {
     if (review?.stickers.includes(sticker.id)) {
       return <EmojiText key={sticker.id}>{sticker.emoji}</EmojiText>
@@ -101,7 +101,6 @@ function Item() {
 
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
-      {/* bottom sheet menu */}
       <ActionSheet
         ref={actionSheetRef}
         containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
@@ -122,7 +121,6 @@ function Item() {
           />
         </MenuContainer>
       </ActionSheet>
-      {/* bottom sheet end */}
       <Container>
         <ImageContainer
           source={
