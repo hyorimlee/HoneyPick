@@ -25,7 +25,10 @@ const initialState = {
     createdAt: '2022-05-07',
     updatedAt: '2022-05-07',
     __v: 1,
-  }
+  },
+  currentItems: [
+
+  ]
 }
 
 const collectionSlice = createSlice({
@@ -37,10 +40,6 @@ const collectionSlice = createSlice({
     builder
       .addCase(editCollection.fulfilled, (state, action) => {
         state.currentCollection = action.payload.collection
-        console.log('상태변화')
-        console.log(action.payload)
-        console.log(initialState)
-        console.log(state.currentCollection)
       })
       .addCase(editCollection.rejected, (state, action) => {
         console.log(action.payload)
@@ -48,6 +47,7 @@ const collectionSlice = createSlice({
       .addCase(getCollection.fulfilled, (state, action) => {
         console.log(action.payload)
         state.currentCollection = action.payload.collection
+        state.currentItems = action.payload.items
         console.log(state)
       })
   },

@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import EditProfile from './editProfile/index'
 import Profile from './default'
 import CreateCollection from './createCollection'
+import CreateVote from '../collection/createVote'
 import {useAppSelector} from '../../store/types'
 import Collection from '../collection/default'
 import EditCollection from '../collection/editCollection'
@@ -62,6 +63,11 @@ function ProfileStack({navigation}: {navigation: BottomTabProfileProp}) {
       <Stack.Screen
         name="EditCollection"
         component={EditCollection}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CreateVote"
+        component={CreateVote}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

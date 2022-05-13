@@ -7,35 +7,13 @@ import {Container} from './styles'
 import {useAppSelector} from '../../store/types'
 import ItemComponent from '../../components/itemComponent'
 import { CollectionNavigationProp } from '../../pages/collection/types'
+import { useRoute, RouteProp } from '@react-navigation/native'
+import { ProfileStackParamList } from '../../../types/navigation'
 
 function ColletionItems() {
   const navigation = useNavigation<CollectionNavigationProp>()
-
-  const items = [
-    {itemName: 'item1', itemPrice:1000},
-    {itemName: 'item2', itemPrice:1000},
-    {itemName: 'item3'},
-    {itemName: 'item4'},
-    {itemName: 'item5'},
-    {itemName: 'item6'},
-    {itemName: 'item7'},
-    {itemName: 'item8'},
-    {itemName: 'item9'},
-    {itemName: 'item1'},
-    {itemName: 'item2'},
-    {itemName: 'item3'},
-    {itemName: 'item4'},
-    {itemName: 'item5'},
-    {itemName: 'item6'},
-    {itemName: 'item7'},
-    {itemName: 'item8'},
-    {itemName: 'item9'},
-    {itemName: 'item1'},
-    {itemName: 'item2'},
-    {itemName: 'item3'},
-    {itemName: 'item4'},
-  ]
-
+  const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const items = useAppSelector(state => state.collection.currentItems)
 
   const pushToItemPage = useCallback(() => {
     navigation.push('ItemPage')
@@ -44,8 +22,9 @@ function ColletionItems() {
   return (
     <Container>
       {items.map((item, index) => {
-        const price = item.itemPrice ? item.itemPrice : 'No Price'
-        return(<ItemComponent key={index} text={item.itemName} price={price} onPress={pushToItemPage}/>)
+        const price = item.priceBefore ? item.priceBefore : 'No Price'
+        console.log(item)
+        return(<ItemComponent key={index} text={item.title} price={price} uri={item.thumbnail} onPress={pushToItemPage}/>)
       })}
     </Container>
   )

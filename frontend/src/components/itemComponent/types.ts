@@ -3,6 +3,7 @@ import {ColorValue} from 'react-native'
 export interface IComponentProps {
   text: string
   price: string | number
+  uri: string | undefined
   onPress: () => void
   onPressIn?: () => void
   onPressOut?: () => void
