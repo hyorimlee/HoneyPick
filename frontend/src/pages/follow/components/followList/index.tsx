@@ -6,8 +6,7 @@ import BaseButton from '../../../../components/button/base'
 import Config from 'react-native-config'
 import {useAppDispatch, useAppSelector} from '../../../../store/types'
 import {setFollow} from '../../../../store/slices/profile/asyncThunk'
-import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp} from '../../../../../types/navigation'
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native'
 import profileSlice from '../../../../store/slices/profile'
 import {
   CustomFlatList,
@@ -20,7 +19,7 @@ import {
 
 function FollowList({data}: IProps) {
   const dispatch = useAppDispatch()
-  const navigation = useNavigation<ProfileNavigationProp>()
+  // const navigation = useNavigation<ProfileNavigationProp>()
   const myUserId = useAppSelector(state => state.user.userId)
 
   const followChange = useCallback(
@@ -33,7 +32,7 @@ function FollowList({data}: IProps) {
 
   const navigateProfile = useCallback(
     (userId: string) => () => {
-      navigation.navigate('Default', {userId})
+      // navigation.navigate('Default', {userId})
     },
     [],
   )

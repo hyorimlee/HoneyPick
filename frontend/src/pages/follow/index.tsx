@@ -39,29 +39,31 @@ function FollowStack() {
   return (
     <Container>
       <Background
-        source={require('../../../assets/images/receipt_long.png')}
+        source={require('../../assets/images/receipt_long.png')}
         resizeMode="stretch">
-        <HorizontalContainer>
-          <Pressable onPress={selectedFollowing}>
-            <CustomText selected={selected === 'following' ? true : false}>
-              following
+        <>
+          <HorizontalContainer>
+            <Pressable onPress={selectedFollowing}>
+              <CustomText selected={selected === 'following' ? true : false}>
+                following
+              </CustomText>
+            </Pressable>
+            <Pressable onPress={selectedFollower}>
+              <CustomText selected={selected === 'follower' ? true : false}>
+                follower
+              </CustomText>
+            </Pressable>
+          </HorizontalContainer>
+          <TotalView>
+            <CustomText selected={false}>
+              total {selected === 'following' ? following : follower}
             </CustomText>
-          </Pressable>
-          <Pressable onPress={selectedFollower}>
-            <CustomText selected={selected === 'follower' ? true : false}>
-              follower
-            </CustomText>
-          </Pressable>
-        </HorizontalContainer>
-        <TotalView>
-          <CustomText selected={false}>
-            total {selected === 'following' ? following : follower}
-          </CustomText>
-        </TotalView>
-        <FollowList
-          data={
-            selected === 'following' ? followingList : followerList
-          }></FollowList>
+          </TotalView>
+          <FollowList
+            data={
+              selected === 'following' ? followingList : followerList
+            }></FollowList>
+        </>
       </Background>
     </Container>
   )

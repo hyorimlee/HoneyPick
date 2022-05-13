@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {Alert, Text, TextInput, View} from 'react-native'
+import {Text, TextInput, View} from 'react-native'
 import BaseTextInput from '../../../../components/textInput/base'
 import BaseButton from '../../../../components/button/base'
 import PhoneForm from '../../../../containers/submitForm/phoneForm/index'

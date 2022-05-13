@@ -4,10 +4,10 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import EditProfile from './editProfile/index'
 import Profile from './default'
 import {useAppSelector} from '../../../store/types'
-import {
-  BottomTabProfileProp,
-  ProfileNavigationProp,
-} from '../../../../types/navigation'
+// import {
+//   BottomTabProfileProp,
+//   ProfileNavigationProp,
+// } from '../../../../types/navigation'
 import {useNavigation} from '@react-navigation/native'
 
 const Stack = createNativeStackNavigator()
