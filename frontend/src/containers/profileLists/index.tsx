@@ -36,7 +36,8 @@ function ProfileLists() {
             text="추가하기"
             onPress={addCollection}
             paddingVertical={2}
-            paddingHorizontal={10}
+            paddingHorizontal={20}
+            fontSize={12}
           />
         </CollectionHorizontalView>
         <HorizontalList data={collections}></HorizontalList>
