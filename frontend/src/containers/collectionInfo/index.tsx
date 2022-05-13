@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useCallback, useState, useEffect, createRef} from 'react'
-import {Image, Text, TouchableOpacity} from 'react-native'
+import {Image, Text, TouchableOpacity, ViewPropTypes} from 'react-native'
 import BaseButton from '../../components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {Container, InfoTextContainer, ButtonContainer, InfoContainer, MenuButtonContainer, MenuContainer} from './styles'
@@ -9,40 +9,36 @@ import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import {CollectionState} from '../../store/slices/collection/types'
 import { useRoute, RouteProp } from '@react-navigation/native'
-import { CollectionStackParamList } from '../../../types/navigation'
 import { ProfileStackParamList } from '../../../types/navigation'
 import { deleteCollection, getCollectionList, getCollection } from '../../store/slices/collection/asyncThunk'
+import { createVote } from '../../store/slices/vote/asyncThunk'
 import { ProfileNavigationProp } from '../profileInfo/types'
 import { configureStore } from '@reduxjs/toolkit'
 
 function CollectionInfo() {
   const navigation = useNavigation<ProfileNavigationProp>()
   const route = useRoute<RouteProp<ProfileStackParamList>>()
-  const {accountId, collectionId} = route.params
+  const {accountId, collectionId, voteId} = route.params
   console.log(route.params)
   const {userId} = useAppSelector(state => state.user)
   const collection = useAppSelector(state => state.collection.currentCollection)
-  const vote = useAppSelector(state => state.vote)
+  const vote = useAppSelector(state => state.vote.currentVote)
+  console.log('투표스테이트',vote)
   const dispatch = useAppDispatch()
 
-  const isVoting = vote!.isClosed
+  const isVoting = (vote.isClosed === undefined) ? false : !vote.isClosed
+
   const isMyList = (collection.user._id === userId)
   const [voteResult, setVoteResult] = useState('')
   const actionSheetRef = createRef<ActionSheet>()
   const username = collection?.user?.username ? collection.user.username : 'No name'
 
-  useEffect(() => {
-    console.log('컬렉션 마운트')
-    dispatch(getCollection({accountId: accountId, collectionId: collectionId}))
-  }, [])
-
   const openSheet = () => {
     actionSheetRef.current?.show()
   }
 
-  const editCollection = useCallback(() => {
+  const editCurrentCollection = useCallback(() => {
     navigation.push('EditCollection')
   }, [])
 
@@ -50,6 +46,10 @@ function CollectionInfo() {
     await dispatch(deleteCollection({accountId: accountId, collectionId: collectionId}))
     openSheet()
     navigation.navigate('Profile')
+  }, [])
+
+  const openVote = useCallback(() => {
+    navigation.push('CreateVote')
   }, [])
 
   const voteHandler = useCallback(() => {
@@ -95,7 +95,7 @@ function CollectionInfo() {
         {}
         {isMyList ?
           (!isVoting ?
-           <BaseButton text={'투표 시작하기'} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>:
+           <BaseButton text={'투표 시작하기'} onPress={openVote} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>:
            <BaseButton text={'투표 종료하기'} onPress={voteHandler} fontSize={8} paddingVertical={5} paddingHorizontal={10}></BaseButton>
           ) : null
         }
@@ -128,7 +128,7 @@ function CollectionInfo() {
         <MenuContainer>
           <BaseButton
             text={'컬렉션 정보 수정하기'}
-            onPress={editCollection}
+            onPress={editCurrentCollection}
             borderRadius={25}
             marginVertical={5}
             paddingVertical={15}
