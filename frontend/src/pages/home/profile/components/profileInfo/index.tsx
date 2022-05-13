@@ -1,9 +1,8 @@
 import * as React from 'react'
 import {memo, useCallback} from 'react'
-import {Image, Pressable, Text} from 'react-native'
+import {Pressable} from 'react-native'
 import BaseButton from '~/components/button/base'
 import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp} from './types'
 import {useAppSelector} from '~/store/types'
 import Config from 'react-native-config'
 import {
@@ -15,20 +14,22 @@ import {
   Nickname,
   NormalText,
 } from './styles'
-import {useAppSelector} from '../../../../../store/types'
+import {RootStackNavigationProp} from '~/../types/navigation'
+import {ProfileDefaultNavigationProp} from '../../default/types'
 
 function ProfileInfo() {
-  const navigation = useNavigation<ProfileNavigationProp>()
+  const profileDefaultNavigation = useNavigation<ProfileDefaultNavigationProp>()
+  const followNavigation = useNavigation<RootStackNavigationProp>()
   const {userId, nickname, profileImage, description, following, follower} =
     useAppSelector(state => state.profile)
   const myUserId = useAppSelector(state => state.user.userId)
 
   const editProfile = useCallback(() => {
-    navigation.navigate('EditProfile')
+    profileDefaultNavigation.navigate('EditProfile')
   }, [])
 
   const navigateFollow = () => {
-    navigation.push('Follow', {userId})
+    followNavigation.push('Follow', {userId})
   }
 
   return (

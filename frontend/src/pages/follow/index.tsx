@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, useState, useEffect, useCallback, useMemo} from 'react'
-import {View, Text, Pressable} from 'react-native'
+import {memo, useState, useEffect, useCallback} from 'react'
+import {Pressable} from 'react-native'
 import FollowList from './components/followList'
 import {getFollowList} from '~/store/slices/profile/asyncThunk'
 import {useAppDispatch, useAppSelector} from '~/store/types'
@@ -11,8 +11,6 @@ import {
   CustomText,
   TotalView,
 } from './styles'
-
-const paddingHorizontal = 30
 
 function FollowStack() {
   const dispatch = useAppDispatch()
