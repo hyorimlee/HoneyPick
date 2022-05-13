@@ -36,6 +36,7 @@ import ViewSlider from 'react-native-view-slider'
 import {useNavigation} from '@react-navigation/native'
 import {RecommendNavigationProps} from './types'
 
+
 const {width, height} = Dimensions.get('window')
 
 function RecommendStack() {
@@ -94,7 +95,7 @@ function RecommendStack() {
                         <ImageContainer
                           style={{flex: 1}}
                           // collection thumbnail
-                          source={require('../../assets/images/sampleimage1.jpg')}
+                          source={require('../../../assets/images/sampleimage1.jpg')}
                           imageStyle={{
                             resizeMode: 'contain',
                             borderRadius: 10,
@@ -143,7 +144,7 @@ function RecommendStack() {
         </SearchBarContainer>
 
         <ItemPageContainer
-          source={require('../../assets/images/receipt_long.png')}
+          source={require('../../../assets/images/receipt_long.png')}
           resizeMode="stretch">
           <ViewSlider
             renderSlides={
@@ -167,7 +168,7 @@ function RecommendStack() {
                                       ? {
                                           uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`,
                                         }
-                                      : require('../../assets/images/sampleimage1.jpg')
+                                      : require('../../../assets/images/sampleimage1.jpg')
                                   }
                                   imageStyle={{
                                     resizeMode: 'contain',
