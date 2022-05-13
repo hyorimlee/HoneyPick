@@ -7,6 +7,7 @@ import {
   saveReview,
   editReview,
 } from './asyncThunk'
+import {RootState, useAppSelector} from '~/store/types'
 
 const initialState: ItemState = {
   itemId: '',
@@ -23,13 +24,13 @@ const initialState: ItemState = {
     discountRate: 0,
     stickers: [],
   },
-  review: {
-    _id: '',
-    user: '',
-    item: '',
-    isRecommend: 0,
-    stickers: [],
-  },
+  // review: {
+  //   _id: '',
+  //   user: '',
+  //   item: '',
+  //   isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
+  //   stickers: [],
+  // },
 }
 
 const itemSlice = createSlice({
@@ -49,8 +50,7 @@ const itemSlice = createSlice({
         state.itemId = action.payload._id
       })
       .addCase(getItem.fulfilled, (state, action) => {
-        console.log(action.payload.item)
-        console.log(action.payload.review)
+        state.itemId = action.payload.item._id
         state.item = action.payload.item
         state.review = action.payload.review
       })
@@ -67,5 +67,18 @@ const itemSlice = createSlice({
   },
 })
 
+export const filteredStickers = createSelector(
+  [(state: RootState) => state.item.item.stickers],
+  stickers => stickers.filter(s => s[1]),
+)
+export const isDashOn = createSelector(
+  [
+    () => useAppSelector(filteredStickers),
+    (state: RootState) => state.item.review,
+  ],
+  (filteredStickers, review) => {
+    return filteredStickers.length > 0 || review ? true : false
+  },
+)
 export const {setCollectionId, setSaveCollection} = itemSlice.actions
 export default itemSlice

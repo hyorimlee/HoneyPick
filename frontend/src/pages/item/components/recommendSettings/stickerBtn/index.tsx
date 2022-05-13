@@ -2,8 +2,8 @@ import {faFilterCircleXmark} from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 import {memo} from 'react'
 
-import {STICKERS} from '../../../modules/stickers'
-import BaseButton from '../../../components/button/base'
+import {STICKERS} from '~/modules/stickers'
+import BaseButton from '~/components/button/base'
 
 import {Container} from './styles'
 
