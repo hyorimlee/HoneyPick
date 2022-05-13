@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback} from 'react'
 import {View, Text, Image, Pressable} from 'react-native'
-import {CustomFlatList, HorizontalContainer} from './styles'
 import {IProps} from './types'
 import BaseButton from '../../button/base'
 import Config from 'react-native-config'
@@ -10,6 +9,7 @@ import {setFollow} from '../../../store/slices/profile/asyncThunk'
 import {useNavigation} from '@react-navigation/native'
 import {ProfileNavigationProp} from '../../../../types/navigation'
 import profileSlice from '../../../store/slices/profile'
+import {CustomFlatList, HorizontalContainer, ProfileImage, ButtonContainer, Nickname, Description} from './styles'
 
 function FollowList({data}: IProps) {
   const dispatch = useAppDispatch()
@@ -36,34 +36,29 @@ function FollowList({data}: IProps) {
 
     return (
       <HorizontalContainer>
-        <View style={{flex: 1}}>
-          <Pressable onPress={navigateProfile(_id)}>
-            <Image
+        <View>
+          <Pressable onPress={navigateProfile(_id)} style={{flexDirection: 'row'}}>
+            <ProfileImage
               source={{uri: `${Config.IMAGE_BASE_URL}/raw/${profileImage}`}}
-              style={{
-                width: 64,
-                height: 64,
-                resizeMode: 'contain',
-                borderRadius: 100,
-                backgroundColor: 'black',
-              }}></Image>
+            ></ProfileImage>
+            <View style={{paddingLeft: 10}}>
+              <Nickname>{nickname}</Nickname>
+              <Description>{description}</Description>
+            </View>
           </Pressable>
         </View>
-        <View style={{flex: 1}}>
-          <Pressable onPress={navigateProfile(_id)}>
-            <Text>{nickname}</Text>
-            <Text>{description}</Text>
-          </Pressable>
-        </View>
-        <View style={{flex: 1}}>
+        <ButtonContainer>
           {myUserId !== _id ? (
             <BaseButton
               text={myFollow === true ? '언팔로우' : '팔로우'}
               backgroundColor={myFollow === true ? '#C4C4C4' : ''}
               onPress={followChange(_id)}
+              fontSize={12}
+              paddingVertical={2}
+              paddingHorizontal={15}
             />
           ) : null}
-        </View>
+        </ButtonContainer>
       </HorizontalContainer>
     )
   }

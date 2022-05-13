@@ -11,7 +11,7 @@ import {
   ProfileStackParamList,
 } from '../../../types/navigation'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {CollectionHorizontalView} from './styles'
+import {CollectionHorizontalView, DivisionContainer, DivisionText} from './styles'
 
 function ProfileLists() {
   const {collections, likes, votes} = useAppSelector(state => state.profile)
@@ -29,25 +29,27 @@ function ProfileLists() {
 
   return (
     <View>
-      <View>
+      <DivisionContainer>
         <CollectionHorizontalView>
-          <Text>나의 컬렉션</Text>
+          <DivisionText>컬렉션</DivisionText>
           <BaseButton
             text="추가하기"
             onPress={addCollection}
-            paddingHorizontal={10}
+            paddingVertical={2}
+            paddingHorizontal={20}
+            fontSize={12}
           />
         </CollectionHorizontalView>
         <HorizontalList data={collections}></HorizontalList>
-      </View>
-      <View>
-        <Text>진행한 투표</Text>
+      </DivisionContainer>
+      <DivisionContainer>
+        <DivisionText>진행한 투표</DivisionText>
         <HorizontalList data={votes}></HorizontalList>
-      </View>
-      <View>
-        <Text>찜한 컬렉션</Text>
+      </DivisionContainer>
+      <DivisionContainer>
+        <DivisionText>찜한 컬렉션</DivisionText>
         <HorizontalList data={likes}></HorizontalList>
-      </View>
+      </DivisionContainer>
     </View>
   )
 }
