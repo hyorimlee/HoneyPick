@@ -49,6 +49,7 @@ function ProfileInfo() {
             text='프로필 수정'
             onPress={editProfile}
             paddingVertical={2}
+            fontSize={12}
           ></BaseButton>
         ) : null}
       </EditContainer>
