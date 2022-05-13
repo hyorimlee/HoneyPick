@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import {STICKERS} from '../../../modules/stickers'
-import RecommendBar from '../../../containers/recommendBar'
+import RecommendBar from '../recommendBar'
 import BaseButton from '../../../components/button/base'
 import {getItem, itemToCollection} from '../../../store/slices/item/asyncThunk'
 import {ItemNavigationProp} from './types'

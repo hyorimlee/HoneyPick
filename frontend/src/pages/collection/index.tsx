@@ -19,11 +19,6 @@ function CollectionStack() {
         component={EditCollection}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="ItemPage"
-        component={Item}
-        options={{headerShown: false}}
-      />
     </Stack.Navigator>
   )
 }

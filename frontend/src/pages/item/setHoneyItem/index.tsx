@@ -4,7 +4,7 @@ import {memo, useState} from 'react'
 import {Alert, SafeAreaView, StatusBar} from 'react-native'
 
 import BaseButton from '../../../components/button/base'
-import StickerBtn from '../../../containers/stickerBtn'
+import StickerBtn from '../stickerBtn'
 import {saveReview} from '../../../store/slices/item/asyncThunk'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 

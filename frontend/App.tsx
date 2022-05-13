@@ -2,7 +2,6 @@ import React, {memo, useCallback, useEffect, useRef, useState} from 'react'
 import {Provider} from 'react-redux'
 import {Modal, View, AppState} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import axios from 'axios'
 
@@ -21,15 +20,19 @@ import {requestAccessToken} from './src/store/slices/user/asyncThunk'
 import store from './src/store'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
-import ItemStack from './src/pages/item'
-import ProfileStack from './src/pages/profile'
-import RecommendStack from './src/pages/recommend'
 
-import SaveItemBtn from './src/containers/saveItemBtn'
+import SaveItemBtn from './src/components/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
 import {setSaveCollection} from './src/store/slices/item'
+import {
+  Home,
+  ItemStack,
+  CollectionStack,
+  CreateCollectionStack,
+  FollowStack,
+  VoteStack,
+} from './src/pages/'
 
-const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
 type IDispatch = ThunkDispatch<CombinedState<RootState>, undefined, AnyAction> &
@@ -120,60 +123,65 @@ const InnerApp = memo(({}) => {
   return (
     <View style={{height: '100%'}}>
       <NavigationContainer>
-        {isLoggined ? (
-          <>
-            <Tab.Navigator
-              initialRouteName="Profile"
-              screenOptions={{
-                tabBarStyle: {
-                  backgroundColor: '#FFD669',
-                  borderTopLeftRadius: 30,
-                },
-              }}>
-              <Tab.Screen
-                name="Profile"
-                component={ProfileStack}
-                options={{title: '프로필', headerShown: false}}
+        <Stack.Navigator initialRouteName="SignIn">
+          {isLoggined ? (
+            <>
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{title: '홈', headerShown: false}}
               />
-              <Tab.Screen
+              <Stack.Screen
                 name="Item"
                 component={ItemStack}
-                options={{title: '아이템', headerShown: false}}
+                options={{title: '아이템 상세', headerShown: false}}
               />
-              <Tab.Screen
-                name="RecommandPage"
-                component={RecommendStack}
-                options={{title: '추천', headerShown: false}}
+              <Stack.Screen
+                name="Collection"
+                component={CollectionStack}
+                options={{title: '컬렉션 상세', headerShown: false}}
               />
-            </Tab.Navigator>
-            {copiedUrl ? (
-              <SaveItemBtn
-                copiedUrl={copiedUrl}
-                btnShowHandler={btnShowHandler}
+              <Stack.Screen
+                name="CreateCollection"
+                component={CreateCollectionStack}
+                options={{title: '컬렉션 추가', headerShown: false}}
               />
-            ) : null}
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={saveCollection === 'yet' ? true : false}
-              onRequestClose={modalClose}>
-              <ChooseCollectionModal />
-            </Modal>
-          </>
-        ) : (
-          <Stack.Navigator initialRouteName="SignIn">
-            <Stack.Screen
-              name="SignIn"
-              component={SignIn}
-              options={{title: '로그인', headerShown: false}}
-            />
-            <Stack.Screen
-              name="SignUp"
-              component={SignUp}
-              options={{title: '회원가입', headerShown: false}}
-            />
-          </Stack.Navigator>
-        )}
+              <Stack.Screen
+                name="Follow"
+                component={FollowStack}
+                options={{title: '팔로우', headerShown: false}}
+              />
+              <Stack.Screen
+                name="Vote"
+                component={VoteStack}
+                options={{title: '투표 결과', headerShown: false}}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="SignIn"
+                component={SignIn}
+                options={{title: '로그인', headerShown: false}}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{title: '회원가입', headerShown: false}}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+        {copiedUrl ? (
+          <SaveItemBtn copiedUrl={copiedUrl} btnShowHandler={btnShowHandler} />
+        ) : null}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={saveCollection === 'yet' ? true : false}
+          onRequestClose={modalClose}>
+          <ChooseCollectionModal />
+        </Modal>
       </NavigationContainer>
     </View>
   )
