@@ -8,7 +8,18 @@ import StickerBtn from '../../../containers/stickerBtn'
 import {saveReview} from '../../../store/slices/item/asyncThunk'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 
-import {Container, ImageContainer, InfoContainer, TextContainer, NormalText, BoldText, PriceText, DashedBorder, PriceContainer, PriceTextGray} from '../default/styles'
+import {
+  Container,
+  ImageContainer,
+  InfoContainer,
+  TextContainer,
+  NormalText,
+  BoldText,
+  PriceText,
+  DashedBorder,
+  PriceTextGray,
+  RowTextContainer,
+} from '../default/styles'
 import {ButtonContainer} from './styles'
 
 function SetHoneyItem() {
@@ -39,7 +50,11 @@ function SetHoneyItem() {
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
       <Container>
         <ImageContainer
-          source={item.thumbnail ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`} : require('../../../assets/images/sampleimage1.jpg')}
+          source={
+            item.thumbnail
+              ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`}
+              : require('../../../assets/images/sampleimage1.jpg')
+          }
           imageStyle={{
             resizeMode: 'contain',
             borderRadius: 20,
@@ -49,17 +64,18 @@ function SetHoneyItem() {
           <TextContainer>
             <NormalText>{item.brand}</NormalText>
             <BoldText>{item.title}</BoldText>
-            {item.priceAfter !== 0 ?
-              <PriceContainer>
+            {item.priceAfter !== 0 ? (
+              <RowTextContainer>
                 <PriceText>￦</PriceText>
                 <PriceText>{item.priceBefore}</PriceText>
-              </PriceContainer>
-            : <PriceContainer>
+              </RowTextContainer>
+            ) : (
+              <RowTextContainer>
                 <PriceText>￦</PriceText>
                 <PriceTextGray>{item.priceBefore}</PriceTextGray>
                 <PriceText>{item.priceAfter}</PriceText>
-              </PriceContainer>
-            }
+              </RowTextContainer>
+            )}
             <NormalText>컬렉션 이름</NormalText>
           </TextContainer>
         </InfoContainer>
@@ -68,24 +84,22 @@ function SetHoneyItem() {
           <NormalText>추천 정도</NormalText>
           <ButtonContainer>
             <BaseButton
-              text='꿀템'
+              text="꿀템"
               onPress={() => recommendHandler(2)}
               borderRadius={25}
               paddingVertical={5}
-              paddingHorizontal={25}
-            ></BaseButton>
+              paddingHorizontal={25}></BaseButton>
             <BaseButton
-              text='굿템'
+              text="굿템"
               onPress={() => recommendHandler(1)}
               borderRadius={25}
               paddingVertical={5}
               paddingHorizontal={25}
-              marginLeft={5}
-            ></BaseButton>
+              marginLeft={5}></BaseButton>
           </ButtonContainer>
           <NormalText>스티커</NormalText>
           <ButtonContainer>
-            <StickerBtn stickers={stickers} setStickers={setStickers}/>
+            <StickerBtn stickers={stickers} setStickers={setStickers} />
           </ButtonContainer>
         </TextContainer>
         <BaseButton

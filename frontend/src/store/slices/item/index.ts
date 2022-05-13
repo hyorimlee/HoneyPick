@@ -14,9 +14,9 @@ const initialState: ItemState = {
   saveCollection: 'no',
   item: {
     _id: '',
-    brand: 'brand',
-    url: 'url',
-    title: 'title',
+    brand: '',
+    url: '',
+    title: '',
     thumbnail: '',
     priceBefore: 0,
     priceAfter: 0,
