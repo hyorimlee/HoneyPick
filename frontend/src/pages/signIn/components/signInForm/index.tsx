@@ -1,16 +1,16 @@
 import * as React from 'react'
 import {memo, useCallback, useRef, useState} from 'react'
 import {TextInput, View} from 'react-native'
-import BaseTextInput from '../../../../components/textInput/base/index'
-import BaseButton from '../../../../components/button/base/index'
+import BaseTextInput from '~/components/textInput/base/index'
+import BaseButton from '~/components/button/base/index'
 import {
   noSpace,
   spaceAlert,
   usernameAlert,
   usernameValid,
-} from '../../../../modules/valid'
-import {useAppDispatch} from '../../../../store/types'
-import {requestSignIn} from '../../../../store/slices/user/asyncThunk'
+} from '~/modules/valid'
+import {useAppDispatch} from '~/store/types'
+import {requestSignIn} from '~/store/slices/user/asyncThunk'
 
 function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
   const dispatch = useAppDispatch()

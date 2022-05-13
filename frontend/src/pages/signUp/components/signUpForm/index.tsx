@@ -1,9 +1,9 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {Alert, Text, TextInput, View} from 'react-native'
-import BaseTextInput from '../../../../components/textInput/base'
-import BaseButton from '../../../../components/button/base'
-import PhoneForm from '../../../../containers/submitForm/phoneForm/index'
+import {Text, TextInput, View} from 'react-native'
+import BaseTextInput from '~/components/textInput/base'
+import BaseButton from '~/components/button/base'
+import PhoneForm from '~/containers/submitForm/phoneForm/index'
 import {
   nicknameValid,
   noSpace,
@@ -12,9 +12,9 @@ import {
   usernameAlert,
   nicknameAlert,
   usernameValid,
-} from '../../../../modules/valid'
-import {useAppDispatch} from '../../../../store/types'
-import {requestSignUp} from '../../../../store/slices/user/asyncThunk'
+} from '~/modules/valid'
+import {useAppDispatch} from '~/store/types'
+import {requestSignUp} from '~/store/slices/user/asyncThunk'
 
 function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
   const dispatch = useAppDispatch()

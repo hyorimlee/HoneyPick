@@ -1,21 +1,16 @@
 import * as React from 'react'
-import {memo, useState, useCallback, useRef} from 'react'
-import {Alert, TextInput, View} from 'react-native'
+import {memo, useState, useCallback} from 'react'
+import {View} from 'react-native'
 import {HorizontalView} from './styles'
-import BaseTextInput from '../../../components/textInput/base'
-import BaseButton from '../../../components/button/base'
-import {
-  noSpace,
-  onlyNumber,
-  onlyNumberAlert,
-  phoneValid,
-} from '../../../modules/valid'
+import BaseTextInput from '~/components/textInput/base'
+import BaseButton from '~/components/button/base'
+import {onlyNumber, onlyNumberAlert, phoneValid} from '~/modules/valid'
 import {IComponentProps} from './types'
-import {useAppDispatch} from '../../../store/types'
+import {useAppDispatch} from '~/store/types'
 import {
   requestPhoneVerify,
   requestPhoneVerifyCheck,
-} from '../../../store/slices/user/asyncThunk'
+} from '~/store/slices/user/asyncThunk'
 
 function PhoneForm({setValidPhone}: IComponentProps) {
   const dispatch = useAppDispatch()

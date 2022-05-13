@@ -1,14 +1,12 @@
 import * as React from 'react'
-import {memo, useState, useCallback} from 'react'
-import {View, Text, Image, Pressable} from 'react-native'
+import {memo, useCallback} from 'react'
+import {View, Pressable} from 'react-native'
 import {IProps} from './types'
-import BaseButton from '../../../../components/button/base'
+import BaseButton from '~/components/button/base'
 import Config from 'react-native-config'
-import {useAppDispatch, useAppSelector} from '../../../../store/types'
-import {setFollow} from '../../../../store/slices/profile/asyncThunk'
-import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp} from '../../../../../types/navigation'
-import profileSlice from '../../../../store/slices/profile'
+import {useAppDispatch, useAppSelector} from '~/store/types'
+import {setFollow} from '~/store/slices/profile/asyncThunk'
+import profileSlice from '~/store/slices/profile'
 import {
   CustomFlatList,
   HorizontalContainer,
@@ -17,10 +15,12 @@ import {
   Nickname,
   Description,
 } from './styles'
+import {ProfileDefaultNavigationProp} from '~/pages/home/profile/default/types'
+import {useNavigation} from '@react-navigation/native'
 
 function FollowList({data}: IProps) {
   const dispatch = useAppDispatch()
-  const navigation = useNavigation<ProfileNavigationProp>()
+  const navigation = useNavigation<ProfileDefaultNavigationProp>()
   const myUserId = useAppSelector(state => state.user.userId)
 
   const followChange = useCallback(

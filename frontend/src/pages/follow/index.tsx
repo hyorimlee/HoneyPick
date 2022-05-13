@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, useState, useEffect, useCallback, useMemo} from 'react'
-import {View, Text, Pressable} from 'react-native'
+import {memo, useState, useEffect, useCallback} from 'react'
+import {Pressable} from 'react-native'
 import FollowList from './components/followList'
 import {getFollowList} from '~/store/slices/profile/asyncThunk'
 import {useAppDispatch, useAppSelector} from '~/store/types'
@@ -11,8 +11,6 @@ import {
   CustomText,
   TotalView,
 } from './styles'
-
-const paddingHorizontal = 30
 
 function FollowStack() {
   const dispatch = useAppDispatch()
@@ -41,27 +39,29 @@ function FollowStack() {
       <Background
         source={require('~/assets/images/receipt_long.png')}
         resizeMode="stretch">
-        <HorizontalContainer>
-          <Pressable onPress={selectedFollowing}>
-            <CustomText selected={selected === 'following' ? true : false}>
-              following
+        <>
+          <HorizontalContainer>
+            <Pressable onPress={selectedFollowing}>
+              <CustomText selected={selected === 'following' ? true : false}>
+                following
+              </CustomText>
+            </Pressable>
+            <Pressable onPress={selectedFollower}>
+              <CustomText selected={selected === 'follower' ? true : false}>
+                follower
+              </CustomText>
+            </Pressable>
+          </HorizontalContainer>
+          <TotalView>
+            <CustomText selected={false}>
+              total {selected === 'following' ? following : follower}
             </CustomText>
-          </Pressable>
-          <Pressable onPress={selectedFollower}>
-            <CustomText selected={selected === 'follower' ? true : false}>
-              follower
-            </CustomText>
-          </Pressable>
-        </HorizontalContainer>
-        <TotalView>
-          <CustomText selected={false}>
-            total {selected === 'following' ? following : follower}
-          </CustomText>
-        </TotalView>
-        <FollowList
-          data={
-            selected === 'following' ? followingList : followerList
-          }></FollowList>
+          </TotalView>
+          <FollowList
+            data={
+              selected === 'following' ? followingList : followerList
+            }></FollowList>
+        </>
       </Background>
     </Container>
   )
