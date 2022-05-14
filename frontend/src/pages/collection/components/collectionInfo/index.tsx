@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {memo, useCallback, useState, createRef} from 'react'
 import {Image, Text, TouchableOpacity} from 'react-native'
-import BaseButton from '~/components/button/base'
+import BaseButton from '../../../../components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {
   Container,
@@ -11,40 +11,38 @@ import {
   MenuButtonContainer,
   MenuContainer,
 } from './styles'
-import {useAppSelector, useAppDispatch} from '~/store/types'
+import { useAppSelector, useAppDispatch } from '../../../../store/types'
 import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {useRoute, RouteProp} from '@react-navigation/native'
-import {ProfileStackParamList} from '~/../types/navigation'
-import {
-  deleteCollection,
-  getCollectionList,
-  getCollection,
-} from '~/store/slices/collection/asyncThunk'
-import {createVote} from '~/store/slices/vote/asyncThunk'
-import {ProfileNavigationProp} from '../profileInfo/types'
+import { deleteCollection } from '../../../../store/slices/collection/asyncThunk'
+import { endVote } from '../../../../store/slices/vote/asyncThunk'
 import {configureStore} from '@reduxjs/toolkit'
+import { setFollow } from '../../../../store/slices/profile/asyncThunk'
+import profileSlice from '../../../../store/slices/profile'
+import { CollectionNavigationProp, CollectionStackParamList } from '../../types'
+import { RootStackNavigationProp, RootStackParamList } from '../../../../../types/navigation'
+import {VoteNavigationProp} from '../../../vote/types'
 
 function CollectionInfo() {
-  const navigation = useNavigation<ProfileNavigationProp>()
-  const route = useRoute<RouteProp<ProfileStackParamList>>()
-  const {accountId, collectionId, voteId} = route.params
-  console.log(route.params)
-  const {userId} = useAppSelector(state => state.user)
-  const collection = useAppSelector(state => state.collection.currentCollection)
-  const vote = useAppSelector(state => state.vote.currentVote)
-  console.log('투표스테이트', vote)
+  const navigation = useNavigation<RootStackNavigationProp>()
+  const collectionNavigation = useNavigation<CollectionNavigationProp>()
+  const voteNavigation = useNavigation<VoteNavigationProp>()
+  const route = useRoute<RouteProp<CollectionStackParamList, 'Default'>>()
   const dispatch = useAppDispatch()
 
-  const isVoting = vote.isClosed === undefined ? false : !vote.isClosed
+  const {accountId, collectionId} = route.params!
+  const {userId} = useAppSelector(state => state.user)
+  const {currentCollection} = useAppSelector(state => state.collection)
+  const {currentVote} = useAppSelector(state => state.vote)
+  const isVoting = currentVote?.isClosed === undefined ? false : !currentVote.isClosed
+  const isMyList = currentCollection.user._id === userId
 
-  const isMyList = collection.user._id === userId
-  const [voteResult, setVoteResult] = useState('')
   const actionSheetRef = createRef<ActionSheet>()
-  const username = collection?.user?.username
-    ? collection.user.username
+  const username = currentCollection?.user?.username
+    ? currentCollection.user.username
     : 'No name'
 
   const openSheet = () => {
@@ -52,36 +50,30 @@ function CollectionInfo() {
   }
 
   const editCurrentCollection = useCallback(() => {
-    navigation.push('EditCollection')
+    collectionNavigation.push('EditCollection')
   }, [])
 
   const deleteCurrentCollection = useCallback(async () => {
-    await dispatch(
-      deleteCollection({accountId: accountId, collectionId: collectionId}),
-    )
-    openSheet()
-    navigation.navigate('Profile')
+    await dispatch(deleteCollection({accountId: accountId, collectionId: collectionId}))
+    actionSheetRef.current?.hide()
+    // navigation.navigate('Profile')
   }, [])
 
   const openVote = useCallback(() => {
-    navigation.push('CreateVote')
+    voteNavigation.push('CreateVote')
   }, [])
 
-  const voteHandler = useCallback(() => {
-    const prevState = isVoting
-
-    setIsVoting(!isVoting)
-
-    if (prevState) {
-      //투표종료, 투표 결과를 가져오는 API요청 + 에러처리
-      setVoteResult('투표결과내용')
-    } else {
-      // 투표를 시작하는 API요청 + 에러처리
-    }
-  }, [isVoting, setVoteResult])
+  const closeVote = useCallback(() => {
+    dispatch(endVote({accountId: accountId, voteId: currentVote?._id}))
+  }, [])
 
   const showVoteResult = useCallback(() => {
     // navigation.push('VoteResult')
+  }, [])
+
+  const followChange = useCallback(() => {
+    dispatch(setFollow({userId}))
+    dispatch(profileSlice.actions.changeFollow({userId, accountId}))
   }, [])
 
   return (
@@ -89,10 +81,10 @@ function CollectionInfo() {
       <InfoContainer>
         <InfoTextContainer>
           <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
-            {collection?.title ? collection.title : 'Notitle'}
+            {currentCollection?.title ?currentCollection.title : 'Notitle'}
           </Text>
           <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>
-            {collection?.description ? collection.description : 'Notitle'}
+            {currentCollection?.description ?currentCollection.description : 'Notitle'}
           </Text>
         </InfoTextContainer>
         <Image
@@ -122,13 +114,13 @@ function CollectionInfo() {
           ) : (
             <BaseButton
               text={'투표 종료하기'}
-              onPress={voteHandler}
+              onPress={closeVote}
               fontSize={8}
               paddingVertical={5}
               paddingHorizontal={10}></BaseButton>
           )
         ) : null}
-        {isMyList && voteResult ? (
+        {isMyList && currentVote?.result ? (
           <BaseButton
             text={'투표 결과보기'}
             onPress={showVoteResult}
@@ -147,21 +139,12 @@ function CollectionInfo() {
             marginHorizontal={6}></BaseButton>
         ) : null}
         {!isMyList ? (
-          true ? (
-            <BaseButton
-              text={`${username}님을 팔로우`}
-              onPress={voteHandler}
-              fontSize={8}
-              paddingVertical={5}
-              paddingHorizontal={10}></BaseButton>
-          ) : (
-            <BaseButton
-              text={`${username}님을 언팔로우`}
-              onPress={voteHandler}
-              fontSize={8}
-              paddingVertical={5}
-              paddingHorizontal={10}></BaseButton>
-          )
+          <BaseButton
+            text={true ? `${username}님을 팔로우` : `${username}님을 언팔로우`}
+            onPress={followChange}
+            fontSize={8}
+            paddingVertical={5}
+            paddingHorizontal={10}></BaseButton>
         ) : null}
       </ButtonContainer>
       {/* Dashed Line 나중에 svg나 다른 라이브러리로 교체해야함 */}

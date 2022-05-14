@@ -4,7 +4,7 @@ import {createAsyncThunk} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
 import {IVoteInfo, IVoteQuery, IVoteListQuery, IItemVoteQuery} from './types'
 
-export const createVote = createAsyncThunk<string, IVoteInfo, {state: RootState}>(
+export const createVote = createAsyncThunk<any, IVoteInfo, {state: RootState}>(
   'vote/createVote',
   async (voteInfo, thunkAPI) => {
     try {
@@ -46,7 +46,7 @@ export const getVoteList = createAsyncThunk<any, IVoteListQuery, {state: RootSta
   }
 )
 
-export const getVote = createAsyncThunk<string, IVoteQuery, {state: RootState}>(
+export const getVote = createAsyncThunk<any, IVoteQuery, {state: RootState}>(
   'vote/getvote',
   async ({accountId, voteId}, thunkAPI) => {
     try {
@@ -66,7 +66,7 @@ export const getVote = createAsyncThunk<string, IVoteQuery, {state: RootState}>(
   }
 )
 
-export const endVote = createAsyncThunk<string, IVoteQuery, {state: RootState}>(
+export const endVote = createAsyncThunk<any, IVoteQuery, {state: RootState}>(
   'vote/endVote',
   async ({accountId, voteId}, thunkAPI) => {
     try {
@@ -86,7 +86,7 @@ export const endVote = createAsyncThunk<string, IVoteQuery, {state: RootState}>(
   }
 )
 
-export const deleteVote = createAsyncThunk<string, IVoteQuery, {state: RootState}>(
+export const deleteVote = createAsyncThunk<any, IVoteQuery, {state: RootState}>(
   'vote/deleteVote',
   async ({accountId, voteId}, thunkAPI) => {
     try {
@@ -106,7 +106,7 @@ export const deleteVote = createAsyncThunk<string, IVoteQuery, {state: RootState
   }
 )
 
-export const vote = createAsyncThunk<string, IItemVoteQuery, {state: RootState}>(
+export const vote = createAsyncThunk<any, IItemVoteQuery, {state: RootState}>(
   'vote/vote',
   async ({accountId, voteId, itemId}, thunkAPI) => {
     try {
