@@ -2,53 +2,79 @@ const { Router } = require('express')
 const recommendRouter = Router()
 const mongoose = require('mongoose')
 const { isValidObjectId } = require('mongoose')
-const { Item, Collection } = require('../models')
+const { Item, Collection, User, Follow } = require('../models')
 
 const { authAccessToken } = require('./auth')
 
-recommendRouter.get('/', authAccessToken, async (req, res) => {
+recommendRouter.get('/collection', authAccessToken, async (req, res) => {
     try {
-        // 추천 로직 구상 (sort 등)
-        collectionTitles = [
-            '팔로우중인 user1의',
-            '팔로우중인 user2의',
-            '팔로우중인 user3의',
-            '팔로우중인 user4의',
-            '팔로우중인 user5의',
-        ]
+        let { page=1 } = req.query
+        page = parseInt(page)
 
-        itemTitles = [
-            '최근 등록된 아이템',
-            'sticker1이 많은 아이템',
-            'sticker2가 많은 아이템',
-            'sticker3이 많은 아이템',
-            'sticker4가 많은 아이템'
-        ]
+        const userId = req.userId
+        const user = await User.findById(userId)
+        const followId = user.follow
+        const follow = await Follow.findById(followId)
+        const collectionTitles = follow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
+        const followUserIds = follow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
 
-        const result = await Promise.all([
-            Collection.find({}).sort({ updatedAt: -1 }).limit(5),
-            Item.find({}).sort({ updatedAt: -1 }).limit(8),
-            Item.find({}).sort({ 'stickers.2': -1 }).limit(8),
-            Item.find({}).sort({ 'stickers.3': -1 }).limit(8),
-            Item.find({}).sort({ 'stickers.4': -1 }).limit(8),
-            Item.find({}).sort({ 'stickers.5': -1 }).limit(8),
-        ])
-        const collections = result.shift().map((collection, idx)=>{
+        const collections = await Collection.find({'user._id': {$in : followUserIds }})
+
+        const result = collectionTitles.map((title, idx) => {
             return {
-                title: collectionTitles[idx],
-                collection
+                title,
+                collection: collections[idx]
             }
         })
+        
+        return res.status(200).send({ collections: result })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({ err: error.message })
+    }
+})
 
+recommendRouter.get('/item', authAccessToken, async (req, res) => {
+    try {
+        let { page=1, recs='0,1,2,3,4' } = req.query
+        page = parseInt(page)
+
+        recs = recs.split(',').map((item) => parseInt(item))
+
+        // Recommend Schema
+        recommends = [
+            {
+                title: '최근 등록된 아이템',
+                sort: { updatedAt: -1 }
+            },
+            {
+                title: '스티커 1이 많은 아이템',
+                sort: { 'stickers.1': -1 }
+            },
+            {
+                title: '스티커 2가 많은 아이템',
+                sort: { 'stickers.2': -1 }
+            },
+            {
+                title: '스티커 3이 많은 아이템',
+                sort: { 'stickers.3': -1 }
+            },
+            {
+                title: '스티커 4가 많은 아이템',
+                sort: { 'stickers.4': -1 }
+            },
+        ].filter(({ }, idx) => recs.includes(idx))
+
+        const promises = recommends.map(({ sort }) => Item.find({}).sort(sort).skip((page-1)*8).limit(8))
+        const result = await Promise.all(promises)
         const items = result.map((item, idx) => {
             return {
-                title: itemTitles[idx],
+                title: recommends[idx].title,
                 itemList: item
             }
         })
         
-        
-        return res.status(200).send({ collections, items })
+        return res.status(200).send({ items })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
