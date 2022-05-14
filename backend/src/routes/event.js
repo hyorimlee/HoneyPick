@@ -5,19 +5,8 @@ const { User, Event, Follow, Item } = require('../models')
 const { authAccessToken } = require('./auth')
 const { Types: { ObjectId } } = require('mongoose')
 
-// 팔로워인지 검증
-async function isFollower(accountId, userId) {
-  const account = await User.findById(accountId)
-  const isFollow = await Follow.findOne({ _id: account.follow, 'followers._id': userId })
-  if (isFollow) {
-    return true
-  }
-  return false
-}
-
 // event 생성
-// eventRouter.post('/', authAccessToken, async (req, res) => {
-eventRouter.post('/', async (req, res) => {
+eventRouter.post('/', authAccessToken, async (req, res) => {
   try {
     // jwt 검증: user 추출 및 검증
     const { userId } = req
@@ -27,11 +16,11 @@ eventRouter.post('/', async (req, res) => {
     //USER가 ADMIN 권한을 가졌는지 확인
     if(user.isAdmin == false) return res.status(401).send({err:'user is not admin'})
     // title, description, isPublic 추출 및 검증
-    const { title, description, isPublic } = req.body
-    if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
-    if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"});
-    if (typeof isPublic !== 'boolean') return res.status(400).send({ err: "boolean isPublic is required"});
-    console.log(user.events.length)
+    const { title, description, additional} = req.body
+    if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"})
+    if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be string type"})
+    if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"})
+    // console.log(user.events.length)
 
     // // 기존 컬렉션이 30개 이상이면, 생성 차단
     // if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
@@ -50,13 +39,8 @@ eventRouter.post('/', async (req, res) => {
 // eventRouter.get('/', authAccessToken, async (req, res) => {
 eventRouter.get('/', async (req, res) => {
   try {
-    const { accountId } = req.params
-    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
-    const account = await User.findById(accountId)
     const events = await Event.find({})
-
     return res.status(200).send({ events: events })
- 
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
