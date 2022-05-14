@@ -14,7 +14,7 @@ import {
 import {InfoContainer, PriceText, PriceTextGray} from './styles'
 import {IProps} from './types'
 
-function ItemInfo({openSheet}: IProps) {
+function ItemInfo({openSheet, isSet}: IProps) {
   const {item, review} = useAppSelector(state => state.item)
   const {userId} = useAppSelector(state => state.user)
 
@@ -37,7 +37,7 @@ function ItemInfo({openSheet}: IProps) {
         )}
         <NormalText>컬렉션 이름</NormalText>
       </TextContainer>
-      {userId !== review?.user ? (
+      {userId === review?.user && !isSet ? (
         <TouchableOpacity onPress={openSheet}>
           <FontAwesomeIcon
             icon={faEllipsisVertical as IconProp}

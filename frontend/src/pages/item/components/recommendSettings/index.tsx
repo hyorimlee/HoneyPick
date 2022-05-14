@@ -29,6 +29,11 @@ function RecommendSettings({toggleIsSet}: IProps) {
       Alert.alert('추천 정도와 스티커를 선택해주세요!')
     }
   }
+
+  const cancelRecommend = () => {
+    toggleIsSet()
+  }
+
   const recommendHandler = (num: 0 | 1 | 2) => {
     setRecommend(num)
   }
@@ -55,6 +60,13 @@ function RecommendSettings({toggleIsSet}: IProps) {
       <ButtonContainer>
         <StickerBtn stickers={stickers} setStickers={setStickers} />
       </ButtonContainer>
+      <BaseButton
+        text={'돌아가기'}
+        onPress={cancelRecommend}
+        borderRadius={25}
+        marginVertical={10}
+        paddingVertical={15}
+      />
       <BaseButton
         text={'저장하기'}
         onPress={saveHoneyItem}
