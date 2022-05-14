@@ -1,7 +1,11 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
 
-const CollectionSchema = new Schema(
+const EventSchema = new Schema(
   {
+    user: {
+      _id: { type: ObjectId, required: true, ref: 'user' },
+      username: { type: String, required: true }
+    },
     title: { type: String , required: true },
     description: { type: String, required: false },
     additional: {type:String, required: false},
@@ -13,6 +17,6 @@ const CollectionSchema = new Schema(
   },
   { timestamps: true })
 
-const Collection = model('collection', CollectionSchema)
+const Event = model('event', EventSchema)
 
-module.exports = { Collection, CollectionSchema }
+module.exports = { Event, EventSchema }

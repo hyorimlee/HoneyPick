@@ -15,14 +15,17 @@ async function isFollower(accountId, userId) {
   return false
 }
 
-// 컬렉션 생성
-eventRouter.post('/', authAccessToken, async (req, res) => {
+// event 생성
+// eventRouter.post('/', authAccessToken, async (req, res) => {
+eventRouter.post('/', async (req, res) => {
   try {
     // jwt 검증: user 추출 및 검증
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     const user = await User.findById(userId)
 
+    //USER가 ADMIN 권한을 가졌는지 확인
+    if(user.isAdmin == false) return res.status(401).send({err:'user is not admin'})
     // title, description, isPublic 추출 및 검증
     const { title, description, isPublic } = req.body
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
@@ -30,15 +33,12 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     if (typeof isPublic !== 'boolean') return res.status(400).send({ err: "boolean isPublic is required"});
     console.log(user.events.length)
 
-    // 기존 컬렉션이 30개 이상이면, 생성 차단
-    if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
+    // // 기존 컬렉션이 30개 이상이면, 생성 차단
+    // if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
 
-    // 컬렉션 자체 추가 & 회원의 컬렉션 목록에 추가
+    // event 자체 추가 
     const event = new Event({ ...req.body, user })
-    await Promise.all([
-      event.save(),
-      User.updateOne({ _id: userId }, { $push: { events: event }})
-    ])
+    await event.save()
     return res.status(201).send({ event })
   } catch (error) {
     console.log(error)
@@ -46,39 +46,17 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
   }
 })
 
-// 컬렉션 목록 조회
-eventRouter.get('/:accountId', authAccessToken, async (req, res) => {
+// event 목록 조회
+// eventRouter.get('/', authAccessToken, async (req, res) => {
+eventRouter.get('/', async (req, res) => {
   try {
     const { accountId } = req.params
     if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
     const account = await User.findById(accountId)
+    const events = await Event.find({})
 
-    // 비공개인 컬렉션은, 사용자가 팔로워여야만 조회 가능 (jwt)
-    const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
-    // 팔로워 목록 조회해서, 팔로워면 all, 아니면 public 보여주기
-    if (await isFollower(accountId, userId) === true || accountId == userId) {
-      const allevents = await account.events.sort((a,b) => {
-        if (a.updatedAt > b.updatedAt) {
-          return -1
-        } else if (a.updatedAt < b.updatedAt) {
-          return 1
-        }
-        return 0
-      })
-      return res.status(200).send({ events: allevents })
-    } else {
-      const unsortedEvents = await account.events.filter(event => event['isPublic'] == true)
-      const publicEvents = await unsortedEvents.sort((a,b) => {
-        if (a.updatedAt > b.updatedAt) {
-          return -1
-        } else if (a.updatedAt < b.updatedAt) {
-          return 1
-        }
-        return 0
-      })
-      return res.status(200).send({ events: publicEvents })
-    }
+    return res.status(200).send({ events: events })
+ 
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
