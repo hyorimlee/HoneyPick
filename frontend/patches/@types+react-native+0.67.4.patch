@@ -1,0 +1,12 @@
+diff --git a/node_modules/@types/react-native/index.d.ts b/node_modules/@types/react-native/index.d.ts
+index 1caa4c7..a33854d 100644
+--- a/node_modules/@types/react-native/index.d.ts
++++ b/node_modules/@types/react-native/index.d.ts
+@@ -3834,6 +3834,7 @@ export interface ImageBackgroundProps extends ImagePropsBase {
+     imageStyle?: StyleProp<ImageStyle> | undefined;
+     style?: StyleProp<ViewStyle> | undefined;
+     imageRef?(image: Image): void;
++    children?:React.ReactNode;
+ }
+ 
+ declare class ImageBackgroundComponent extends React.Component<ImageBackgroundProps> {}

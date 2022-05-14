@@ -3,8 +3,6 @@ import {memo, useCallback, useState} from 'react'
 import {Text} from 'react-native'
 import {IComponentProps} from './types'
 import {CustomBaseButtonPressable} from './styles'
-import {useAppDispatch, useAppSelector} from '../../../store/types'
-import uiSlice from '../../../store/slices/ui'
 
 function BaseButton({
   text,

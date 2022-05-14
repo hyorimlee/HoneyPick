@@ -1,47 +1,25 @@
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
-import {CompositeNavigationProp} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
 export type RootStackParamList = {
+  Home: undefined
+  Item: {itemId: string; collectionId: string}
+  Collection: {accountId: string; collectionId: string} | undefined
+  CreateCollection: undefined
+  Follow: {userId: string}
+  Vote: undefined
   SignIn: undefined
   SignUp: undefined
 }
 
-export type BottomTabParamList = {
-  Profile: undefined
-  Item: undefined
-}
+// 최상단 스택간 이동하는 navigation type
+export type RootStackNavigationProp =
+  NativeStackNavigationProp<RootStackParamList>
 
-export type ProfileStackParamList = {
-  Default: {userId: string}
-  EditProfile: undefined
-  Collection: {accountId: string, collectionId: string} | undefined
-  EditCollection: undefined
-  Follow: {userId: string}
-  CreateCollection: undefined
-}
+// export type ChooseCollectionStackParamList = {
+//   Item: {itemId: string; collectionId: string}
+// }
 
-export type CollectionStackParamList = {
-  Default: {collection: any}
-  EditCollection: undefined
-  ItemPage: undefined
-}
-
-export type ChooseCollectionStackParamList = {
-  Item: {itemId: string; collectionId: string}
-}
-
-export type ItemStackParamList = {
-  Default: {itemId: string; collectionId: string}
-  SetHoneyItem: undefined
-}
-
-export type ProfileNavigationProp = CompositeNavigationProp<
-  BottomTabNavigationProp<BottomTabParamList, 'Profile'>,
-  NativeStackNavigationProp<ProfileStackParamList, 'Default'>
->
-
-export type BottomTabProfileProp = BottomTabNavigationProp<
-  BottomTabParamList,
-  'Profile'
->
+// export type ItemStackParamList = {
+//   Default: {itemId: string; collectionId: string}
+//   SetHoneyItem: undefined
+// }

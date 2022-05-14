@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {createSelector, createSlice} from '@reduxjs/toolkit'
 import {ItemState} from './types'
 import {
   saveItem,
@@ -7,29 +7,30 @@ import {
   saveReview,
   editReview,
 } from './asyncThunk'
+import {RootState, useAppSelector} from '~/store/types'
 
 const initialState: ItemState = {
-  itemId: '', //627b44ad6ce3b0b4264389f7
+  itemId: '',
   collectionId: '',
   saveCollection: 'no',
   item: {
     _id: '',
-    brand: 'brand',
-    url: 'url',
-    title: 'title',
+    brand: '',
+    url: '',
+    title: '',
     thumbnail: '',
     priceBefore: 0,
     priceAfter: 0,
     discountRate: 0,
     stickers: [],
   },
-  review: {
-    _id: '',
-    user: '',
-    item: '',
-    isRecommend: 0,
-    stickers: [],
-  },
+  // review: {
+  //   _id: '',
+  //   user: '',
+  //   item: '',
+  //   isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
+  //   stickers: [],
+  // },
 }
 
 const itemSlice = createSlice({
@@ -46,12 +47,10 @@ const itemSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(saveItem.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.itemId = action.payload._id
       })
       .addCase(getItem.fulfilled, (state, action) => {
-        console.log(action.payload.item)
-        console.log(action.payload.review)
+        state.itemId = action.payload.item._id
         state.item = action.payload.item
         state.review = action.payload.review
       })
@@ -68,5 +67,18 @@ const itemSlice = createSlice({
   },
 })
 
+export const filteredStickers = createSelector(
+  [(state: RootState) => state.item.item.stickers],
+  stickers => stickers.filter(s => s[1]),
+)
+export const isDashOn = createSelector(
+  [
+    () => useAppSelector(filteredStickers),
+    (state: RootState) => state.item.review,
+  ],
+  (filteredStickers, review) => {
+    return filteredStickers.length > 0 || review ? true : false
+  },
+)
 export const {setCollectionId, setSaveCollection} = itemSlice.actions
 export default itemSlice

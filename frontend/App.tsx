@@ -1,8 +1,7 @@
-import React, {memo, useEffect, useState} from 'react'
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react'
 import {Provider} from 'react-redux'
-import {Modal, Platform, Pressable, View} from 'react-native'
+import {Modal, View, AppState} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import axios from 'axios'
 
@@ -21,14 +20,19 @@ import {requestAccessToken} from './src/store/slices/user/asyncThunk'
 import store from './src/store'
 import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
-import ItemStack from './src/pages/item'
-import ProfileStack from './src/pages/profile'
-import RecommendStack from './src/pages/recommend'
 
-import SaveItemBtn from './src/containers/saveItemBtn'
+import SaveItemBtn from './src/components/saveItemBtn'
 import ChooseCollectionModal from './src/containers/chooseCollectionModal'
+import {setSaveCollection} from './src/store/slices/item'
+import {
+  Home,
+  ItemStack,
+  CollectionStack,
+  CreateCollectionStack,
+  FollowStack,
+  VoteStack,
+} from './src/pages/'
 
-const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
 
 type IDispatch = ThunkDispatch<CombinedState<RootState>, undefined, AnyAction> &
@@ -79,123 +83,105 @@ const axiosInterceptor = (dispatch: IDispatch) => {
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
-  const {userId} = useAppSelector(state => state.user)
   const {saveCollection} = useAppSelector(state => state.item)
-
-  const [copiedUrl, setCopiedUrl] = useState<string>('')
-  const [btnShow, setBtnShow] = useState<boolean>(false)
-  const [modalVisible, setModalVisible] = useState<boolean>(false)
-
-  console.log(modalVisible)
-
-  const clipboardListener = async () => {
-    const text = await Clipboard.getString()
-    if (text.indexOf('http') > -1) {
-      console.log('링크 감지 완료')
-      setCopiedUrl(text)
-      setBtnShow(true)
-    }
-  }
-
-  useEffect(() => {
-    if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      const listener = Clipboard.addListener(clipboardListener)
-      return () => {
-        listener.remove()
-      }
-    }
-  }, [])
-
-  const btnShowHandler = () => {
-    if (btnShow) {
-      setBtnShow(false)
-    }
-  }
-
-  useEffect(() => {
-    console.log(saveCollection)
-    if (saveCollection === 'yet') {
-      setModalVisible(true)
-    } else if (saveCollection === 'done') {
-      Clipboard.setString('')
-      setModalVisible(false)
-    } else {
-      setModalVisible(false)
-    }
-  }, [saveCollection])
+  const [copiedUrl, setCopiedUrl] = useState('')
+  const appState = useRef(AppState.currentState)
 
   useEffect(() => {
     getRefreshToken(dispatch)
     axiosInterceptor(dispatch)
+
+    const listener = AppState.addEventListener('change', nextAppState => {
+      const isNowInactive = appState.current.match(/inactive|background/)
+
+      if (isNowInactive && nextAppState === 'active') {
+        const getClipboard = async () => {
+          await Clipboard.hasString()
+          const text = await Clipboard.getString()
+
+          if (text.slice(0, 4) === 'http') {
+            setCopiedUrl(text)
+          }
+        }
+        getClipboard()
+      }
+
+      appState.current = nextAppState
+    })
+
+    return () => listener.remove()
+  }, [])
+
+  const btnShowHandler = useCallback(() => {
+    setCopiedUrl('')
+  }, [])
+
+  const modalClose = useCallback(() => {
+    dispatch(setSaveCollection('no'))
   }, [])
 
   return (
     <View style={{height: '100%'}}>
       <NavigationContainer>
-        {isLoggined ? (
-          <>
-            <Tab.Navigator
-              initialRouteName="Profile"
-              screenOptions={{
-                tabBarStyle: {
-                  backgroundColor: '#FFD669',
-                  borderTopLeftRadius: 30,
-                },
-              }}>
-              <Tab.Screen
-                name="Profile"
-                component={ProfileStack}
-                options={{title: '프로필', headerShown: false}}
+        <Stack.Navigator initialRouteName="SignIn">
+          {isLoggined ? (
+            <>
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{title: '홈', headerShown: false}}
               />
-              <Tab.Screen
+              <Stack.Screen
                 name="Item"
                 component={ItemStack}
-                options={{title: '아이템', headerShown: false}}
+                options={{title: '아이템 상세', headerShown: false}}
               />
-              {/* <Tab.Screen
-                name="EventPage"
-                component={}
-                options={{title: '이벤트'}}
-              /> */}
-              <Tab.Screen
-                name="RecommandPage"
-                component={RecommendStack}
-                options={{title: '추천', headerShown: false}}
+              <Stack.Screen
+                name="Collection"
+                component={CollectionStack}
+                options={{title: '컬렉션 상세', headerShown: false}}
               />
-            </Tab.Navigator>
-            {/* 전역 버튼, 모달 */}
-            {btnShow ? (
-              <SaveItemBtn
-                copiedUrl={copiedUrl}
-                setCopiedUrl={(text: string) => setCopiedUrl(text)}
-                btnShowHandler={() => btnShowHandler()}
+              <Stack.Screen
+                name="CreateCollection"
+                component={CreateCollectionStack}
+                options={{title: '컬렉션 추가', headerShown: false}}
               />
-            ) : null}
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(false)
-              }}>
-              <ChooseCollectionModal
-                setModalVisible={setModalVisible}></ChooseCollectionModal>
-            </Modal>
-          </>
-        ) : (
-          <Stack.Navigator initialRouteName="SignIn">
-            <Stack.Screen
-              name="SignIn"
-              component={SignIn}
-              options={{title: '로그인', headerShown: false}}
-            />
-            <Stack.Screen
-              name="SignUp"
-              component={SignUp}
-              options={{title: '회원가입', headerShown: false}}
-            />
-          </Stack.Navigator>
-        )}
+              <Stack.Screen
+                name="Follow"
+                component={FollowStack}
+                options={{title: '팔로우', headerShown: false}}
+              />
+              <Stack.Screen
+                name="Vote"
+                component={VoteStack}
+                options={{title: '투표 결과', headerShown: false}}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="SignIn"
+                component={SignIn}
+                options={{title: '로그인', headerShown: false}}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{title: '회원가입', headerShown: false}}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+        {copiedUrl ? (
+          <SaveItemBtn copiedUrl={copiedUrl} btnShowHandler={btnShowHandler} />
+        ) : null}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={saveCollection === 'yet' ? true : false}
+          onRequestClose={modalClose}>
+          <ChooseCollectionModal />
+        </Modal>
       </NavigationContainer>
     </View>
   )
