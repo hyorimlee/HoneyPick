@@ -26,7 +26,6 @@ function BaseButton({
   position,
   bottom,
   width,
-  isSelect,
 }: IComponentProps) {
   const [isPressing, setIsPressing] = useState(false)
 

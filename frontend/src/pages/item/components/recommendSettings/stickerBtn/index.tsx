@@ -1,9 +1,8 @@
-import {faFilterCircleXmark} from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 import {memo} from 'react'
 
 import {STICKERS} from '~/modules/stickers'
-import BaseButton from '~/components/button/base'
+import SelectedButton from '../selectButton'
 
 import {Container} from './styles'
 
@@ -24,15 +23,10 @@ function StickerBtn({
 
   const ButtonList = STICKERS.map(sticker => {
     return (
-      <BaseButton
+      <SelectedButton
         text={sticker.emoji + ' ' + sticker.label}
         onPress={() => clickHandler(sticker.id)}
-        borderRadius={25}
-        paddingVertical={5}
-        paddingHorizontal={15}
-        marginLeft={5}
-        marginVertical={3}
-        key={sticker.id}></BaseButton>
+        key={sticker.id}></SelectedButton>
     )
   })
 
