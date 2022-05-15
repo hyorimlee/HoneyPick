@@ -1,6 +1,10 @@
 import * as React from 'react'
-import {memo} from 'react'
+import {memo, useEffect} from 'react'
 import {SafeAreaView, Alert} from 'react-native'
+
+import {useIsFocused} from '@react-navigation/native'
+import {useAppSelector, useAppDispatch} from '~/store/types'
+import {getEventList} from '~/store/slices/event/asyncThunk'
 
 import {Container, MainEvent, SubEvent, EventImage, SubEventImage, InfoContainer, InfoTop, TitleText, NormalText} from './styles'
 
@@ -27,6 +31,16 @@ const events = [
 ]
 
 function EventStack() {
+  const isFocused = useIsFocused()
+  const dispatch = useAppDispatch()
+  // const events = useAppSelector(state => state.event.eventList)
+
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     dispatch(getEventList())
+  //   }
+  // }, [isFocused])
+
   const onClick = (idx: number) => {
     Alert.alert(idx + ' 으로 이동')
   }
