@@ -33,18 +33,20 @@ likeRouter.post('/', authAccessToken, async (req, res) => {
 // 컬렉션 찜 목록 조회
 likeRouter.get('/', authAccessToken, async (req, res) => {
   try {
-    let { page=1 } = req.query
-    page = parseInt(page)
     const { userId } = req
     const user = await User.findById(userId)
-    const likes = await user.likes.sort((a,b) => {
-      if (a.updatedAt > b.updatedAt) {
-        return -1
-      } else if (a.updatedAt < b.updatedAt) {
-        return 1
-      }
-      return 0
-    })
+    let likes = []
+    if (user.likes.length > 1) {
+      likes = user.likes
+      .sort((a,b) => {
+        if (a.updatedAt > b.updatedAt) {
+          return -1
+        } else if (a.updatedAt < b.updatedAt) {
+          return 1
+        }
+        return 0
+      })
+    }
     return res.status(200).send({ likes })
   } catch (error) {
     console.log(error)
