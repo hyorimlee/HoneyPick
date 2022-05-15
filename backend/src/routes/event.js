@@ -9,6 +9,8 @@ const { Types: { ObjectId } } = require('mongoose')
 eventRouter.patch('/item',authAccessToken,async(req,res)=>{
   try {
         const userId = req.userId
+        const user = await findById(userId)
+        if(user.isAdmin == false) return res.status(400).send({err:"user가 admin이 아닙니다"})
         const { originalEventId, eventId,itemId } = req.body
         if(!eventId && !originalEventId) return res.status(400).send({err:"eventId 혹은 originalEventId가 필요"})
         
@@ -50,7 +52,7 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     //USER가 ADMIN 권한을 가졌는지 확인
     if(user.isAdmin == false) return res.status(401).send({err:'user is not admin'})
     // title, description, isPublic 추출 및 검증
-    const { title, description, additional} = req.body
+    const { title, description, additional} = req.bodyrh
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"})
     if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be string type"})
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"})
@@ -112,13 +114,14 @@ eventRouter.get('/:eventId', authAccessToken, async (req, res) => {
 // 이벤트 수정
 eventRouter.patch('/:eventId', authAccessToken, async (req, res) => {
   try {
+    const user = await findById(userId)
+    if(user.isAdmin == false) return res.status(400).send({err:"user가 admin이 아닙니다"})
     const { eventId } = req.params
     const { title, description, additional} = req.body
     const { userId } = req
     let event = await Event.findById(eventId)
 
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
-    if (event.user._id.toString() !== userId ) return res.status(401).send({ err: "Unauthorized" })
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be a string" })
