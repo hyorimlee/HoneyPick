@@ -61,7 +61,8 @@ function FollowList({data}: IProps) {
           {myUserId !== _id ? (
             <BaseButton
               text={myFollow === true ? '언팔로우' : '팔로우'}
-              backgroundColor={myFollow === true ? '#C4C4C4' : ''}
+              backgroundColor={myFollow === true ? '#C4C4C4' : 'default'}
+              // backgroundColor={myFollow === true ? '#C4C4C4' : ''}
               onPress={followChange(_id)}
               fontSize={12}
               paddingVertical={2}
