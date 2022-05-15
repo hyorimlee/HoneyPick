@@ -11,15 +11,17 @@ import {
   CustomText,
   TotalView,
 } from './styles'
+import {useRoute} from '@react-navigation/native'
+import {FollowRoute} from '~/../types/navigation'
 
 function FollowStack() {
   const dispatch = useAppDispatch()
+  const route = useRoute<FollowRoute>()
   const {following, followingList, follower, followerList} = useAppSelector(
     state => state.profile,
   )
-
   const [selected, setSelected] = useState<'following' | 'follower'>(
-    'following',
+    route.params?.type,
   )
 
   const selectedFollowing = useCallback(() => {
