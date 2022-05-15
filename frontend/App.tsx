@@ -1,7 +1,7 @@
 import React, {memo, useCallback, useEffect, useRef, useState} from 'react'
 import {Provider} from 'react-redux'
 import {Modal, View, AppState} from 'react-native'
-import {NavigationContainer} from '@react-navigation/native'
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import axios from 'axios'
 
@@ -80,6 +80,15 @@ const axiosInterceptor = (dispatch: IDispatch) => {
   )
 }
 
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#F9C12E',
+    background: '#FFFFFF',
+  }
+}
+
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
@@ -122,7 +131,7 @@ const InnerApp = memo(({}) => {
 
   return (
     <View style={{height: '100%'}}>
-      <NavigationContainer>
+      <NavigationContainer theme={MyTheme}>
         <Stack.Navigator initialRouteName="SignIn">
           {isLoggined ? (
             <>
