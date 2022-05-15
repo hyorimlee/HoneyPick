@@ -105,12 +105,13 @@ eventRouter.delete('/:eventId', authAccessToken, async (req, res) => {
     if (!isValidObjectId(eventId)) return res.status(400).send({ err: "invalid eventId"})
 
     let event = await Event.findById(eventId)
-    if (userId !==event.user._id) return res.status(401).send({ err: "Unauthorized" })
+    if (userId !==event.user._id.toString()) return res.status(401).send({ err: "Unauthorized" })
     if(event.isDeleted==true) return res.status(401).send({err:"event is already deleted"})
-    event.isDeleted = false
+    event.isDeleted = true
 
     await event.save()
-    return res.status(204).send({msg: `${event.title} is deleted`})
+    console.log(event.title)
+    return res.status(200).send({msg:`${event.title} is deleted`})
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
