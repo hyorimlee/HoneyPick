@@ -52,7 +52,7 @@ eventRouter.get('/:eventId', authAccessToken, async (req, res) => {
   try {
     const { eventId } = req.params
     if (!isValidObjectId(eventId)) return res.status(400).send({ err: "invalid eventId" })
-    
+    if(event.isDeleted==true) return res.status(401).send({err:"event is already deleted"})
     const event = await Event.findById(eventId)
 
     var idList = event.items.map(({ _id }) => ObjectId(_id))
@@ -68,7 +68,7 @@ eventRouter.get('/:eventId', authAccessToken, async (req, res) => {
   }
 })
 
-// 이벤트 수정(제목, 설명, 공개여부. 아이템 추가 및 제거는 item.js에서 처리)
+// 이벤트 수정
 eventRouter.patch('/:eventId', authAccessToken, async (req, res) => {
   try {
     const { eventId } = req.params
@@ -77,7 +77,8 @@ eventRouter.patch('/:eventId', authAccessToken, async (req, res) => {
     let event = await Event.findById(eventId)
 
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
-    if (event.user._id.toString() !== userId || userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
+    if (event.user._id.toString() !== userId ) return res.status(401).send({ err: "Unauthorized" })
+    if(event.isDeleted==true) return res.status(401).send({err:"event is already deleted"})
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
@@ -96,20 +97,20 @@ eventRouter.patch('/:eventId', authAccessToken, async (req, res) => {
 })
 
 // 컬렉션 삭제
-eventRouter.delete('/:accountId/:eventId', authAccessToken, async (req, res) => {
+eventRouter.delete('/:eventId', authAccessToken, async (req, res) => {
   try {
-    const { accountId, eventId } = req.params
+    const {  eventId } = req.params
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
-    if (userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
     if (!isValidObjectId(eventId)) return res.status(400).send({ err: "invalid eventId"})
 
-    await Promise.all([
-      Event.findByIdAndDelete(eventId),
-      User.findByIdAndUpdate(accountId, { $pull: { events: { _id: eventId }}})
-    ])
-    return res.status(204).send()
+    let event = await Event.findById(eventId)
+    if (userId !==event.user._id) return res.status(401).send({ err: "Unauthorized" })
+    if(event.isDeleted==true) return res.status(401).send({err:"event is already deleted"})
+    event.isDeleted = false
+
+    await event.save()
+    return res.status(204).send({msg: `${event.title} is deleted`})
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
