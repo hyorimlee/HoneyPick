@@ -47,22 +47,14 @@ eventRouter.get('/', async (req, res) => {
   }
 })
 
-// 컬렉션 상세 조회
-eventRouter.get('/:accountId/:eventId', authAccessToken, async (req, res) => {
+// 이벤트 상세 조회
+eventRouter.get('/:eventId', authAccessToken, async (req, res) => {
   try {
-    const { accountId, eventId } = req.params
-    const { userId } = req
-    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
-    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
+    const { eventId } = req.params
     if (!isValidObjectId(eventId)) return res.status(400).send({ err: "invalid eventId" })
-
-    // 비공개인 경우: jwt 토큰에서 userId 가져와서 accountId 의 팔로워 목록에 있는지 확인하고, 있으면 공개, 없으면 못 봄
+    
     const event = await Event.findById(eventId)
-    if (event.isPublic === false) {
-      if (await isFollower(accountId, userId) == false && accountId !== userId) {
-        return res.status(400).send({ err: 'private event'})
-      }
-    }
+
     var idList = event.items.map(({ _id }) => ObjectId(_id))
     var itemList = await Item.find({ _id: { $in: idList }})
     const items = itemList.map((item, idx) => {
@@ -76,11 +68,11 @@ eventRouter.get('/:accountId/:eventId', authAccessToken, async (req, res) => {
   }
 })
 
-// 컬렉션 수정(제목, 설명, 공개여부. 아이템 추가 및 제거는 item.js에서 처리)
-eventRouter.patch('/:accountId/:eventId', authAccessToken, async (req, res) => {
+// 이벤트 수정(제목, 설명, 공개여부. 아이템 추가 및 제거는 item.js에서 처리)
+eventRouter.patch('/:eventId', authAccessToken, async (req, res) => {
   try {
-    const { accountId, eventId } = req.params
-    const { title, description, isPublic } = req.body
+    const { eventId } = req.params
+    const { title, description, additional} = req.body
     const { userId } = req
     let event = await Event.findById(eventId)
 
@@ -88,27 +80,14 @@ eventRouter.patch('/:accountId/:eventId', authAccessToken, async (req, res) => {
     if (event.user._id.toString() !== userId || userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
-    if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
-
+    if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     const eventUpdate = {}
     const userUpdate = {}
-    
-    if (title) {
-      eventUpdate['title'] = title
-      userUpdate['events.$.title'] = title
-    }
-    if (description) {
-      eventUpdate['description'] = description
-    }
-    if (typeof isPublic !== 'undefined') {
-      eventUpdate['isPublic'] = isPublic
-    }
+    if(title) event.title = title
+    if(description) event.description = description
+    if(additional) event.additional = additional
 
-    [event, _] = await Promise.all([
-      event.findByIdAndUpdate(eventId, eventUpdate, { new: true }),
-      User.updateOne({ _id: userId, 'events._id': eventId }, userUpdate)
-    ])
-
+    await event.save()
     return res.status(200).send({ event })
   } catch (error) {
     console.log(error)
