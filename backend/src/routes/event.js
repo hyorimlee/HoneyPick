@@ -1,9 +1,43 @@
 const { Router } = require('express')
 const eventRouter = Router()
 const { isValidObjectId } = require('mongoose')
-const { User, Event, Follow, Item } = require('../models')
+const { User, Event, Review,Item } = require('../models')
 const { authAccessToken } = require('./auth')
 const { Types: { ObjectId } } = require('mongoose')
+
+
+eventRouter.patch('/item',authAccessToken,async(req,res)=>{
+  try {
+        const userId = req.userId
+        const { originalEventId, eventId,itemId } = req.body
+        if(!eventId && !originalEventId) return res.status(400).send({err:"eventId 혹은 originalEventId가 필요"})
+        
+        if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
+        if(originalEventId&&!isValidObjectId(originalEventId)) return res.status(400).send({ err: "잘못된 originalEventId" })
+        if(eventId && !isValidObjectId(eventId)) return res.status(400).send({ err: "잘못된 eventId" })
+
+        const item = await Item.findById(itemId)
+        if(!item) return res.status(400).send({ err: "아이템이 존재하지 않습니다." })
+
+        var promises = []
+        if(originalEventId) {            
+            promises.push(Event.findOneAndUpdate({ _id: originalEventId, 'user._id': userId }, { $pull: { items: { _id: itemId } } }, { new: true }))
+        }
+        if(eventId) {
+            const review = await Review.findOne({ user: userId, item: itemId })
+            const recommend = review?.isRecommend
+            promises.push(Event.findOneAndUpdate({_id: eventId, 'user._id': userId}, { $addToSet: { items: { _id: itemId, recommend } } }))
+        }
+
+        await Promise.all(promises)
+        // return res.status(204).send()
+        return res.status(200).send({ message: `add [${item.title}] at [${eventId}]`})
+  } catch (err) {
+    console.log(err)
+    return res.status(500).send({err:err.message})
+  }
+})
+
 
 // event 생성
 eventRouter.post('/', authAccessToken, async (req, res) => {
@@ -36,9 +70,14 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
 })
 
 // event 목록 조회
-// eventRouter.get('/', authAccessToken, async (req, res) => {
-eventRouter.get('/', async (req, res) => {
+eventRouter.get('/', authAccessToken, async (req, res) => {
   try {
+    const { userId } = req
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+
+    const user = await User.findById(userId)
+    if(user.withdraw == true) return res.status(401).send({err:"withdrawn user"})
+
     const events = await Event.find({})
     return res.status(200).send({ events: events })
   } catch (error) {
@@ -47,12 +86,14 @@ eventRouter.get('/', async (req, res) => {
   }
 })
 
-// 이벤트 상세 조회
+// 이벤트 개별 조회
 eventRouter.get('/:eventId', authAccessToken, async (req, res) => {
   try {
+    const user = await User.findById(req.userId)
+    if(user.withdraw == true) return res.status(401).send({err:"withdrawn user"})
+
     const { eventId } = req.params
     if (!isValidObjectId(eventId)) return res.status(400).send({ err: "invalid eventId" })
-    if(event.isDeleted==true) return res.status(401).send({err:"event is already deleted"})
     const event = await Event.findById(eventId)
 
     var idList = event.items.map(({ _id }) => ObjectId(_id))
@@ -78,10 +119,9 @@ eventRouter.patch('/:eventId', authAccessToken, async (req, res) => {
 
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (event.user._id.toString() !== userId ) return res.status(401).send({ err: "Unauthorized" })
-    if(event.isDeleted==true) return res.status(401).send({err:"event is already deleted"})
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
-    if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
+    if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be a string" })
     const eventUpdate = {}
     const userUpdate = {}
     if(title) event.title = title
@@ -106,16 +146,14 @@ eventRouter.delete('/:eventId', authAccessToken, async (req, res) => {
 
     let event = await Event.findById(eventId)
     if (userId !==event.user._id.toString()) return res.status(401).send({ err: "Unauthorized" })
-    if(event.isDeleted==true) return res.status(401).send({err:"event is already deleted"})
-    event.isDeleted = true
-
-    await event.save()
+    await findByIdAndDelete(eventId)
     console.log(event.title)
-    return res.status(200).send({msg:`${event.title} is deleted`})
+    return res.status(204).send()
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
   }
 })
+
 
 module.exports = eventRouter
