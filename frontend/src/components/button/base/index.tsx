@@ -60,7 +60,7 @@ function BaseButton({
       paddingHorizontal={paddingHorizontal}
       paddingVertical={paddingVertical}
       backgroundColor={
-        disabled
+        disabled || backgroundColor === '#C4C4C4'
           ? '#C4C4C4' // 비활성화
           : backgroundColor === 'default'
           ? isPressing

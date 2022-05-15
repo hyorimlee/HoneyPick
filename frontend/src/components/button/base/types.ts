@@ -13,7 +13,7 @@ export interface IComponentProps {
   color?: ColorValue
   fontSize?: number
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify'
-  backgroundColor?: 'default' | 'white'
+  backgroundColor?: 'default' | 'white' | ColorValue
   borderRadius?: number
   borderWidth?: number
   borderColor?: ColorValue
