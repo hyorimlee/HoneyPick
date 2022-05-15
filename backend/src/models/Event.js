@@ -12,8 +12,7 @@ const EventSchema = new Schema(
     items: [{
       _id: { type: ObjectId, required: true, ref: 'item'},
       recommend: { type: Number, required: true, default: 0}
-    }],
-    isDeleted: {type:Boolean, default:false}
+    }]
   },
   { timestamps: true })
 
