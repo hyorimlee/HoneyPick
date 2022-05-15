@@ -96,7 +96,7 @@ eventRouter.patch('/:eventId', authAccessToken, async (req, res) => {
   }
 })
 
-// 컬렉션 삭제
+// 이벤트 삭제
 eventRouter.delete('/:eventId', authAccessToken, async (req, res) => {
   try {
     const {  eventId } = req.params
