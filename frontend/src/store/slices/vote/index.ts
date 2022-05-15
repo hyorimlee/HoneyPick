@@ -2,7 +2,8 @@ import axios from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
-import {} from './types'
+import {VoteInitialState} from './types'
+import { ItemState } from '../item/types'
 import {
   createVote,
   getVoteList,
@@ -12,8 +13,9 @@ import {
   vote,
 } from './asyncThunk'
 
-const initialState = {
-  currentVote: {}
+const initialState: VoteInitialState = {
+  currentVote: undefined,
+  selectedItems: [],
 }
 
 const voteSlice = createSlice({
@@ -23,21 +25,22 @@ const voteSlice = createSlice({
     setCurrentVote(state, action) {
       state.currentVote = action.payload
     },
+    setSelectedItems(state, action) {
+      state.selectedItems = action.payload
+    },
   },
   extraReducers: builder => {
     builder
       .addCase(createVote.fulfilled, (state, action) => {
         state.currentVote = action.payload.vote
-        console.log(state)
       })
       .addCase(getVote.fulfilled, (state, action) => {
         state.currentVote = action.payload.vote
-        console.log('겟', state)
       })
       .addCase(getVoteList.fulfilled, (state, action) => {
         console.log(action.payload.votes)
       })
   },
 })
-export const {setCurrentVote} = voteSlice.actions
+export const {setCurrentVote, setSelectedItems} = voteSlice.actions
 export default voteSlice

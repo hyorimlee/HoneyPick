@@ -2,7 +2,7 @@ import axios from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
-import {CollectionState, CollectionListState, ICollectionListQuery} from './types'
+import {CollectionInitialState} from './types'
 import {
   getCollectionList,
   getCollection,
@@ -11,7 +11,7 @@ import {
   deleteCollection
 } from './asyncThunk'
 
-const initialState = {
+const initialState: CollectionInitialState = {
   currentCollection: {
     user: {
       _id: '-1',
@@ -26,9 +26,7 @@ const initialState = {
     updatedAt: '2022-05-07',
     __v: 1,
   },
-  currentItems: [
-
-  ]
+  currentItems: []
 }
 
 const collectionSlice = createSlice({
