@@ -38,7 +38,7 @@ function CollectionInfo() {
   const {currentCollection} = useAppSelector(state => state.collection)
   const {currentVote} = useAppSelector(state => state.vote)
   const isVoting = currentVote?.isClosed === undefined ? false : !currentVote.isClosed
-  const isMyList = currentCollection.user._id === userId
+  const isMyList = currentCollection?.user._id === userId
 
   const actionSheetRef = createRef<ActionSheet>()
   const username = currentCollection?.user?.username
