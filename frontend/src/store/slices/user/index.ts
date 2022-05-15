@@ -18,7 +18,13 @@ const initialState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setReset: state => {
+      state.userId = ''
+      state.accessToken = ''
+      state.collections = []
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(requestAccessToken.fulfilled, (state, action) => {

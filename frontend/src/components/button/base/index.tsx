@@ -17,7 +17,7 @@ function BaseButton({
   color = '#ffffff',
   fontSize,
   textAlign = 'center',
-  backgroundColor,
+  backgroundColor = 'default',
   borderRadius = 20,
   borderWidth,
   borderColor,
@@ -28,7 +28,6 @@ function BaseButton({
   width,
 }: IComponentProps) {
   const [isPressing, setIsPressing] = useState(false)
-  const [isPressed, setIsPressed] = useState(false)
 
   const pressIn = useCallback(() => {
     setIsPressing(true)
@@ -42,12 +41,7 @@ function BaseButton({
     if (onPressOut) {
       onPressOut()
     }
-
-    if (isPressed === true) {
-      setIsPressed(true)
-      setIsPressing(false)
-    }
-  }, [onPressOut, isPressed])
+  }, [onPressOut])
 
   const press = useCallback(() => {
     onPress()
@@ -66,11 +60,15 @@ function BaseButton({
       paddingHorizontal={paddingHorizontal}
       paddingVertical={paddingVertical}
       backgroundColor={
-        backgroundColor || disabled
-          ? '#C4C4C4'
+        disabled || backgroundColor === '#C4C4C4'
+          ? '#C4C4C4' // 비활성화
+          : backgroundColor === 'default'
+          ? isPressing
+            ? '#FFD669' // 활성화 기본 색상 누르는 중
+            : '#F9C12E' // 활성화 기본 색상
           : isPressing
-          ? '#FFD669'
-          : '#F9C12E'
+          ? '#FFF9E9' // 활성화 흰색 누르는 중
+          : 'white' // 활성화 흰색
       }
       borderRadius={borderRadius}
       borderWidth={borderWidth}
@@ -86,3 +84,5 @@ function BaseButton({
 }
 
 export default memo(BaseButton)
+
+// 배경색 흰색
