@@ -73,11 +73,11 @@ export const filteredStickers = createSelector(
 )
 export const isDashOn = createSelector(
   [
-    () => useAppSelector(filteredStickers),
+    (state: RootState) => state.item.item.stickers,
     (state: RootState) => state.item.review,
   ],
-  (filteredStickers, review) => {
-    return filteredStickers.length > 0 || review ? true : false
+  (stickers, review) => {
+    return stickers.filter(s => s[1]).length > 0 || review ? true : false
   },
 )
 export const {setCollectionId, setSaveCollection} = itemSlice.actions
