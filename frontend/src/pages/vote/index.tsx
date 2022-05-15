@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import createVote from './createVote'
+import CreateVote from './createVote'
 
 const Stack = createNativeStackNavigator()
 
@@ -9,7 +9,7 @@ function VoteStack() {
     <Stack.Navigator>
       <Stack.Screen
         name="CreateVote"
-        component={createVote}
+        component={CreateVote}
         options={{headerShown: false}}
       />
       {/* <Stack.Screen

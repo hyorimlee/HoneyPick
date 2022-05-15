@@ -7,13 +7,11 @@ import {useAppDispatch} from '../../../store/types'
 import {editCollection} from '../../../store/slices/collection/asyncThunk'
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native'
 import {useAppSelector} from '../../../store/types'
-import {ProfileStackParamList} from '../../../../types/navigation'
-import {ProfileNavigationProp} from '../../../containers/profileInfo/types'
+import {RootStackNavigationProp} from '../../../../types/navigation'
 import { createVote } from '../../../store/slices/vote/asyncThunk'
 
 function CreateVote() {
-  const navigation = useNavigation<ProfileNavigationProp>()
-  const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const navigation = useNavigation<RootStackNavigationProp>()
   const collection = useAppSelector(state => state.collection.currentCollection)
   const vote = useAppSelector(state => state.vote.currentVote)
   const dispatch = useAppDispatch()

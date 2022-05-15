@@ -1,5 +1,10 @@
 import {ItemState} from '../item/types'
 
+export interface CollectionInitialState {
+  currentCollection: CollectionState | undefined,
+  currentItems: ItemState[] | undefined
+}
+
 export interface CollectionState {
   user: CollectionUserObject,
   title: string,
