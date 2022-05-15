@@ -13,7 +13,7 @@ export interface IComponentProps {
   color?: ColorValue
   fontSize?: number
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify'
-  backgroundColor?: ColorValue
+  backgroundColor?: 'default' | 'white'
   borderRadius?: number
   borderWidth?: number
   borderColor?: ColorValue
@@ -22,6 +22,7 @@ export interface IComponentProps {
   position?: 'relative' | 'absolute'
   bottom?: number | string
   width?: number | string
+  isSelect?: boolean
 }
 
 export interface IStyleProps {
@@ -33,7 +34,7 @@ export interface IStyleProps {
   color?: ColorValue
   fontSize?: number
   textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify'
-  backgroundColor?: ColorValue
+  backgroundColor?: 'default' | 'white'
   borderRadius?: number
   borderWidth?: number
   borderColor?: ColorValue

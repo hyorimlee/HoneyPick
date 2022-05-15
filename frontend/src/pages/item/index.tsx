@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {memo, useState, useEffect, useRef, useCallback} from 'react'
-import {SafeAreaView, StatusBar, Linking} from 'react-native'
+import {memo, useState, useEffect, useCallback, useRef} from 'react'
+import {SafeAreaView, StatusBar, Linking, Pressable, Text} from 'react-native'
 import Config from 'react-native-config'
 import ActionSheet from 'react-native-actions-sheet'
 
@@ -23,7 +23,7 @@ function ItemStack() {
   const {item} = useAppSelector(state => state.item)
   const dashOn = useAppSelector(isDashOn)
   const [isSet, setIsSet] = useState(false)
-  const actionSheetRef = useRef<ActionSheet | null>(null)
+  const actionSheetRef = useRef<ActionSheet>(null)
   const route = useRoute<ItemRoute>()
   const {itemId, collectionId} = route.params!
 
@@ -38,6 +38,7 @@ function ItemStack() {
   }
 
   const deleteItem = () => {
+    actionSheetRef.current?.hide()
     dispatch(
       itemToCollection({
         itemId,
@@ -46,12 +47,12 @@ function ItemStack() {
     )
   }
 
-  const toggleIsSet = () => {
+  const toggleIsSet = useCallback(() => {
     actionSheetRef.current?.hide()
-    // setIsSet(!isSet)
-  }
+    setIsSet(!isSet)
+  }, [isSet])
 
-  // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
+  // // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
   const goToSite = useCallback(async () => {
     await Linking.canOpenURL(item.url)
     // if (supported) {
@@ -98,19 +99,22 @@ function ItemStack() {
             borderRadius: 20,
           }}
         />
-        <ItemInfo openSheet={openSheet}></ItemInfo>
+        <ItemInfo openSheet={openSheet} isSet={isSet}></ItemInfo>
         {dashOn ? <DashedBorder /> : null}
-        {/* {isSet ? (
+        {isSet ? (
           <RecommendSettings toggleIsSet={toggleIsSet} />
-        ) : // <RecommendInfo />
-        null} */}
-        <BaseButton
-          text={'사이트로 이동하기'}
-          onPress={goToSite}
-          borderRadius={25}
-          marginVertical={10}
-          paddingVertical={15}
-        />
+        ) : (
+          <>
+            <RecommendInfo />
+            <BaseButton
+              text={'사이트로 이동하기'}
+              onPress={goToSite}
+              borderRadius={25}
+              marginVertical={10}
+              paddingVertical={15}
+            />
+          </>
+        )}
       </Container>
     </SafeAreaView>
   )
