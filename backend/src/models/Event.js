@@ -1,22 +1,22 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
 
-const CollectionSchema = new Schema(
+const EventSchema = new Schema(
   {
     user: {
       _id: { type: ObjectId, required: true, ref: 'user' },
       username: { type: String, required: true },
-      nickname: { type: String, required: true }
+      nickname: { type: String, required: true },
     },
     title: { type: String , required: true },
     description: { type: String, required: false },
+    additional: { type: String, required: false },
     items: [{
       _id: { type: ObjectId, required: true, ref: 'item'},
       recommend: { type: Number, required: true, default: 0}
-    }],
-    isPublic: { type: Boolean, required: true }
+    }]
   },
   { timestamps: true })
 
-const Collection = model('collection', CollectionSchema)
+const Event = model('event', EventSchema)
 
-module.exports = { Collection, CollectionSchema }
+module.exports = { Event, EventSchema }
