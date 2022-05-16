@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const voteRouter = Router()
 const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
-const { Vote, Collection, User, Follow } = require('../models')
+const { Vote, Collection, User, Follow, Event } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
@@ -18,17 +18,28 @@ async function isFollower(accountId, userId) {
 voteRouter.post('/', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    const { collectionId, title, isPublic } = req.body
+    const { type, targetId, title, isPublic } = req.body
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
+    if (!isValidObjectId(targetId)) return res.status(400).send({ err: "invalid targetId" })
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
 
-    // 투표 만들기 & 프로필의 투표 목록에 추가
-    const collection = await Collection.findById(collectionId)
-    const accountId = collection.user._id
-    if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
-    const vote = new Vote({ collectionId, title, result: collection.items, isPublic })
+    // 이벤트 투표는 admin만 생성 가능
+    const user = await User.findById(userId)
+    if (type == 'event' && user.isAdmin == false) return res.status(403).send({ err: "Unauthorized1" })
+
+    // 투표 만들기 & 회원의 투표 목록에 추가
+    let target;
+    if (type == 'collection') {
+      target = await Collection.findById(targetId)
+    } else if (type == 'event') {
+      target = await Event.findById(targetId)
+    } else {
+      return res.status(400).send({ err: "wrong type" })
+    }
+    const accountId = target.user._id
+    if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized2" })
+    const vote = new Vote({ targetId, title, result: target.items, isPublic })
     await Promise.all([
       vote.save(),
       User.updateOne({ _id: userId }, { $push: { votes: vote } })
