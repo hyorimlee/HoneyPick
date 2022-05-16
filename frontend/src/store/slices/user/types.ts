@@ -7,7 +7,10 @@ export interface IAccessToken {
 export interface UserState {
   userId: string
   accessToken: string
-  collections: CollectionState[],
+  collections: CollectionState[]
+  nickname: string
+  username: string
+  isAdmin: boolean
 }
 
 export interface ISignInParameter {
