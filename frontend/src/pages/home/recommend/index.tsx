@@ -9,11 +9,12 @@ import {
   View,
   Dimensions,
   StyleSheet,
+  FlatList,
 } from 'react-native'
 
-import BaseTextInput from '../../../components/textInput/base/index'
-import {getRecommend} from '../../../store/slices/recommend/asyncThunk'
-import {useAppSelector, useAppDispatch} from '../../../store/types'
+import BaseTextInput from '~/components/textInput/base/index'
+import {getItemRecommend, getCollectionRecommend} from '~/store/slices/recommend/asyncThunk'
+import {useAppSelector, useAppDispatch} from '~/store/types'
 
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
@@ -31,176 +32,137 @@ import {
   ItemBox,
 } from './styles'
 
-import ViewSlider from 'react-native-view-slider'
-
 import {useNavigation} from '@react-navigation/native'
-import {RecommendNavigationProps} from './types'
+import { RootStackNavigationProp } from '~/../types/navigation'
 
 
 const {width, height} = Dimensions.get('window')
 
 function RecommendStack() {
-  const navigation = useNavigation<RecommendNavigationProps>()
+  const navigation = useNavigation<RootStackNavigationProp>()
 
   const {userId} = useAppSelector(state => state.profile)
 
   const pressedCollection = useCallback(
-    (id: String) => () => {
+    (id: string) => () => {
       navigation.navigate('Collection', {accountId: userId, collectionId: id})
     },
     [userId],
   )
 
-  const dispatch = useAppDispatch()
-  const getRecommendList = () => {
-    console.log('추천 리스트 가져오기')
-    dispatch(getRecommend({}))
-  }
-  const {collections, items} = useAppSelector(state => state.recommend)
-
-  useEffect(() => getRecommendList(), [])
-
-  const [keyword, setKeyword] = useState('')
-
-  const keywordChanged = useCallback(
-    (text: string) => {
-      setKeyword(text)
+  const pressedItem = useCallback(
+    (itemId: string) => () => {
+      navigation.navigate('Item', {itemId: itemId, collectionId: ''})
     },
-    [keyword],
+    [userId],
   )
 
-  const goToCollection = (collectionId: String) => {
-    // Alert.alert(`${collectionId} 컬렉션으로 이동하기`)
-    pressedCollection(collectionId)
+  const dispatch = useAppDispatch()
+
+  const getCollectionRecommendList = () => {
+    // 추가 데이터 요청 시 query 받기
+    dispatch(getCollectionRecommend({}))
   }
-  const goToItem = (itemId: String) => {
-    Alert.alert(`${itemId} 아이템으로 이동하기`)
+  const getItemRecommendList = () => {
+    dispatch(getItemRecommend({}))
   }
-  const searchRecommend = () => {
-    Alert.alert('검색 !')
+  const {collections, items} = useAppSelector(state => state.recommend )
+
+  useEffect(() => getCollectionRecommendList(), [])
+  useEffect(() => getItemRecommendList(), [])
+
+  const collectionRenderItem = ({item}: {item: any}) => {
+    return (
+      <View key={item.collection._id} style={styles.collectionViewBox}>
+        <CollectionContainer
+          onPress={pressedCollection(item.collection._id)}>
+          <ImageContainer
+            style={{flex: 1}}
+            // collection thumbnail
+            source={require('../../../assets/images/sampleimage1.jpg')}
+            imageStyle={{
+              resizeMode: 'contain',
+              borderRadius: 10,
+            }}
+          />
+          <InfoContainer style={{flex: 1}}>
+            <NormalText>{item.title}</NormalText>
+            <BoldText>{item.collection.title}</BoldText>
+          </InfoContainer>
+        </CollectionContainer>
+      </View>
+    )
   }
 
+  const getAdditionalCollection = () => {
+    if(collections.length < 5){
+      return
+    }
+    console.log('컬렉션 더 가져오기')
+  }
+
+  const getAdditionalItem = (index: number) => {
+    console.log(index, '아이템 더 가져오기')
+    // 데이터 추가하기
+
+  }
+
+  const itemRenderItem = ({item}: {item: any}) => {
+    return (
+      <ItemBox key={item._id} onPress={pressedItem(item._id)}>
+        <ImageContainer
+          source={
+            item.thumbnail
+              ? {
+                  uri: `${Config.IMAGE_BASE_URL}/w128/${item.thumbnail}`,
+                }
+              : require('~/assets/images/sampleimage1.jpg')
+          }
+          imageStyle={{
+            resizeMode: 'contain',
+            borderRadius: 10,
+          }}
+        />
+        <NormalText>
+          {item.priceAfter
+            ? item.priceAfter
+            : item.priceBefore
+            ? item.priceBefore
+            : '가격정보 없음'}
+        </NormalText>
+        <NormalText>
+          {item.title ? item.title : 'No Title'}
+        </NormalText>
+      </ItemBox>
+    )}
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
       <Container>
-        <>
-          <ViewSlider
-            renderSlides={
-              <>
-                {collections.map(({title, collection}, index) => {
-                  return (
-                    <View key={index} style={styles.collectionViewBox}>
-                      <CollectionContainer
-                        onPress={() => goToCollection(collection._id)}>
-                        <ImageContainer
-                          style={{flex: 1}}
-                          // collection thumbnail
-                          source={require('../../../assets/images/sampleimage1.jpg')}
-                          imageStyle={{
-                            resizeMode: 'contain',
-                            borderRadius: 10,
-                          }}
-                        />
-                        <InfoContainer style={{flex: 1}}>
-                          <NormalText>{title}</NormalText>
-                          <BoldText>{collection.title}</BoldText>
-                        </InfoContainer>
-                      </CollectionContainer>
-                    </View>
-                  )
-                })}
-              </>
-            }
-            style={styles.slider} //Main slider container style
-            height={140} //Height of your slider
-            slideCount={collections.length} //How many views you are adding to slide
-            autoSlide={false} //The views will slide automatically
-          />
-        </>
+        <FlatList
+          style={{width: '100%'}}
+          renderItem={collectionRenderItem}
+          data={collections}
+          horizontal={true}
+          // onScroll={scrollEvent}
+          onEndReached={getAdditionalCollection}
+        >
+        </FlatList>
 
-        <SearchBarContainer>
-          <BaseTextInput
-            placeholderTextColor="white"
-            color={'white'}
-            flex={5}
-            value={keyword}
-            onChangeText={keywordChanged}
-            onSubmitEditing={searchRecommend}
-            placeholder={'검색어를 입력해주세요'}
-            importantForAutofill={'auto'} // Android
-            returnKeyType={'next'}
-            maxLength={100}
-            marginVertical={10}
-          />
-          <TouchableOpacity
-            style={{flex: 1, paddingLeft: 15, paddingRight: 0}}
-            onPress={searchRecommend}>
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass as IconProp}
-              color="#FFFFFF"
-              size={24}
-            />
-          </TouchableOpacity>
-        </SearchBarContainer>
+        {items.map(({title, itemList}, index) => {
+          return (
+          <View key={index} style={styles.viewBox}>
+          <BoldText style={{width: '100%', textAlign: 'left'}}>{title}</BoldText>
 
-        <ItemPageContainer
-          source={require('../../../assets/images/receipt_long.png')}
-          resizeMode="stretch">
-          <ViewSlider
-            renderSlides={
-              <>
-                {items.map(({title, itemList}, index) => {
-                  return (
-                    <View key={index} style={styles.viewBox}>
-                      <BoldText style={{textAlign: 'center'}}>{title}</BoldText>
-
-                      <ItemContainer>
-                        {itemList.map(
-                          (
-                            {_id, thumbnail, priceAfter, priceBefore, title},
-                            index,
-                          ) => {
-                            return (
-                              <ItemBox onPress={() => goToItem(_id)}>
-                                <ImageContainer
-                                  source={
-                                    thumbnail
-                                      ? {
-                                          uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`,
-                                        }
-                                      : require('../../../assets/images/sampleimage1.jpg')
-                                  }
-                                  imageStyle={{
-                                    resizeMode: 'contain',
-                                    borderRadius: 10,
-                                  }}
-                                />
-                                <NormalText>
-                                  {priceAfter
-                                    ? priceAfter
-                                    : priceBefore
-                                    ? priceBefore
-                                    : '가격정보 없음'}
-                                </NormalText>
-                                <NormalText>
-                                  {title ? title : 'No Title'}
-                                </NormalText>
-                              </ItemBox>
-                            )
-                          },
-                        )}
-                      </ItemContainer>
-                    </View>
-                  )
-                })}
-              </>
-            }
-            style={styles.slider} //Main slider container style
-            // height = {auto}    //Height of your slider
-            slideCount={items.length} //How many views you are adding to slide
-            autoSlide={false} //The views will slide automatically
-          />
-        </ItemPageContainer>
+          <ItemContainer>
+            <FlatList
+              renderItem={itemRenderItem}
+              data={itemList}
+              horizontal={true}
+              >
+            </FlatList>
+          </ItemContainer>
+        </View>)
+        })}
       </Container>
     </SafeAreaView>
   )
@@ -212,12 +174,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: width * 0.9,
     borderRadius: 20,
+    marginRight: 10,
+    marginVertical: 10,
+    // height: 200,
   },
   collectionViewBox: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: width * 0.9,
+    width: width * 0.8,
     borderRadius: 20,
+    marginRight: 10,
+    height: 140
   },
   slider: {
     width: width * 0.9,
@@ -233,4 +200,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RecommendStack
+export default memo(RecommendStack)
