@@ -30,51 +30,14 @@ function Collection() {
 
   useEffect(() => {
     dispatch(getCollection({accountId: accountId, collectionId: collectionId}))
-    if (matchedVote) {
-      dispatch(getVote({accountId: accountId, voteId: matchedVote._id}))
-    } else {
-      dispatch(setCurrentVote({}))
-    }
   }, [])
-
-  const startVote = useCallback(() => {
-    const prevState = onVote
-    if (!prevState) {
-      setOnVote(!prevState)
-    }
-  }, [onVote])
-
-  const submitVote = useCallback(() => {
-    selectedItems.map(async (item) => {
-      await dispatch(vote({accountId: accountId, voteId: currentVote?._id, itemId: item._id}))
-    })
-
-    dispatch(getVote({accountId: accountId, voteId: currentVote?._id}))
-    const prevState = onVote
-    if (prevState) {
-      setOnVote(!prevState)
-    }
-  }, [accountId, currentVote, onVote, selectedItems])
 
   return (
     <>
-    <KeyboardAwareScrollView style={{paddingHorizontal: 20, marginTop: 30}}>
-      <CollectionInfo></CollectionInfo>
-      <CollectionItems onVote={onVote}></CollectionItems>
-    </KeyboardAwareScrollView>
-    {isVoting && !isMyList && !isVoted ?
-      <BaseButton
-        text={onVote ? '투표 제출하기' : '투표 시작하기'}
-        onPress={onVote ? submitVote : startVote}
-        fontSize={8}
-        marginVertical={10}
-        paddingVertical={15}
-        marginHorizontal={30}
-        position='absolute'
-        width={windowWidth - 60}
-        bottom="0%"
-      /> : null
-    }
+      <KeyboardAwareScrollView style={{paddingHorizontal: 20, marginTop: 30}}>
+        <CollectionInfo accountId={accountId} collectionId={collectionId}></CollectionInfo>
+        <CollectionItems accountId={accountId} collectionId={collectionId}></CollectionItems>
+      </KeyboardAwareScrollView>
     </>
   )
 }

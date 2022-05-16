@@ -2,17 +2,7 @@ export interface ItemState {
   itemId: string
   collectionId: string
   saveCollection: 'no' | 'yet'
-  item: {
-    _id: string
-    brand?: string
-    url: string
-    title?: string
-    thumbnail?: string
-    priceBefore?: number
-    priceAfter?: number
-    discountRate?: number
-    stickers: [string, number][]
-  }
+  item: IItem
   review?: {
     _id: string
     user: string
@@ -20,6 +10,18 @@ export interface ItemState {
     isRecommend: 0 | 1 | 2
     stickers: string[]
   }
+}
+
+export interface IItem {
+  _id: string
+  brand?: string
+  url: string
+  title?: string
+  thumbnail?: string
+  priceBefore?: number
+  priceAfter?: number
+  discountRate?: number
+  stickers: [string, number][]
 }
 
 export interface IItemToCollectionParameter {

@@ -44,10 +44,8 @@ const collectionSlice = createSlice({
         console.log(action.payload)
       })
       .addCase(getCollection.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.currentCollection = action.payload.collection
         state.currentItems = action.payload.items
-        console.log(state)
       })
   },
 })
