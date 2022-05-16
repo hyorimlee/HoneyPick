@@ -4,11 +4,11 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../../types/navigation'
 
 export type VoteStackParamList = {
-  CreateVote: undefined
+  Default: {accountId: string, collectionId: string, voteId: string}
   VoteResult: undefined
-}
+}r
 
 export type VoteNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<RootStackParamList, 'Vote'>,
-  NativeStackNavigationProp<VoteStackParamList, 'CreateVote'>
+  NativeStackNavigationProp<VoteStackParamList, 'Default'>
 >

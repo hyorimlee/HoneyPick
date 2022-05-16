@@ -17,23 +17,24 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import { deleteCollection } from '../../../../store/slices/collection/asyncThunk'
-import { endVote } from '../../../../store/slices/vote/asyncThunk'
+import { endVote, deleteVote } from '../../../../store/slices/vote/asyncThunk'
 import {configureStore} from '@reduxjs/toolkit'
 import { setFollow } from '../../../../store/slices/profile/asyncThunk'
 import profileSlice from '../../../../store/slices/profile'
-import { CollectionNavigationProp, CollectionStackParamList } from '../../types'
-import { RootStackNavigationProp, RootStackParamList } from '../../../../../types/navigation'
-import {VoteNavigationProp} from '../../../vote/types'
+import {VoteNavigationProp, VoteStackParamList} from '../../../vote/types'
 import { IComponentProps } from './types'
+import { RootStackNavigationProp } from '../../../../../types/navigation'
 
-function CollectionInfo({accountId, collectionId}: IComponentProps) {
+function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
-  const collectionNavigation = useNavigation<CollectionNavigationProp>()
+  const voteNavigation = useNavigation<VoteNavigationProp>()
   const dispatch = useAppDispatch()
 
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
-  const isMyList = currentCollection?.user._id === userId
+  const {currentVote} = useAppSelector(state => state.vote)
+  // const isMyList = currentCollection?.user._id === userId
+  const isMyList = true
 
   const actionSheetRef = createRef<ActionSheet>()
   const username = currentCollection?.user?.username
@@ -44,17 +45,14 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
     actionSheetRef.current?.show()
   }
 
-  const editCurrentCollection = useCallback(() => {
-    collectionNavigation.navigate('EditCollection')
-  }, [])
-
-  const deleteCurrentCollection = useCallback(async () => {
-    await dispatch(deleteCollection({accountId: accountId, collectionId: collectionId}))
+  const deleteCurrentVote = useCallback(async () => {
+    await dispatch(deleteVote({accountId: accountId, voteId: voteId}))
     navigation.navigate('Home')
   }, [])
 
-  const openVote = useCallback(() => {
-    collectionNavigation.push('CreateVote')
+  const closeVote = useCallback(async () => {
+    await dispatch(endVote({accountId: accountId, voteId: currentVote?._id}))
+    voteNavigation.push('VoteResult')
   }, [])
 
   const followChange = useCallback(() => {
@@ -88,20 +86,17 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
       </InfoContainer>
       <ButtonContainer>
         {isMyList ? (
-          (
-            <BaseButton
-              text={'투표 진행하기'}
-              onPress={openVote}
-              fontSize={8}
-              paddingVertical={5}
-              paddingHorizontal={10}></BaseButton>
-          )
-        ) : null}
-        {!isMyList ? (
+          <BaseButton
+            text={'투표 종료하기'}
+            onPress={closeVote}
+            fontSize={8}
+            paddingVertical={5}
+            paddingHorizontal={10}></BaseButton>
+        ) : (
           <>
             <BaseButton
               text={'컬렉션 찜하기'}
-              onPress={openVote}
+              onPress={closeVote}
               fontSize={8}
               paddingVertical={5}
               paddingHorizontal={10}
@@ -113,7 +108,7 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
               paddingVertical={5}
               paddingHorizontal={10}></BaseButton>
           </>
-        ) : null}
+        )}
       </ButtonContainer>
       {/* Dashed Line 나중에 svg나 다른 라이브러리로 교체해야함 */}
       <Text ellipsizeMode="clip" numberOfLines={1}>
@@ -139,15 +134,8 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
             }}>
             <MenuContainer>
               <BaseButton
-                text={'컬렉션 정보 수정하기'}
-                onPress={editCurrentCollection}
-                borderRadius={25}
-                marginVertical={5}
-                paddingVertical={15}
-              />
-              <BaseButton
-                text={'이 컬렉션 삭제하기'}
-                onPress={deleteCurrentCollection}
+                text={'이 투표 삭제하기'}
+                onPress={deleteCurrentVote}
                 borderRadius={25}
                 marginVertical={5}
                 paddingVertical={15}
@@ -160,4 +148,4 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
   )
 }
 
-export default memo(CollectionInfo)
+export default memo(VoteInfo)

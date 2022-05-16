@@ -2,17 +2,7 @@ export interface ItemState {
   itemId: string
   collectionId: string
   saveCollection: 'no' | 'yet'
-  item: {
-    _id: string
-    brand?: string
-    url: string
-    title?: string
-    thumbnail?: string
-    priceBefore?: number
-    priceAfter?: number
-    discountRate?: number
-    stickers: [string, number][]
-  }
+  item: IItem
   review?: {
     _id: string
     user: {_id: string, username: string, nickname: string}
@@ -27,6 +17,18 @@ export interface ItemCollectionState {
   _id: string
   title: string
   description: string
+}
+
+export interface IItem {
+  _id: string
+  brand?: string
+  url: string
+  title?: string
+  thumbnail?: string
+  priceBefore?: number
+  priceAfter?: number
+  discountRate?: number
+  stickers: [string, number][]
 }
 
 export interface IItemToCollectionParameter {
