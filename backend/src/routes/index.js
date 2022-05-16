@@ -10,4 +10,5 @@ router.use('/profile',require('./profile'))
 router.use('/like', require('./like'))
 router.use('/search', require('./search'))
 router.use('/recommend', require('./recommend'))
+router.use('/event',require('./event'))
 module.exports = router

@@ -29,6 +29,7 @@ const UserSchema = new Schema({
         ref:'review',
     },
     withdraw: {type: Boolean, default:false},
+    isAdmin: {type:Boolean, default:false},
 }, { timestamps: true })
 
 UserSchema.pre('save',function(nxt){

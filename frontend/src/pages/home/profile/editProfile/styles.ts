@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
 
-export const ProfileImage = styled.ImageBackground`
+export const ProfileImage = styled.Image`
   width: 128px;
   height: 128px;
   border-radius: 100px;
@@ -11,8 +11,5 @@ export const ProfileImage = styled.ImageBackground`
 `
 
 export const ChangeImage = styled.Pressable`
-  width: 100%;
-  height: 100%;
-  position: absolute;
   border-radius: 100px;
 `

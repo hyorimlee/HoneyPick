@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo} from 'react'
-import {View} from 'react-native'
+import {ActivityIndicator, View} from 'react-native'
 import HorizontalList from '~/components/flatList/horizontalList'
 import BaseButton from '~/components/button/base'
 import {useAppSelector} from '~/store/types'
@@ -22,27 +22,36 @@ function ProfileLists() {
 
   return (
     <View>
-      <DivisionContainer>
-        <CollectionHorizontalView>
-          <DivisionText>컬렉션</DivisionText>
-          <BaseButton
-            text="추가하기"
-            onPress={addCollection}
-            paddingVertical={2}
-            paddingHorizontal={20}
-            fontSize={12}
-          />
-        </CollectionHorizontalView>
-        <HorizontalList data={collections}></HorizontalList>
-      </DivisionContainer>
-      <DivisionContainer>
-        <DivisionText>진행한 투표</DivisionText>
-        <HorizontalList data={votes}></HorizontalList>
-      </DivisionContainer>
-      <DivisionContainer>
-        <DivisionText>찜한 컬렉션</DivisionText>
-        <HorizontalList data={likes}></HorizontalList>
-      </DivisionContainer>
+      {collections && votes && likes ? (
+        <>
+          <DivisionContainer>
+            <CollectionHorizontalView>
+              <DivisionText>컬렉션</DivisionText>
+              <BaseButton
+                text="추가하기"
+                onPress={addCollection}
+                paddingVertical={2}
+                paddingHorizontal={20}
+                fontSize={12}
+              />
+            </CollectionHorizontalView>
+            <HorizontalList data={collections}></HorizontalList>
+          </DivisionContainer>
+          <DivisionContainer>
+            <DivisionText>진행한 투표</DivisionText>
+            <HorizontalList data={votes}></HorizontalList>
+          </DivisionContainer>
+          <DivisionContainer>
+            <DivisionText>찜한 컬렉션</DivisionText>
+            <HorizontalList data={likes}></HorizontalList>
+          </DivisionContainer>
+        </>
+      ) : (
+        <ActivityIndicator
+          size="large"
+          color="#FFD669"
+          style={{marginVertical: 20}}></ActivityIndicator>
+      )}
     </View>
   )
 }
