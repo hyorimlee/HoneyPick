@@ -15,10 +15,10 @@ import {InfoContainer, PriceText, PriceTextGray} from './styles'
 import {IProps} from './types'
 
 function ItemInfo({openSheet, isRecommendMode}: IProps) {
-  const {item, review} = useAppSelector(state => state.item)
+  const {item} = useAppSelector(state => state.item)
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
-
+  
   return (
     <InfoContainer>
       <TextContainer>

@@ -5,16 +5,16 @@ import {IProps} from './types'
 import {CustomButton, CustomText} from './styles'
 
 function SelectButton({text, onPress, selected}: IProps) {
-  const [isSelect, setIsSelect] = useState(false)
+  // const [isSelect, setIsSelect] = useState(false)
 
-  useEffect(() => {
-    if (!selected) {
-      setIsSelect(false)
-    }
-  }, [selected])
+  // useEffect(() => {
+  //   if (!selected) {
+  //     setIsSelect(false)
+  //   }
+  // }, [selected])
 
   const press = useCallback(() => {
-    setIsSelect(!isSelect)
+    // setIsSelect(!isSelect)
     onPress()
   }, [onPress])
 
@@ -26,10 +26,10 @@ function SelectButton({text, onPress, selected}: IProps) {
       paddingHorizontal={15}
       marginLeft={5}
       marginVertical={3}
-      backgroundColor={isSelect || selected ? '#F9C12E' : 'white'}
-      borderColor={isSelect || selected ? '' : '#F9C12E'}
+      backgroundColor={selected ? '#F9C12E' : 'white'}
+      borderColor={selected ? '' : '#F9C12E'}
       borderWidth={1.5}>
-      <CustomText color={isSelect || selected}>{text}</CustomText>
+      <CustomText color={selected}>{text}</CustomText>
     </CustomButton>
   )
 }

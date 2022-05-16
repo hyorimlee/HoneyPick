@@ -55,6 +55,7 @@ const itemSlice = createSlice({
         state.itemId = action.payload._id
       })
       .addCase(getItem.fulfilled, (state, action) => {
+        console.log('getItem', action.payload)
         state.itemId = action.payload.item._id
         state.item = action.payload.item
         state.review = action.payload.review

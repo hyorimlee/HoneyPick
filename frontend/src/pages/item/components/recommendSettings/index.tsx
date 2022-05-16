@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {memo, useState} from 'react'
+import {memo, useState, useEffect} from 'react'
 import {Alert} from 'react-native'
 import BaseButton from '~/components/button/base'
 import SelectButton from './selectButton'
-import {saveReview} from '~/store/slices/item/asyncThunk'
+import {saveReview, editReview} from '~/store/slices/item/asyncThunk'
 import {useAppDispatch, useAppSelector} from '~/store/types'
 import {NormalText, TextContainer} from '../../styles'
 import StickerBtn from './stickerBtn'
@@ -12,10 +12,17 @@ import {IProps} from './types'
 
 function RecommendSettings({toggleIsRecommendMode}: IProps) {
   const dispatch = useAppDispatch()
-  const {itemId, item} = useAppSelector(state => state.item)
+  const {itemId, review} = useAppSelector(state => state.item)
 
   const [recommend, setRecommend] = useState<0 | 1 | 2>(0)
   const [stickers, setStickers] = useState<string[]>([])
+
+  useEffect(() => {
+    if (review) {
+      setRecommend(review.isRecommend)
+      setStickers(review.stickers)
+    }
+  }, [])
 
   const cancelRecommend = () => {
     toggleIsRecommendMode()
@@ -30,13 +37,25 @@ function RecommendSettings({toggleIsRecommendMode}: IProps) {
   }
 
   const saveHoneyItem = () => {
+    console.log(stickers)
     if (recommend !== 0 && stickers) {
-      const data = {
-        itemId,
-        isRecommend: recommend,
-        stickers: stickers,
+      if (review) {
+        const reviewId = review._id
+        const data = {
+          itemId,
+          reviewId,
+          isRecommend: recommend,
+          stickers: stickers,
+        }
+        dispatch(editReview(data))
+      } else {
+        const data = {
+          itemId,
+          isRecommend: recommend,
+          stickers: stickers,
+        }
+        dispatch(saveReview(data))
       }
-      dispatch(saveReview(data))
       toggleIsRecommendMode()
     } else {
       Alert.alert('추천 정도와 스티커를 선택해주세요!')

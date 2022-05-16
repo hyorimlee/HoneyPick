@@ -24,7 +24,7 @@ function ItemStack() {
   const route = useRoute<ItemRoute>()
   const {itemId, collectionId} = route.params!
   const actionSheetRef = useRef<ActionSheet>(null)
-  const {item} = useAppSelector(state => state.item)
+  const {item, review} = useAppSelector(state => state.item)
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
   const [isRecommendMode, setIsRecommendMode] = useState(false)
@@ -80,13 +80,23 @@ function ItemStack() {
             marginVertical={5}
             paddingVertical={15}
           />
-          <BaseButton
-            text={'이 상품 추천하기'}
-            onPress={toggleIsRecommendMode}
-            borderRadius={25}
-            marginVertical={5}
-            paddingVertical={15}
-          />
+          {review ?
+            <BaseButton
+              text={'추천 정보 수정하기'}
+              onPress={toggleIsRecommendMode}
+              borderRadius={25}
+              marginVertical={5}
+              paddingVertical={15}
+            />
+            :
+            <BaseButton
+              text={'이 상품 추천하기'}
+              onPress={toggleIsRecommendMode}
+              borderRadius={25}
+              marginVertical={5}
+              paddingVertical={15}
+            />
+          }
         </MenuContainer>
       </ActionSheet>
 
