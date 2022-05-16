@@ -8,9 +8,9 @@ export interface IInitialState {
   description: string
   following: number
   follower: number
-  collections: any[]
-  likes: any[]
-  votes: any[]
+  collections: any[] | null
+  likes: any[] | null
+  votes: any[] | null
   followingList: IFollow[]
   followerList: IFollow[]
 }

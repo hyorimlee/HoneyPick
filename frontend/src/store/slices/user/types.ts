@@ -1,3 +1,5 @@
+import {PayloadAction, SerializedError} from '@reduxjs/toolkit'
+
 export interface IAccessToken {
   refreshToken: string | null
 }
