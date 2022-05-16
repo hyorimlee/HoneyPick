@@ -86,7 +86,7 @@ const MyTheme = {
     ...DefaultTheme.colors,
     primary: '#F9C12E',
     background: '#FFFFFF',
-  }
+  },
 }
 
 const InnerApp = memo(({}) => {

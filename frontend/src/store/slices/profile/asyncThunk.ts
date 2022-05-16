@@ -71,11 +71,11 @@ export const getLists = createAsyncThunk<
 >('profile/getCollections', async ({accountId}, thunkAPI) => {
   try {
     const {accessToken, userId} = thunkAPI.getState().user
-
+    console.log(accountId)
     const getCollections = () =>
       axios({
         method: 'GET',
-        url: `${Config.API_BASE_URL}/collection/${userId}`,
+        url: `${Config.API_BASE_URL}/collection/${accountId}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
@@ -93,7 +93,7 @@ export const getLists = createAsyncThunk<
     const getVotes = () =>
       axios({
         method: 'GET',
-        url: `${Config.API_BASE_URL}/vote/${userId}`,
+        url: `${Config.API_BASE_URL}/vote/${accountId}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
