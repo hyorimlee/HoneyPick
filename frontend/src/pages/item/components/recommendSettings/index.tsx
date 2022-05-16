@@ -10,7 +10,7 @@ import StickerBtn from './stickerBtn'
 import {ButtonContainer} from './styles'
 import {IProps} from './types'
 
-function RecommendSettings({toggleIsSet}: IProps) {
+function RecommendSettings({toggleIsRecommendMode}: IProps) {
   const dispatch = useAppDispatch()
   const {itemId, item} = useAppSelector(state => state.item)
 
@@ -25,14 +25,14 @@ function RecommendSettings({toggleIsSet}: IProps) {
         stickers: stickers,
       }
       dispatch(saveReview(data))
-      toggleIsSet()
+      toggleIsRecommendMode()
     } else {
       Alert.alert('추천 정도와 스티커를 선택해주세요!')
     }
   }
 
   const cancelRecommend = () => {
-    toggleIsSet()
+    toggleIsRecommendMode()
   }
 
   const recommendHandler = (num: 0 | 1 | 2) => () => {

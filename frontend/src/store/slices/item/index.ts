@@ -24,13 +24,13 @@ const initialState: ItemState = {
     discountRate: 0,
     stickers: [],
   },
-  // review: {
-  //   _id: '',
-  //   user: '',
-  //   item: '',
-  //   isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
-  //   stickers: [],
-  // },
+  review: {
+    _id: '',
+    user: '',
+    item: '',
+    isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
+    stickers: [],
+  },
 }
 
 const itemSlice = createSlice({
@@ -55,12 +55,10 @@ const itemSlice = createSlice({
         state.review = action.payload.review
       })
       .addCase(saveReview.fulfilled, (state, action) => {
-        // BE확인 받아야 함
         console.log(action.payload.review)
         state.review = action.payload.review
       })
       .addCase(editReview.fulfilled, (state, action) => {
-        // BE확인 받아야 함
         console.log(action.payload.review)
         state.review = action.payload.review
       })

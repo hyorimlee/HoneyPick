@@ -1,5 +1,13 @@
+import {CollectionState} from './../collection/types'
+
 export interface IAccessToken {
   refreshToken: string | null
+}
+
+export interface UserState {
+  userId: string
+  accessToken: string
+  collections: CollectionState[],
 }
 
 export interface ISignInParameter {

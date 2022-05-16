@@ -14,9 +14,10 @@ import {
 import {InfoContainer, PriceText, PriceTextGray} from './styles'
 import {IProps} from './types'
 
-function ItemInfo({openSheet, isSet}: IProps) {
+function ItemInfo({openSheet, isRecommendMode}: IProps) {
   const {item, review} = useAppSelector(state => state.item)
   const {userId} = useAppSelector(state => state.user)
+  const {currentCollection} = useAppSelector(state => state.collection)
 
   return (
     <InfoContainer>
@@ -35,9 +36,10 @@ function ItemInfo({openSheet, isSet}: IProps) {
             <PriceText>{item.priceAfter}</PriceText>
           </RowTextContainer>
         )}
-        <NormalText>컬렉션 이름</NormalText>
+        {/* nickname으로 수정 필요 */}
+        {currentCollection ? <NormalText>{currentCollection.title}</NormalText> : null}
       </TextContainer>
-      {userId === review?.user && !isSet ? (
+      {userId === currentCollection!.user._id ? (
         <TouchableOpacity onPress={openSheet}>
           <FontAwesomeIcon
             icon={faEllipsisVertical as IconProp}
