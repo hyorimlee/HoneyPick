@@ -26,7 +26,7 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
 
     // 이벤트 투표는 admin만 생성 가능
     const user = await User.findById(userId)
-    if (type == 'event' && user.isAdmin == false) return res.status(403).send({ err: "Unauthorized1" })
+    if (type == 'event' && user.isAdmin == false) return res.status(403).send({ err: "Unauthorized" })
 
     // 투표 만들기 & 회원의 투표 목록에 추가
     let target;
@@ -38,7 +38,7 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
       return res.status(400).send({ err: "wrong type" })
     }
     const accountId = target.user._id
-    if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized2" })
+    if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
     const vote = new Vote({ targetId, title, result: target.items, isPublic })
     await Promise.all([
       vote.save(),
@@ -52,36 +52,45 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
 })
 
 // 투표 목록 조회
-voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
+voteRouter.get('/', authAccessToken, async (req, res) => {
   try {
-    const { accountId } = req.params
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
-    const account = await User.findById(accountId)
+    const { type, accountId } = req.body
 
-    // 팔로워 혹은 본인이면 모든 투표 조회, 아니라면 public 투표만 조회
-    if (await isFollower(accountId, userId) === true || accountId == userId ) {
-      const allVotes = await account.votes.sort((a,b) => {
-        if (a. createdAt > b. createdAt) {
-          return -1
-        } else if (a. createdAt < b. createdAt) {
-          return 1
-        }
-        return 0
-      })
-      return res.status(200).send({ votes: allVotes })
+    // 컬렉션 투표
+    if (type == 'collection') {
+      if (accountId && !isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
+      const account = await User.findById(accountId)
+      // 팔로워 혹은 본인이면 모든 투표 조회, 아니라면 public 투표만 조회
+      if (await isFollower(accountId, userId) === true || accountId == userId ) {
+        const allVotes = await account.votes.sort((a,b) => {
+          if (a. createdAt > b. createdAt) {
+            return -1
+          } else if (a. createdAt < b. createdAt) {
+            return 1
+          }
+          return 0
+        })
+        return res.status(200).send({ votes: allVotes })
+      } else {
+        const unsortedVotes = await account.votes.filter(vote => vote['isPublic'] == true)
+        const publicVotes = await unsortedVotes.sort((a,b) => {
+          if (a.createdAt > b.createdAt) {
+            return -1
+          } else if (a.createdAt < b.createdAt) {
+            return 1
+          }
+          return 0
+        })
+        return res.status(200).send({ votes: publicVotes })
+      }
+    } else if (type == 'event') {
+      // 이벤트 투표 목록
+      const adminUser = await User.findOne({ isAdmin: true })
+      return res.status(200).send({ votes: adminUser.votes })
     } else {
-      const unsortedVotes = await account.votes.filter(vote => vote['isPublic'] == true)
-      const publicVotes = await unsortedVotes.sort((a,b) => {
-        if (a.createdAt > b.createdAt) {
-          return -1
-        } else if (a.createdAt < b.createdAt) {
-          return 1
-        }
-        return 0
-      })
-      return res.status(200).send({ votes: publicVotes })
+      return res.status(400).send({ err: "wrong type" })
     }
   } catch (error) {
     console.log(error)
