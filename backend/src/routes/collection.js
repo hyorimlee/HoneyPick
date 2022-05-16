@@ -28,7 +28,6 @@ collectionRouter.post('/', authAccessToken, async (req, res) => {
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"});
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"});
     if (typeof isPublic !== 'boolean') return res.status(400).send({ err: "boolean isPublic is required"});
-    console.log(user.collections.length)
 
     // 기존 컬렉션이 30개 이상이면, 생성 차단
     if (user.collections.length >= 30) return res.status(403).send({ err: "maximum 30 collections per user" })
@@ -130,7 +129,7 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
 
     const collectionUpdate = {}
     const userUpdate = {}
-    
+
     if (title) {
       collectionUpdate['title'] = title
       userUpdate['collections.$.title'] = title
