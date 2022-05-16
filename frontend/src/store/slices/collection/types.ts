@@ -19,7 +19,8 @@ export interface CollectionState {
 
 export interface CollectionUserObject {
   _id: string,
-  username: string
+  username: string,
+  nickname: string,
 }
 
 export interface CollectionListState {

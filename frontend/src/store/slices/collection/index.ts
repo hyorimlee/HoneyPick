@@ -15,7 +15,8 @@ const initialState: CollectionInitialState = {
   currentCollection: {
     user: {
       _id: '-1',
-      username: 'sample user'
+      username: 'sample user',
+      nickname: 'sample nickname'
     },
     title: 'My Collection',
     description: 'Description of Collection',

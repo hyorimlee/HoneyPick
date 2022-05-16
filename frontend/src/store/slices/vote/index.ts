@@ -45,6 +45,9 @@ const voteSlice = createSlice({
       .addCase(getVoteList.fulfilled, (state, action) => {
         console.log(action.payload.votes)
       })
+      .addCase(endVote.fulfilled, (state, action) => {
+        state.currentVote = action.payload.vote
+      })
   },
 })
 export const {setCurrentVote, setSelectedItems} = voteSlice.actions
