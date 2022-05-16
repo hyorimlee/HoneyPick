@@ -126,14 +126,13 @@ voteRouter.get('/:voteId', authAccessToken, async (req, res) => {
 voteRouter.patch('/:voteId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    const { type, accountId } = req.body
+    const { accountId } = req.body
     const { voteId } = req.params
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (accountId && !isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
     if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId" })
-    if (type !== 'collection' && type !== 'event') return res.status(400).send({ err: "wrong type" })
-    if (type == 'collection' && userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
-    if (type == 'event') {
+    if (accountId && userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
+    if (!accountId) {
       const user = await User.findById(userId)
       if (user.isAdmin == false) {
         return res.status(403).send({ err: "Unauthorized" })
@@ -156,21 +155,15 @@ voteRouter.delete('/:voteId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
     const { voteId } = req.params
-    const { type, accountId } = req.body
+    const { accountId } = req.body
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId" })
-    if (type == 'collection') {
-      if (!accountId) {
-        return res.status(400).send({ err: "missing accountId" })
-      } else {
-        if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
-        if (userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
-      }
-    } else if (type == 'event') {
+    if (accountId) {
+      if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
+      if (userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
+    } else {
       const user = await User.findById(userId)
       if (user.isAdmin !== true) return res.status(403).send({ err: "Unauthorized" })
-    } else {
-      return res.status(400).send({ err: "wrong type" })
     }
     await Promise.all([
       Vote.deleteOne({ _id: voteId }),
