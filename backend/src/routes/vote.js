@@ -186,10 +186,8 @@ voteRouter.delete('/:voteId', authAccessToken, async (req, res) => {
 voteRouter.patch('/:voteId/:itemId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    const { accountId } = req.body
     const { voteId, itemId } = req.params
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    if (accountId && !isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
     if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
     if (!isValidObjectId(itemId)) return res.status(400).send({ err: "invalid itemId"})
 
