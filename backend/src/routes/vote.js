@@ -122,14 +122,22 @@ voteRouter.get('/:voteId', authAccessToken, async (req, res) => {
 })
 
 // 투표 종료 (종료 → 재시작 불가)
-voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
+voteRouter.patch('/:voteId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    const { accountId, voteId } = req.params
-    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
-    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
-    if (userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
+    const { type, accountId } = req.body
+    const { voteId } = req.params
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (accountId && !isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
+    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId" })
+    if (type !== 'collection' && type !== 'event') return res.status(400).send({ err: "wrong type" })
+    if (type == 'collection' && userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
+    if (type == 'event') {
+      const user = await User.findById(userId)
+      if (user.isAdmin == false) {
+        return res.status(403).send({ err: "Unauthorized" })
+      }
+    }
     await Promise.all([
       Vote.updateOne({ _id: voteId }, { $set: { isClosed: true } }),
       User.updateOne({ _id: userId, 'votes._id': voteId }, { 'votes.$.isClosed': true })
