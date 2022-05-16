@@ -28,6 +28,7 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
     if (collectionId) {
       if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
       target = await Collection.findById(collectionId)
+      if (!target) return res.status(400).send({ err: "wrong collectionId" })
       const accountId = target.user._id
       if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
       vote = new Vote({ collectionId, title, result: target.items, isPublic })
@@ -37,9 +38,10 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
       const user = await User.findById(userId)
       if (user.isAdmin == false) return res.status(403).send({ err: "Unauthorized" })
       target = await Event.findById(eventId)
+      if (!target) return res.status(400).send({ err: "wrong eventId" })
       const accountId = target.user._id
       if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
-      vote = new Vote({ eventId, title, result: target.items, isPublic })
+      vote = new Vote({ eventId, title, result: target.items, isPublic: true })
     } else {
       return res.status(400).send({ err: "either collectionId or eventId is required"})
     }
@@ -55,11 +57,11 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
 })
 
 // 투표 목록 조회
-voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
+voteRouter.get('/', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    const { accountId } = req.params
+    const { accountId } = req.query
 
     // 컬렉션 투표
     if (accountId) {
@@ -88,12 +90,12 @@ voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
         })
         return res.status(200).send({ votes: publicVotes })
       }
-    } 
-    // else {
-    //   // 이벤트 투표 목록
-    //   const adminUser = await User.findOne({ isAdmin: true })
-    //   return res.status(200).send({ votes: adminUser.votes })
-    // }
+    }
+    else {
+      // 이벤트 투표 목록
+      const adminUser = await User.findOne({ isAdmin: true })
+      return res.status(200).send({ votes: adminUser.votes })
+    }
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
