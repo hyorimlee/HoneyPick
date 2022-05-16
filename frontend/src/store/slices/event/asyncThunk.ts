@@ -5,25 +5,25 @@ import {createAsyncThunk} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
 import {ISaveEventParameter, IEditEventParameter} from './types'
 
-export const saveEvent = createAsyncThunk<any, ISaveEventParameter, {state: RootState}>(
-  'event/saveEvent',
-  async ({title, description, additional}, thunkAPI) => {
-    try {
-      const {accessToken} = thunkAPI.getState().user
-      const response = await axios({
-        method: 'POST',
-        url: `${Config.API_BASE_URL}/event`,
-        data: {title, description, additional},
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        }
-      })
-      return response.data
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data)
-    }
-  }
-)
+// export const saveEvent = createAsyncThunk<any, ISaveEventParameter, {state: RootState}>(
+//   'event/saveEvent',
+//   async ({title, description, additional}, thunkAPI) => {
+//     try {
+//       const {accessToken} = thunkAPI.getState().user
+//       const response = await axios({
+//         method: 'POST',
+//         url: `${Config.API_BASE_URL}/event`,
+//         data: {title, description, additional},
+//         headers: {
+//           authorization: `Bearer ${accessToken}`,
+//         }
+//       })
+//       return response.data
+//     } catch (err: any) {
+//       return thunkAPI.rejectWithValue(err.response.data)
+//     }
+//   }
+// )
 
 export const getEventList = createAsyncThunk<any, undefined, {state: RootState}>(
   'event/getEventList',
