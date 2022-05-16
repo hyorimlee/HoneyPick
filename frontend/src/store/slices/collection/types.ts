@@ -1,8 +1,8 @@
-import {ItemState} from '../item/types'
+import {ItemState, IItem} from '../item/types'
 
 export interface CollectionInitialState {
   currentCollection: CollectionState | undefined,
-  currentItems: ItemState[] | undefined
+  currentItems: IItem[] | undefined
 }
 
 export interface CollectionState {
@@ -19,7 +19,8 @@ export interface CollectionState {
 
 export interface CollectionUserObject {
   _id: string,
-  username: string
+  username: string,
+  nickname: string,
 }
 
 export interface CollectionListState {

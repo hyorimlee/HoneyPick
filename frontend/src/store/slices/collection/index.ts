@@ -15,7 +15,8 @@ const initialState: CollectionInitialState = {
   currentCollection: {
     user: {
       _id: '-1',
-      username: 'sample user'
+      username: 'sample user',
+      nickname: 'sample nickname'
     },
     title: '',
     description: 'Description of Collection',
@@ -43,10 +44,8 @@ const collectionSlice = createSlice({
         console.log(action.payload)
       })
       .addCase(getCollection.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.currentCollection = action.payload.collection
         state.currentItems = action.payload.items
-        console.log(state)
       })
   },
 })
