@@ -75,7 +75,7 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
         // 해당아이템이 포함된 내 컬렉션 가져오기
         const [item, review, collections] = await Promise.all([
             Item.findById(itemId),
-            Review.findOne({ user: userId, item: itemId }),
+            Review.findOne({ 'user._id': userId, item: itemId }),
             Collection.find({ 'user._id': userId, 'items._id': itemId })
         ])        
         if(!item) res.status(400).send({ err: "아이템이 존재하지 않습니다." })
