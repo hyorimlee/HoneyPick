@@ -26,11 +26,16 @@ const initialState: ItemState = {
   },
   review: {
     _id: '',
-    user: '',
+    user: {
+      _id: '',
+      username: '',
+      nickname: ''
+    },
     item: '',
     isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
     stickers: [],
   },
+  collections: []
 }
 
 const itemSlice = createSlice({
@@ -53,6 +58,7 @@ const itemSlice = createSlice({
         state.itemId = action.payload.item._id
         state.item = action.payload.item
         state.review = action.payload.review
+        state.collections = action.payload.collections
       })
       .addCase(saveReview.fulfilled, (state, action) => {
         console.log(action.payload.review)

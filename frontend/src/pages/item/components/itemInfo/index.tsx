@@ -36,7 +36,6 @@ function ItemInfo({openSheet, isRecommendMode}: IProps) {
             <PriceText>{item.priceAfter}</PriceText>
           </RowTextContainer>
         )}
-        {/* nickname으로 수정 필요 */}
         {currentCollection ? <NormalText>{currentCollection.title}</NormalText> : null}
       </TextContainer>
       {userId === currentCollection!.user._id ? (

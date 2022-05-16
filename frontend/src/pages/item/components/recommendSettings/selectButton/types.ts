@@ -3,6 +3,7 @@ import {ColorValue} from 'react-native'
 export interface IProps {
   text: string
   onPress: () => void
+  selected: boolean
 }
 
 export interface IStylePressableProps {

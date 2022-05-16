@@ -17,6 +17,18 @@ function RecommendSettings({toggleIsRecommendMode}: IProps) {
   const [recommend, setRecommend] = useState<0 | 1 | 2>(0)
   const [stickers, setStickers] = useState<string[]>([])
 
+  const cancelRecommend = () => {
+    toggleIsRecommendMode()
+  }
+
+  const recommendHandler = (num: 0 | 1 | 2) => () => {
+    if (recommend === num) {
+      setRecommend(0)
+    } else {
+      setRecommend(num)
+    }
+  }
+
   const saveHoneyItem = () => {
     if (recommend !== 0 && stickers) {
       const data = {
@@ -31,20 +43,12 @@ function RecommendSettings({toggleIsRecommendMode}: IProps) {
     }
   }
 
-  const cancelRecommend = () => {
-    toggleIsRecommendMode()
-  }
-
-  const recommendHandler = (num: 0 | 1 | 2) => () => {
-    setRecommend(num)
-  }
-
   return (
     <TextContainer>
       <NormalText>추천 정도</NormalText>
       <ButtonContainer>
-        <SelectButton text="꿀템" onPress={recommendHandler(2)}></SelectButton>
-        <SelectButton text="굿템" onPress={recommendHandler(1)}></SelectButton>
+        <SelectButton text="꿀템" onPress={recommendHandler(2)} selected={recommend === 2}></SelectButton>
+        <SelectButton text="굿템" onPress={recommendHandler(1)} selected={recommend === 1}></SelectButton>
       </ButtonContainer>
       <NormalText>스티커</NormalText>
       <ButtonContainer>
