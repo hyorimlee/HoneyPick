@@ -28,6 +28,11 @@ export interface RItemState {
   itemList: Item[],
 }
 
-export interface IRecommendQuery {
+export interface IRecommendItemQuery {
+  page?: number
+  recs?: string
+}
 
+export interface IRecommendCollectionQuery {
+  page?: number
 }
