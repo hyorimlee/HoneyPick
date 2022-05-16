@@ -32,7 +32,9 @@ function SignUp({navigation}: SignUpScreenProps) {
       <SignUpForm paddingHorizontal={paddingHorizontal} />
       <View style={{paddingHorizontal, alignItems: 'center'}}>
         <Pressable onPress={navigateSignIn}>
-          <Text style={{color, fontSize: 10}}>로그인 하러가기</Text>
+          <Text style={{color, fontSize: 15, marginTop: 20}}>
+            로그인 하러가기
+          </Text>
         </Pressable>
       </View>
     </KeyboardAwareScrollView>

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useCallback} from 'react'
-import {Pressable, Alert} from 'react-native'
+import {Pressable, Alert, View} from 'react-native'
 import BaseButton from '~/components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {useAppSelector} from '~/store/types'
@@ -50,9 +50,12 @@ function ProfileInfo() {
       <InfoContainer>
         <ProfileImage
           source={{uri: `${Config.IMAGE_BASE_URL}/raw/${profileImage}`}}
+          resizeMode={'contain'}
         />
-        <Nickname>{nickname}</Nickname>
-        <NormalText>{description}</NormalText>
+        <View>
+          <Nickname>{nickname}</Nickname>
+          <NormalText>{description}</NormalText>
+        </View>
         <FollowContainer>
           <Pressable onPress={navigateFollow('following')}>
             <NormalText>{following} 팔로잉</NormalText>
@@ -68,13 +71,13 @@ function ProfileInfo() {
             <BaseButton
               text="로그아웃"
               onPress={logout}
-              paddingVertical={2}
+              paddingVertical={5}
               marginVertical={10}
               fontSize={12}></BaseButton>
             <BaseButton
               text="프로필 수정"
               onPress={editProfile}
-              paddingVertical={2}
+              paddingVertical={5}
               fontSize={12}></BaseButton>
           </>
         ) : null}
