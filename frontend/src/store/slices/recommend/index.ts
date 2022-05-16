@@ -4,7 +4,8 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
 import {RecommendState} from './types'
 import {
-  getRecommend,
+  getItemRecommend,
+  getCollectionRecommend
 } from './asyncThunk'
 
 const initialState: RecommendState = {
@@ -19,12 +20,19 @@ const recommendSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(getRecommend.fulfilled, (state, action) => {
+      .addCase(getItemRecommend.fulfilled, (state, action) => {
         console.log(action.payload)
-        state.collections = action.payload.collections
+        // 여기서 특정 아이템별로 추가할 수 있게 해줘야할듯?
         state.items = action.payload.items
       })
-      .addCase(getRecommend.rejected, (state, action) => {
+      .addCase(getItemRecommend.rejected, (state, action) => {
+        console.log(action.payload)
+      })
+      .addCase(getCollectionRecommend.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.collections.push(...action.payload.collections)
+      })
+      .addCase(getCollectionRecommend.rejected, (state, action) => {
         console.log(action.payload)
       })
   },
