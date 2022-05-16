@@ -3,6 +3,7 @@ import {memo} from 'react'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import ProfileStack from './profile'
 import RecommendStack from './recommend'
+import SearchStack from './search'
 import EventStack from './event'
 import Event from './event/default'
 
@@ -28,11 +29,11 @@ function Home() {
         component={RecommendStack}
         options={{title: '추천', headerShown: false}}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Search"
         component={SearchStack}
         options={{title: '검색', headerShown: false}}
-      /> */}
+      />
       <Tab.Screen
         name="Event"
         component={EventStack}
