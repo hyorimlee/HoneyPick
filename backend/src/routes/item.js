@@ -72,13 +72,22 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
         if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
         if(!isValidObjectId(userId)) return res.status(400).send({ err: "잘못된 userId" })
 
-        const [item, review] = await Promise.all([
+        // 해당아이템이 포함된 내 컬렉션 가져오기
+        const [item, review, collections] = await Promise.all([
             Item.findById(itemId),
-            Review.findOne({ user: userId, item: itemId })
-        ])
+            Review.findOne({ user: userId, item: itemId }),
+            Collection.find({ 'user._id': userId, 'items._id': itemId })
+        ])        
         if(!item) res.status(400).send({ err: "아이템이 존재하지 않습니다." })
         item.stickers = Object.entries(item.stickers).sort(([, a], [, b]) => b - a).slice(0, 3)
-        return res.status(200).send({ item, review })
+
+        collections.forEach(collection => {
+            collection.items = undefined
+            collection.user = undefined
+            collection.isPublic = undefined
+        })
+
+        return res.status(200).send({ item, review, collections })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
