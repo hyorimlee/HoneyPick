@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
+import {Alert} from 'react-native'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import {
   requestAccessToken,
@@ -8,7 +9,11 @@ import {
   requestSignUp,
   getUserCollectionList,
 } from './asyncThunk'
+<<<<<<< HEAD
 import {UserState} from './types'
+=======
+import {RejectedActoionProp} from './types'
+>>>>>>> 35469eae06b77d6259517a5b4a261a8890eff0a2
 
 const initialState: UserState = {
   userId: '',
@@ -46,7 +51,6 @@ const userSlice = createSlice({
         console.log(action.payload)
       })
       .addCase(requestSignUp.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.userId = action.payload.userId
         state.accessToken = action.payload.accessToken
         EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)

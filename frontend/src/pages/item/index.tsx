@@ -57,7 +57,7 @@ function ItemStack() {
 
   // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
   const goToSite = useCallback(async () => {
-    await Linking.canOpenURL(item.url)
+    await Linking.openURL(item.url)
     // if (supported) {
     //   await Linking.openURL(item.url)
     // } else {

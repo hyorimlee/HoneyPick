@@ -130,6 +130,7 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
         text={'회원가입'}
         onPress={signUpSubmit}
         marginVertical={10}
+        paddingVertical={10}
         borderRadius={5}
         disabled={buttonDisabled}
       />

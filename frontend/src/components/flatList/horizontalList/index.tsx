@@ -3,8 +3,10 @@ import {memo, useCallback} from 'react'
 import {IProps} from './types'
 import {useNavigation} from '@react-navigation/native'
 import {useAppSelector} from '../../../store/types'
-import {CustomFlatList, ItemContainer, ListItem, Title} from './styles'
+import {CustomFlatList, ItemContainer, Title} from './styles'
 import {RootStackNavigationProp} from '~/../types/navigation'
+import {Image, Text} from 'react-native'
+import Config from 'react-native-config'
 
 function HorizontalList({data}: IProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
@@ -20,17 +22,26 @@ function HorizontalList({data}: IProps) {
   const renderItem = ({item}: {item: any}) => {
     return (
       <ItemContainer onPress={pressedList(item._id)}>
-        <ListItem></ListItem>
-        <Title>컬렉션 이름</Title>
+        <Image
+          source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
+          style={{width: 75, height: 75, borderRadius: 10}}></Image>
+        <Title>{item.title}</Title>
       </ItemContainer>
     )
   }
 
   return (
-    <CustomFlatList
-      renderItem={renderItem}
-      data={data}
-      horizontal={true}></CustomFlatList>
+    <>
+      {Array.from(data).length > 0 ? (
+        <CustomFlatList
+          renderItem={renderItem}
+          data={data}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}></CustomFlatList>
+      ) : (
+        <Text style={{color: 'black'}}>비어있습니다.</Text>
+      )}
+    </>
   )
 }
 

@@ -19,9 +19,9 @@ const initialState: IInitialState = {
   description: '',
   following: 0,
   follower: 0,
-  collections: [],
-  likes: [],
-  votes: [],
+  collections: null,
+  likes: null,
+  votes: null,
   followingList: [],
   followerList: [],
 }

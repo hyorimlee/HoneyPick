@@ -113,17 +113,27 @@ function EditProfile() {
 
   return (
     <KeyboardAwareScrollView style={{padding: 30}}>
-      <ProfileImage source={{uri: profileImage}} resizeMode="contain">
-        <ChangeImage onPress={profileImageChanged}>
-          {/* justifyContent가 안 먹음 */}
-          {/* <FontAwesomeIcon
-            icon={faImage as IconProp}
-            color='#FFFFFF'
-            size={60}
-            style={{opacity: 30, backgroundColor:'red', alignSelf: 'center', justifyContent: 'center'}}
+      <ChangeImage onPress={profileImageChanged}>
+        <ProfileImage
+          source={{uri: profileImage}}
+          resizeMode="contain"
+          style={{
+            borderRadius: 100,
+            width: 128,
+            height: 128,
+          }}></ProfileImage>
+        {/* <FontAwesomeIcon
+            icon={faPen as IconProp}
+            color="black"
+            size={30}
+            style={{
+              opacity: 10,
+              alignSelf: 'flex-start',
+              justifyContent: 'flex-start',
+              position: 'absolute',
+            }}
           /> */}
-        </ChangeImage>
-      </ProfileImage>
+      </ChangeImage>
       <BaseTextInput
         value={nickname}
         defaultValue={initNickname}
