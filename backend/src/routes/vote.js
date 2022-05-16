@@ -59,11 +59,11 @@ voteRouter.get('/', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    const { type, accountId } = req.body
+    const { accountId } = req.body
 
     // 컬렉션 투표
-    if (type == 'collection') {
-      if (accountId && !isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
+    if (accountId) {
+      if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
       const account = await User.findById(accountId)
       // 팔로워 혹은 본인이면 모든 투표 조회, 아니라면 public 투표만 조회
       if (await isFollower(accountId, userId) === true || accountId == userId ) {
@@ -88,12 +88,10 @@ voteRouter.get('/', authAccessToken, async (req, res) => {
         })
         return res.status(200).send({ votes: publicVotes })
       }
-    } else if (type == 'event') {
+    } else {
       // 이벤트 투표 목록
       const adminUser = await User.findOne({ isAdmin: true })
       return res.status(200).send({ votes: adminUser.votes })
-    } else {
-      return res.status(400).send({ err: "wrong type" })
     }
   } catch (error) {
     console.log(error)
