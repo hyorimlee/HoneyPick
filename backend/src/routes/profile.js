@@ -50,10 +50,10 @@ profileRouter.patch('/',authAccessToken, async (req, res) => {
             user.profileImage = imageKey
             profileImage = presigned
         }
-        if(description){
-            if(typeof description!=="string") return res.status(400).send({err:"description의 형식이 잘못되었습니다."})
-            user.description = description
-        }
+
+        if(typeof description === "string") user.description = description
+        else return res.status(400).send({err:"description의 형식이 잘못되었습니다."})
+
         await user.save()
         return res.status(200).send({msg:"DONE",username:user.username,nickname:user.nickname,profileImage:profileImage,description:user.description,following:user.followingCount,follower:user.followerCount })
     } catch (error) {
