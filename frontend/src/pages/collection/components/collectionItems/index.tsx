@@ -9,19 +9,20 @@ import ItemComponent from '../itemComponent'
 import {CollectionNavigationProp} from '../../types'
 import {useRoute, RouteProp} from '@react-navigation/native'
 import {ProfileStackParamList} from '../../../../../types/navigation'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import { IComponentProps } from './types'
 import { RootStackNavigationProp } from '../../../../../types/navigation'
+import { setSelectedItems } from '../../../../store/slices/vote'
 
 function ColletionItems({onVote}: IComponentProps) {
+  const dispatch = useAppDispatch()
   const navigation = useNavigation<CollectionNavigationProp>()
   const itemNavigation = useNavigation<RootStackNavigationProp>()
   const route = useRoute<RouteProp<ProfileStackParamList>>()
-  const selectedItems = useState<any[]>([])
+  const {selectedItems} = useAppSelector(state => state.vote)
   const {currentCollection, currentItems} = useAppSelector(state => state.collection)
-  console.log(currentItems)
-  const addItem = useCallback(() => {
-    console.log('addItem')
+
+  const toggleVote = useCallback((item: any) => {
+    dispatch(setSelectedItems(item))
   }, [])
 
   const pushToItemPage = useCallback((itemId: string) => {
@@ -33,14 +34,14 @@ function ColletionItems({onVote}: IComponentProps) {
       <ItemsContainer>
       {currentItems!.map((item, index) => {
         const price = item?.priceBefore ? item.priceBefore : 'No Price'
-        console.log(item)
         return (
           <ItemComponent
           key={index}
           text={item.title}
           price={price}
           uri={item.thumbnail}
-          onPress={onVote ? addItem : () => pushToItemPage(item._id)}
+          borderColor={selectedItems?.find((votedItem) => votedItem._id === item._id) ? '#F9C12E' : undefined}
+          onPress={onVote ? () => toggleVote(item) : () => pushToItemPage(item._id)}
           />
           )
         })}

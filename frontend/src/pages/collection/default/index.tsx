@@ -24,7 +24,7 @@ function Collection() {
   const collection = useAppSelector(state => state.collection.currentCollection)
   const matchedVote: IVoteState | undefined = votes.find((vote: IVoteState | undefined) => vote!.collectionId === collectionId)
   const isVoting = matchedVote?.isClosed === undefined ? false : !matchedVote.isClosed
-  const isMyList = collection.user._id === userId
+  const isMyList = collection?.user._id === userId
   const isVoted = matchedVote?.participants?.some((participant: {_id: string} | undefined) => participant?._id === userId)
   const [onVote, setOnVote] = useState<boolean>(false)
 
@@ -46,16 +46,15 @@ function Collection() {
 
   const submitVote = useCallback(() => {
     selectedItems.map(async (item) => {
-      await dispatch(vote({accountId: accountId, voteId: currentVote?._id, itemId: item.item._id}))
+      await dispatch(vote({accountId: accountId, voteId: currentVote?._id, itemId: item._id}))
     })
 
     dispatch(getVote({accountId: accountId, voteId: currentVote?._id}))
-
     const prevState = onVote
     if (prevState) {
       setOnVote(!prevState)
     }
-  }, [accountId, currentVote, onVote])
+  }, [accountId, currentVote, onVote, selectedItems])
 
   return (
     <>

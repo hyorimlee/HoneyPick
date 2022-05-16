@@ -5,7 +5,8 @@ import { RootStackParamList } from '../../../types/navigation'
 
 export type CollectionStackParamList = {
   Default: {accountId: string, collectionId: string} | undefined,
-  EditCollection: undefined
+  EditCollection: undefined,
+  CreateVote: undefined
 }
 
 export type CollectionNavigationProp = CompositeNavigationProp<

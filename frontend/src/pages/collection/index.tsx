@@ -2,6 +2,7 @@ import * as React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import Collection from './default'
 import EditCollection from './editCollection'
+import CreateVote from './createVote'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../../types/navigation'
 const Stack = createNativeStackNavigator()
@@ -21,6 +22,11 @@ function CollectionStack() {
       <Stack.Screen
         name="EditCollection"
         component={EditCollection}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CreateVote"
+        component={CreateVote}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

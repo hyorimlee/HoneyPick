@@ -2,7 +2,7 @@ import { ItemState } from "../item/types"
 
 export interface VoteInitialState {
   currentVote: IVoteState | undefined,
-  selectedItems: ItemState[] | [],
+  selectedItems: ItemState[] | Array<any>,
 }
 
 export interface IVoteState {

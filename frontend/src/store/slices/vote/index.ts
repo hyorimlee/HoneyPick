@@ -26,7 +26,12 @@ const voteSlice = createSlice({
       state.currentVote = action.payload
     },
     setSelectedItems(state, action) {
-      state.selectedItems = action.payload
+      const isExist = state.selectedItems.find((item) => item._id === action.payload._id)
+      if (isExist) {
+        state.selectedItems = state.selectedItems.filter((item) => item._id !== action.payload._id)
+      } else {
+        state.selectedItems.push(action.payload)
+      }
     },
   },
   extraReducers: builder => {

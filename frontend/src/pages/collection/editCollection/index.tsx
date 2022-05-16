@@ -7,12 +7,10 @@ import {useAppDispatch} from '../../../store/types'
 import {editCollection} from '../../../store/slices/collection/asyncThunk'
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native'
 import {useAppSelector} from '../../../store/types'
-import {ProfileStackParamList} from '../../../../types/navigation'
-import {ProfileNavigationProp} from '../../../containers/profileInfo/types'
+import { CollectionNavigationProp } from '../types'
 
 function EditCollection() {
-  const navigation = useNavigation<ProfileNavigationProp>()
-  const route = useRoute<RouteProp<ProfileStackParamList>>()
+  const navigation = useNavigation<CollectionNavigationProp>()
   const collection = useAppSelector(state => state.collection.currentCollection)
   const dispatch = useAppDispatch()
   const [collectionName, setCollectionName] = useState(collection!.title)
@@ -49,9 +47,9 @@ function EditCollection() {
     )
       .unwrap()
       .then(res => {
-        navigation.push('Collection', {
-          accountId: collection.user._id,
-          collectionId: collection._id,
+        navigation.navigate('Default', {
+          accountId: collection!.user._id,
+          collectionId: collection!._id,
         })
       })
   }, [collectionName, collectionDescription])

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useCallback, useState, createRef} from 'react'
+import {memo, useCallback, useState, useEffect, createRef} from 'react'
 import {Image, Text, TouchableOpacity} from 'react-native'
 import BaseButton from '../../../../components/button/base'
 import {useNavigation} from '@react-navigation/native'
@@ -50,7 +50,7 @@ function CollectionInfo() {
   }
 
   const editCurrentCollection = useCallback(() => {
-    collectionNavigation.push('EditCollection')
+    collectionNavigation.navigate('EditCollection')
   }, [])
 
   const deleteCurrentCollection = useCallback(async () => {
@@ -60,7 +60,7 @@ function CollectionInfo() {
   }, [])
 
   const openVote = useCallback(() => {
-    voteNavigation.push('CreateVote')
+    collectionNavigation.push('CreateVote')
   }, [])
 
   const closeVote = useCallback(() => {
@@ -68,7 +68,7 @@ function CollectionInfo() {
   }, [])
 
   const showVoteResult = useCallback(() => {
-    // navigation.push('VoteResult')
+    navigation.push('Vote')
   }, [])
 
   const followChange = useCallback(() => {
@@ -101,8 +101,6 @@ function CollectionInfo() {
         />
       </InfoContainer>
       <ButtonContainer>
-        {/* 내 리스트 판별로직 추가필요 */}
-        {}
         {isMyList ? (
           !isVoting ? (
             <BaseButton
