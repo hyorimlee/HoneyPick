@@ -53,7 +53,7 @@ reviewRouter.patch('/:reviewId', authAccessToken, async (req, res) => {
     if (typeof isRecommend !== 'number') return res.status(400).send({ err: "추천 정도는 필수값입니다."});
     if (!Array.isArray(stickers)) return res.status(400).send({ err: "스티커는 필수값입니다."});
 
-    const review = await Review.findByIdAndUpdate(reviewId, { $set: { isRecommend, stickers } }, { new: true })
+    const review = await Review.findByIdAndUpdate(reviewId, { $set: { isRecommend, stickers } })
 
     const changedStickers = calStickers(review.stickers, stickers)
 
@@ -61,6 +61,8 @@ reviewRouter.patch('/:reviewId', authAccessToken, async (req, res) => {
       Item.updateOne({ _id: itemId }, { $inc: changedStickers }),
       Collection.findOneAndUpdate({ 'user._id': userId, 'items._id': itemId }, { 'items.$.recommend': isRecommend })
     ])
+
+    review.stickers = stickers
 
     return res.status(200).send({ review })
   } catch (error) {
