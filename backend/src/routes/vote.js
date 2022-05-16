@@ -113,7 +113,8 @@ voteRouter.patch('/:accountId/:voteId', authAccessToken, async (req, res) => {
       Vote.updateOne({ _id: voteId }, { $set: { isClosed: true } }),
       User.updateOne({ _id: userId, 'votes._id': voteId }, { 'votes.$.isClosed': true })
     ])
-    return res.status(200).send({ message: "poll is now closed" })
+    const vote = await Vote.findById(voteId)
+    return res.status(200).send({ vote })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
