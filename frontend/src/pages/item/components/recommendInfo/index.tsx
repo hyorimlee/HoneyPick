@@ -17,6 +17,8 @@ function RecommendInfo() {
   const stickers = useAppSelector(filteredStickers)
   const {review} = useAppSelector(state => state.item)
 
+  console.log(stickers)
+
   const itemSticker = STICKERS.map(sticker => {
     if (review?.stickers.includes(sticker.id)) {
       return <EmojiText key={sticker.id}>{sticker.emoji}</EmojiText>

@@ -26,7 +26,9 @@ function StickerBtn({
       <SelectedButton
         text={sticker.emoji + ' ' + sticker.label}
         onPress={() => clickHandler(sticker.id)}
-        key={sticker.id}></SelectedButton>
+        key={sticker.id}
+        selected={stickers.includes(sticker.id)}
+      ></SelectedButton>
     )
   })
 

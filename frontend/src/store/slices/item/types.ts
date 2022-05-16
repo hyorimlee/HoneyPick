@@ -15,11 +15,18 @@ export interface ItemState {
   }
   review?: {
     _id: string
-    user: string
+    user: {_id: string, username: string, nickname: string}
     item: string
     isRecommend: 0 | 1 | 2
     stickers: string[]
   }
+  collections? : ItemCollectionState[]
+}
+
+export interface ItemCollectionState {
+  _id: string
+  title: string
+  description: string
 }
 
 export interface IItemToCollectionParameter {

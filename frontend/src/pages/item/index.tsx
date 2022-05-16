@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useEffect, useCallback, useRef} from 'react'
-import {SafeAreaView, StatusBar, Linking, Pressable, Text} from 'react-native'
+import {SafeAreaView, StatusBar, Linking, Pressable, Text, View} from 'react-native'
 import Config from 'react-native-config'
 import ActionSheet from 'react-native-actions-sheet'
 
@@ -20,18 +20,21 @@ import RecommendSettings from './components/recommendSettings'
 function ItemStack() {
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
-  const {item} = useAppSelector(state => state.item)
   const dashOn = useAppSelector(isDashOn)
-  const [isSet, setIsSet] = useState(false)
-  const actionSheetRef = useRef<ActionSheet>(null)
   const route = useRoute<ItemRoute>()
   const {itemId, collectionId} = route.params!
+  const actionSheetRef = useRef<ActionSheet>(null)
+  const {item, review} = useAppSelector(state => state.item)
+  const {userId} = useAppSelector(state => state.user)
+  const {currentCollection} = useAppSelector(state => state.collection)
+  const [isRecommendMode, setIsRecommendMode] = useState(false)
+  const isMyItem = userId === currentCollection!.user._id
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !isRecommendMode) {
       dispatch(getItem(itemId))
     }
-  }, [isFocused])
+  }, [isFocused, isRecommendMode])
 
   const openSheet = () => {
     actionSheetRef.current?.show()
@@ -47,12 +50,12 @@ function ItemStack() {
     )
   }
 
-  const toggleIsSet = useCallback(() => {
+  const toggleIsRecommendMode = useCallback(() => {
     actionSheetRef.current?.hide()
-    setIsSet(!isSet)
-  }, [isSet])
+    setIsRecommendMode(!isRecommendMode)
+  }, [isRecommendMode])
 
-  // // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
+  // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
   const goToSite = useCallback(async () => {
     await Linking.openURL(item.url)
     // if (supported) {
@@ -77,13 +80,23 @@ function ItemStack() {
             marginVertical={5}
             paddingVertical={15}
           />
-          <BaseButton
-            text={'이 상품 추천하기'}
-            onPress={toggleIsSet}
-            borderRadius={25}
-            marginVertical={5}
-            paddingVertical={15}
-          />
+          {review ?
+            <BaseButton
+              text={'추천 정보 수정하기'}
+              onPress={toggleIsRecommendMode}
+              borderRadius={25}
+              marginVertical={5}
+              paddingVertical={15}
+            />
+            :
+            <BaseButton
+              text={'이 상품 추천하기'}
+              onPress={toggleIsRecommendMode}
+              borderRadius={25}
+              marginVertical={5}
+              paddingVertical={15}
+            />
+          }
         </MenuContainer>
       </ActionSheet>
 
@@ -99,20 +112,39 @@ function ItemStack() {
             borderRadius: 20,
           }}
         />
-        <ItemInfo openSheet={openSheet} isSet={isSet}></ItemInfo>
+        <ItemInfo openSheet={openSheet} isRecommendMode={isRecommendMode} collectionId={collectionId}></ItemInfo>
         {dashOn ? <DashedBorder /> : null}
-        {isSet ? (
-          <RecommendSettings toggleIsSet={toggleIsSet} />
+        {isRecommendMode ? (
+          <RecommendSettings toggleIsRecommendMode={toggleIsRecommendMode} />
         ) : (
           <>
             <RecommendInfo />
-            <BaseButton
-              text={'사이트로 이동하기'}
-              onPress={goToSite}
-              borderRadius={25}
-              marginVertical={10}
-              paddingVertical={15}
-            />
+            {isMyItem ? (
+              <BaseButton
+                text={'사이트로 이동하기'}
+                onPress={goToSite}
+                borderRadius={25}
+                marginVertical={10}
+                paddingVertical={15}
+              />
+            ) : (
+              <View style={{flexDirection: 'row'}}>
+                <BaseButton
+                  text={'사이트로 이동하기'}
+                  onPress={goToSite}
+                  borderRadius={25}
+                  marginVertical={10}
+                  paddingVertical={15}
+                />
+                <BaseButton
+                  text={'내 컬렉션에 담기'}
+                  onPress={() => console.log('내 컬렉션에 담기')}
+                  borderRadius={25}
+                  marginVertical={10}
+                  paddingVertical={15}
+                />
+              </View>
+            )}
           </>
         )}
       </Container>

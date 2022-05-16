@@ -1,3 +1,3 @@
 export interface IProps {
-  toggleIsSet: () => void
+  toggleIsRecommendMode: () => void
 }

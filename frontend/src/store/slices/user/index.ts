@@ -9,9 +9,9 @@ import {
   requestSignUp,
   getUserCollectionList,
 } from './asyncThunk'
-import {RejectedActoionProp} from './types'
+import {UserState} from './types'
 
-const initialState = {
+const initialState: UserState = {
   userId: '',
   accessToken: '',
   collections: [],
