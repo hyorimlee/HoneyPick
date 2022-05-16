@@ -63,10 +63,10 @@ reviewRouter.patch('/:reviewId', authAccessToken, async (req, res) => {
     ])
 
     return res.status(200).send({ review })
-} catch (error) {
-    console.log(error)
-    return res.status(500).send({ err: error.message })
-}
+  } catch (error) {
+      console.log(error)
+      return res.status(500).send({ err: error.message })
+  }
 })
 
 // 스티커 개수 변화 계산
