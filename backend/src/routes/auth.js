@@ -31,22 +31,14 @@ function authAccessToken (req, res, next)  {
         return res.status(419).send({err:"잘못된 accessToken 혹은 만료된 accessToken"})
     }
 }
-authRouter.get('/test',authAccessToken,async(req,res)=>{
-    try {
-        console.log("in the test")
-        return res.status(201).send({msg:"test!",user:req.userId})
-    } catch (err) {
-        console.log(err)
-        return res.status(500).send({ err: error.message })
-    }
-})
 authRouter.post('/signup', async (req, res) => {
     try {
-        const {username,phone, nickname} = req.body
+        const {username,phone, nickname,isAdmin} = req.body
         if(typeof username!=="string") return res.status(400).send({err:"username은 필수입니다"})
         if(typeof phone!=="string") return res.status(400).send({err:"phone은 필수입니다"})
         if(typeof nickname!=="string") return res.status(400).send({err:"nickname은 필수입니다"})
-        
+        if(isAdmin&&typeof isAdmin !=="boolean") return res.status(400).send({err:"isAdmin은 boolean이어야합니다"})
+
         if(nickname.length>10) return res.status(400).send({err:"nickname 길이가 10이 넘습니다"})
         if(username.length>10) return res.status(400).send({err:"username 길이가 10이 넘습니다"})
 
@@ -55,12 +47,13 @@ authRouter.post('/signup', async (req, res) => {
         let user = new User(req.body)
         let follow = new Follow({ ...req.body, user})
         user.follow = follow._id
+        if(isAdmin) user.isAdmin = isAdmin
         const {accessToken,refreshToken} = generateTokens(user._id)
         await Promise.all([ 
             follow.save(),       
             user.save()
         ])
-        return res.status(201).send({userId:user._id,username:req.body.username,description:"",profileImage:process.env.DEFAULT_PROFILE_IMG,accessToken:accessToken,refreshToken:refreshToken})
+        return res.status(201).send({userId:user._id,username:req.body.username,description:"",profileImage:process.env.DEFAULT_PROFILE_IMG,isAdmin:user.isAdmin,accessToken:accessToken,refreshToken:refreshToken})
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
@@ -77,7 +70,7 @@ authRouter.post('/login', async (req, res) => {
             if(user.withdraw==true) return res.status(400).send({err:`${user.username}는 탈퇴되었습니다.`})
             if(await bcrypt.compare(password,user.password)==false) return res.status(400).send({err:'잘못된 비밀번호'})
             const {accessToken,refreshToken} = generateTokens(user._id)
-            return res.status(201).send({userId:user._id,username,description:"",profileImage:user.profileImage,accessToken:accessToken,refreshToken:refreshToken})
+            return res.status(201).send({userId:user._id,username,description:"",profileImage:user.profileImage,isAdmin:user.isAdmin,accessToken:accessToken,refreshToken:refreshToken})
         }catch(err){
             console.log(err)
             return res.status(400).send({err:'로그인 중 에러가 발생했습니다.'})
@@ -97,7 +90,7 @@ authRouter.post('/refresh',async (req,res)=>{
             const accessToken = jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACCESS_EXPIRESIN})
             const user = await User.findById(userId)
             if(user.withdraw==true) return res.status(400).send({err:`${await user.usename}는 탈퇴되었습니다.`})
-            return res.status(201).send({msg:"새로운 메세지",userId:userId,accessToken:accessToken,refreshToken:refreshToken,userId:user._id})
+            return res.status(201).send({userId:userId,isAdmin:user.isAdmin,accessToken:accessToken,refreshToken:refreshToken,userId:user._id})
         } catch (err) {
             console.log(err)
             return res.status(403).send({err:"refreshToken이 만료되었습니다."}) 

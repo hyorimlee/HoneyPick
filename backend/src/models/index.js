@@ -6,4 +6,5 @@ module.exports = {
   ...require('./Phone'),
   ...require('./Follow'),
   ...require('./Review'),
+  ...require('./Event'),
 }
