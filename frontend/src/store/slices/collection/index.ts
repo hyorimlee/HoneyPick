@@ -17,7 +17,7 @@ const initialState: CollectionInitialState = {
       _id: '-1',
       username: 'sample user'
     },
-    title: 'My Collection',
+    title: '',
     description: 'Description of Collection',
     isPublic: true,
     _id: '1',

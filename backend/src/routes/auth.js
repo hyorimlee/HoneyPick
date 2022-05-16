@@ -66,11 +66,10 @@ authRouter.post('/login', async (req, res) => {
         if(!username || !password) return res.status(400).send({err:'username와 password은 필수입니다.'})
         try{
             const user = await User.findOne({username:username})
-            console.log(username)
-            if(user.withdraw==true) return res.status(400).send({err:`${user.username}는 탈퇴되었습니다.`})
+            if(user.withdraw) return res.status(400).send({err:`${user.username}는 탈퇴되었습니다.`})
             if(await bcrypt.compare(password,user.password)==false) return res.status(400).send({err:'잘못된 비밀번호'})
             const {accessToken,refreshToken} = generateTokens(user._id)
-            return res.status(201).send({userId:user._id,username,description:"",profileImage:user.profileImage,isAdmin:user.isAdmin,accessToken:accessToken,refreshToken:refreshToken})
+            return res.status(201).send({userId:user._id, username, nickname:user.nickname, isAdmin:user.isAdmin, accessToken, refreshToken})
         }catch(err){
             console.log(err)
             return res.status(400).send({err:'로그인 중 에러가 발생했습니다.'})
@@ -90,7 +89,7 @@ authRouter.post('/refresh',async (req,res)=>{
             const accessToken = jwt.sign({userId:userId},process.env.JWT_ACCESS_KEY,{expiresIn:process.env.JWT_ACCESS_EXPIRESIN})
             const user = await User.findById(userId)
             if(user.withdraw==true) return res.status(400).send({err:`${await user.usename}는 탈퇴되었습니다.`})
-            return res.status(201).send({userId:userId,isAdmin:user.isAdmin,accessToken:accessToken,refreshToken:refreshToken,userId:user._id})
+            return res.status(201).send({ userId:userId, username:user.username, nickname:user.nickname, isAdmin:user.isAdmin, accessToken, refreshToken })
         } catch (err) {
             console.log(err)
             return res.status(403).send({err:"refreshToken이 만료되었습니다."}) 

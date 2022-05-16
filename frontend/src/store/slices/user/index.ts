@@ -9,14 +9,15 @@ import {
   requestSignUp,
   getUserCollectionList,
 } from './asyncThunk'
+import {UserState} from './types'
 
-const initialState = {
+const initialState: UserState = {
   userId: '',
   accessToken: '',
   collections: [],
   nickname: '',
   username: '',
-  isAdmin: '',
+  isAdmin: false,
 }
 
 const userSlice = createSlice({

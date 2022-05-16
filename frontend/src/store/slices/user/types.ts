@@ -1,7 +1,16 @@
-import {PayloadAction, SerializedError} from '@reduxjs/toolkit'
+import {CollectionState} from './../collection/types'
 
 export interface IAccessToken {
   refreshToken: string | null
+}
+
+export interface UserState {
+  userId: string
+  accessToken: string
+  collections: CollectionState[]
+  nickname: string
+  username: string
+  isAdmin: boolean
 }
 
 export interface ISignInParameter {
