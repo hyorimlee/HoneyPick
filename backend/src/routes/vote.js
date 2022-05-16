@@ -55,11 +55,11 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
 })
 
 // 투표 목록 조회
-voteRouter.get('/', authAccessToken, async (req, res) => {
+voteRouter.get('/:accountId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    const { accountId } = req.body
+    const { accountId } = req.params
 
     // 컬렉션 투표
     if (accountId) {
@@ -88,11 +88,12 @@ voteRouter.get('/', authAccessToken, async (req, res) => {
         })
         return res.status(200).send({ votes: publicVotes })
       }
-    } else {
-      // 이벤트 투표 목록
-      const adminUser = await User.findOne({ isAdmin: true })
-      return res.status(200).send({ votes: adminUser.votes })
-    }
+    } 
+    // else {
+    //   // 이벤트 투표 목록
+    //   const adminUser = await User.findOne({ isAdmin: true })
+    //   return res.status(200).send({ votes: adminUser.votes })
+    // }
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -103,7 +104,7 @@ voteRouter.get('/', authAccessToken, async (req, res) => {
 voteRouter.get('/:voteId', authAccessToken, async (req, res) => {
   try {
     const { voteId } = req.params
-    const { accountId } = req.body
+    const { accountId } = req.query
     const { userId } = req
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (accountId && !isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
