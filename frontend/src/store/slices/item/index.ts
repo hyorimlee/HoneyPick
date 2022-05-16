@@ -3,7 +3,6 @@ import {ItemState} from './types'
 import {
   saveItem,
   getItem,
-  itemToCollection,
   saveReview,
   editReview,
 } from './asyncThunk'
@@ -24,13 +23,18 @@ const initialState: ItemState = {
     discountRate: 0,
     stickers: [],
   },
-  // review: {
-  //   _id: '',
-  //   user: '',
-  //   item: '',
-  //   isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
-  //   stickers: [],
-  // },
+  review: {
+    _id: '',
+    user: {
+      _id: '',
+      username: '',
+      nickname: ''
+    },
+    item: '',
+    isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
+    stickers: [],
+  },
+  collections: []
 }
 
 const itemSlice = createSlice({
@@ -50,17 +54,17 @@ const itemSlice = createSlice({
         state.itemId = action.payload._id
       })
       .addCase(getItem.fulfilled, (state, action) => {
+        console.log('getItem', action.payload)
         state.itemId = action.payload.item._id
         state.item = action.payload.item
         state.review = action.payload.review
+        state.collections = action.payload.collections
       })
       .addCase(saveReview.fulfilled, (state, action) => {
-        // BE확인 받아야 함
         console.log(action.payload.review)
         state.review = action.payload.review
       })
       .addCase(editReview.fulfilled, (state, action) => {
-        // BE확인 받아야 함
         console.log(action.payload.review)
         state.review = action.payload.review
       })
@@ -69,7 +73,7 @@ const itemSlice = createSlice({
 
 export const filteredStickers = createSelector(
   [(state: RootState) => state.item.item.stickers],
-  stickers => stickers.filter(s => s[1]),
+  (stickers) => stickers.filter(s => s[1])
 )
 export const isDashOn = createSelector(
   [

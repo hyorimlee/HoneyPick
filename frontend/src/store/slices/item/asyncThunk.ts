@@ -22,7 +22,6 @@ export const saveItem = createAsyncThunk<any, string, {state: RootState}>(
           authorization: `Bearer ${accessToken}`,
         },
       })
-
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
