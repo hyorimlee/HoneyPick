@@ -9,11 +9,7 @@ import {
   requestSignUp,
   getUserCollectionList,
 } from './asyncThunk'
-<<<<<<< HEAD
 import {UserState} from './types'
-=======
-import {RejectedActoionProp} from './types'
->>>>>>> 35469eae06b77d6259517a5b4a261a8890eff0a2
 
 const initialState: UserState = {
   userId: '',

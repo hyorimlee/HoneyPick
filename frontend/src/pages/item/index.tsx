@@ -31,10 +31,10 @@ function ItemStack() {
   const isMyItem = userId === currentCollection!.user._id
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !isRecommendMode) {
       dispatch(getItem(itemId))
     }
-  }, [isFocused])
+  }, [isFocused, isRecommendMode])
 
   const openSheet = () => {
     actionSheetRef.current?.show()
@@ -112,7 +112,7 @@ function ItemStack() {
             borderRadius: 20,
           }}
         />
-        <ItemInfo openSheet={openSheet} isRecommendMode={isRecommendMode}></ItemInfo>
+        <ItemInfo openSheet={openSheet} isRecommendMode={isRecommendMode} collectionId={collectionId}></ItemInfo>
         {dashOn ? <DashedBorder /> : null}
         {isRecommendMode ? (
           <RecommendSettings toggleIsRecommendMode={toggleIsRecommendMode} />

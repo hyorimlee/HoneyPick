@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import {CollectionState} from './../collection/types'
-=======
-import {PayloadAction, SerializedError} from '@reduxjs/toolkit'
->>>>>>> 35469eae06b77d6259517a5b4a261a8890eff0a2
 
 export interface IAccessToken {
   refreshToken: string | null

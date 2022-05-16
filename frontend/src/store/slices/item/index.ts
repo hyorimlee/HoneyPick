@@ -3,7 +3,6 @@ import {ItemState} from './types'
 import {
   saveItem,
   getItem,
-  itemToCollection,
   saveReview,
   editReview,
 } from './asyncThunk'
@@ -74,7 +73,7 @@ const itemSlice = createSlice({
 
 export const filteredStickers = createSelector(
   [(state: RootState) => state.item.item.stickers],
-  stickers => stickers.filter(s => s[1]),
+  (stickers) => stickers.filter(s => s[1])
 )
 export const isDashOn = createSelector(
   [

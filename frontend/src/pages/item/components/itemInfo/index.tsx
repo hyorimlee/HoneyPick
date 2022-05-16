@@ -14,11 +14,11 @@ import {
 import {InfoContainer, PriceText, PriceTextGray} from './styles'
 import {IProps} from './types'
 
-function ItemInfo({openSheet, isRecommendMode}: IProps) {
+function ItemInfo({openSheet, isRecommendMode, collectionId}: IProps) {
   const {item} = useAppSelector(state => state.item)
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
-  
+
   return (
     <InfoContainer>
       <TextContainer>
@@ -36,7 +36,7 @@ function ItemInfo({openSheet, isRecommendMode}: IProps) {
             <PriceText>{item.priceAfter}</PriceText>
           </RowTextContainer>
         )}
-        {currentCollection ? <NormalText>{currentCollection.title}</NormalText> : null}
+        {collectionId ? <NormalText>{currentCollection!.title}</NormalText> : null}
       </TextContainer>
       {userId === currentCollection!.user._id ? (
         <TouchableOpacity onPress={openSheet}>
