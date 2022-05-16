@@ -2,7 +2,8 @@ const { Schema, model, Types: { ObjectId } } = require('mongoose')
 
 const VoteSchema = new Schema(
   {
-    collectionId: { type: ObjectId, required: true, ref: 'collection' },
+    collectionId: { type: ObjectId, required: false, ref: 'collection'},
+    eventId: { type: ObjectId, required: false, ref: 'event'},
     title: { type: String, required: false },
     result: [{
       _id: { type: ObjectId, required: true, ref: 'item' },
