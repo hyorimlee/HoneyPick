@@ -151,15 +151,26 @@ voteRouter.patch('/:voteId', authAccessToken, async (req, res) => {
 })
 
 // 투표 삭제
-voteRouter.delete('/:accountId/:voteId', authAccessToken, async (req, res) => {
+voteRouter.delete('/:voteId', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    const { accountId, voteId } = req.params
-    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
-    if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId"})
-    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId"})
-    if (userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
-
+    const { voteId } = req.params
+    const { type, accountId } = req.body
+    if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
+    if (!isValidObjectId(voteId)) return res.status(400).send({ err: "invalid voteId" })
+    if (type == 'collection') {
+      if (!accountId) {
+        return res.status(400).send({ err: "missing accountId" })
+      } else {
+        if (!isValidObjectId(accountId)) return res.status(400).send({ err: "invalid accountId" })
+        if (userId !== accountId) return res.status(403).send({ err: "Unauthorized" })
+      }
+    } else if (type == 'event') {
+      const user = await User.findById(userId)
+      if (user.isAdmin !== true) return res.status(403).send({ err: "Unauthorized" })
+    } else {
+      return res.status(400).send({ err: "wrong type" })
+    }
     await Promise.all([
       Vote.deleteOne({ _id: voteId }),
       User.updateOne({ _id: accountId }, { $pull: { votes: { _id: ObjectId(voteId) } }})
