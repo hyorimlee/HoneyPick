@@ -14,6 +14,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
 import {
   Container,
+  SearchBarImage,
   SearchBarContainer,
   BoldText
 } from './styles'
@@ -48,30 +49,35 @@ function SearchStack() {
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
       <Container>
         <>
-          <SearchBarContainer>
-            <BaseTextInput
-              placeholderTextColor="white"
-              color={'white'}
-              flex={5}
-              value={keyword}
-              onChangeText={keywordChanged}
-              onSubmitEditing={searchRecommend}
-              placeholder={'검색어를 입력해주세요'}
-              importantForAutofill={'auto'} // Android
-              returnKeyType={'next'}
-              maxLength={100}
-              marginVertical={10}
-            />
-            <TouchableOpacity
-              style={{flex: 1, paddingLeft: 15, paddingRight: 0}}
-              onPress={searchRecommend}>
-              <FontAwesomeIcon
-                icon={faMagnifyingGlass as IconProp}
-                color="#FFFFFF"
-                size={24}
+          <SearchBarImage
+            source={require('../../../assets/images/search.png')}
+            imageStyle={{resizeMode: 'stretch'}}
+          >
+            <SearchBarContainer>
+              <BaseTextInput
+                placeholderTextColor="white"
+                color={'white'}
+                value={keyword}
+                onChangeText={keywordChanged}
+                onSubmitEditing={searchRecommend}
+                placeholder={'검색어를 입력해주세요'}
+                importantForAutofill={'auto'} // Android
+                returnKeyType={'next'}
+                maxLength={15}
+                borderBottomColor={'transparent'}
               />
-            </TouchableOpacity>
-          </SearchBarContainer>
+              <TouchableOpacity
+                style={{paddingLeft: 15, paddingBottom: 5}}
+                onPress={searchRecommend}>
+                <FontAwesomeIcon
+                  icon={faMagnifyingGlass as IconProp}
+                  color="#FFFFFF"
+                  size={20}
+                />
+              </TouchableOpacity>
+            </SearchBarContainer>
+
+          </SearchBarImage>
         </>
 
         { keywordEntered ?
