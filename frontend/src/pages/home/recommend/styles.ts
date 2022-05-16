@@ -6,11 +6,13 @@ const Container = styled.ScrollView`
   padding-horizontal: 30px;
 `
 
+// padding: 5px;
+// margin-right: 5px;
 const CollectionContainer = styled.TouchableOpacity`
-  width: 90%;
-  margin-horizontal: 5px;
+  width: 100%;
+  
   margin-vertical: 10px;
-  padding: 5px;
+  
   display: flex;
   flex-direction: row;
   justifyContent: center;
@@ -48,11 +50,11 @@ const InfoContainer = styled.View`
   flex-direction: column;
   justify-content: flex-end;
 `
+//   margin-horizontal: 5px;
+// margin-vertical: 5px;
 
 const ItemContainer = styled.View`
-  width: 90%;
-  margin-horizontal: 5px;
-  margin-vertical: 5px;
+  width: 100%;
   padding: 5px;
   display: flex;
   flex-wrap: wrap;
@@ -61,9 +63,10 @@ const ItemContainer = styled.View`
 
 `
 
+// flex: 40%;
 const ItemBox = styled.TouchableOpacity`
-  flex: 40%;
-  margin: 10px;
+  width: 120px;
+  margin-right: 10px;
 `
 
 const NormalText = styled.Text`
@@ -87,8 +90,7 @@ const ImageContainer = styled.ImageBackground`
 const ItemPageContainer = styled.ImageBackground`
   width: 100%;
   padding-top: 50px;
-  margin-bottom: 20px;
-  overflow-x: hidden;
+  margin-vertical: 30px;
 `
 
 export {Container, CollectionContainer, SearchBarContainer, SlideContainer, ItemContainer, NormalText, BoldText, InfoContainer, ImageContainer, ItemBox, ItemPageContainer}
