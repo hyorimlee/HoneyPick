@@ -71,7 +71,7 @@ export const getLists = createAsyncThunk<
 >('profile/getCollections', async ({accountId}, thunkAPI) => {
   try {
     const {accessToken, userId} = thunkAPI.getState().user
-    console.log(accountId)
+
     const getCollections = () =>
       axios({
         method: 'GET',

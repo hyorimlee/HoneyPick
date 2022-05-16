@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {TextInput, View} from 'react-native'
+import {Alert, TextInput, View} from 'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import BaseTextInput from '~/components/textInput/base'
 import BaseButton from '~/components/button/base'
@@ -66,7 +66,9 @@ function EditProfile() {
 
   const descriptionChanged = useCallback(
     (text: string) => {
-      setDescription(text)
+      text.split('\n').length >= 3
+        ? Alert.alert('2줄까지 작성 가능합니다.')
+        : setDescription(text)
     },
     [description],
   )

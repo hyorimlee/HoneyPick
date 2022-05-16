@@ -9,12 +9,14 @@ import {
   requestSignUp,
   getUserCollectionList,
 } from './asyncThunk'
-import {RejectedActoionProp} from './types'
 
 const initialState = {
   userId: '',
   accessToken: '',
   collections: [],
+  nickname: '',
+  username: '',
+  isAdmin: '',
 }
 
 const userSlice = createSlice({
@@ -32,6 +34,9 @@ const userSlice = createSlice({
       .addCase(requestAccessToken.fulfilled, (state, action) => {
         state.accessToken = action.payload.accessToken
         state.userId = action.payload.userId
+        state.username = action.payload.username
+        state.nickname = action.payload.nickname
+        state.isAdmin = action.payload.isAdmin
       })
       .addCase(requestAccessToken.rejected, (state, action) => {
         console.log(action.payload)
@@ -39,6 +44,9 @@ const userSlice = createSlice({
       .addCase(requestSignIn.fulfilled, (state, action) => {
         state.userId = action.payload.userId
         state.accessToken = action.payload.accessToken
+        state.username = action.payload.username
+        state.nickname = action.payload.nickname
+        state.isAdmin = action.payload.isAdmin
         EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)
           .then(() => console.log('login => refreshToken success'))
           .catch(err => console.log('login => refreshToken fail', err))
@@ -49,6 +57,9 @@ const userSlice = createSlice({
       .addCase(requestSignUp.fulfilled, (state, action) => {
         state.userId = action.payload.userId
         state.accessToken = action.payload.accessToken
+        state.username = action.payload.username
+        state.nickname = action.payload.nickname
+        state.isAdmin = action.payload.isAdmin
         EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)
           .then(() => console.log('signup => refreshToken success'))
           .catch(err => console.log('signup => refreshToken fail', err))
