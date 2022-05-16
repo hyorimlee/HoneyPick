@@ -52,7 +52,7 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     //USER가 ADMIN 권한을 가졌는지 확인
     if(user.isAdmin == false) return res.status(401).send({err:'user is not admin'})
     // title, description, isPublic 추출 및 검증
-    const { title, description, additional} = req.bodyrh
+    const { title, description, additional} = req.body
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"})
     if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be string type"})
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"})
