@@ -31,22 +31,14 @@ function authAccessToken (req, res, next)  {
         return res.status(419).send({err:"잘못된 accessToken 혹은 만료된 accessToken"})
     }
 }
-authRouter.get('/test',authAccessToken,async(req,res)=>{
-    try {
-        console.log("in the test")
-        return res.status(201).send({msg:"test!",user:req.userId})
-    } catch (err) {
-        console.log(err)
-        return res.status(500).send({ err: error.message })
-    }
-})
 authRouter.post('/signup', async (req, res) => {
     try {
-        const {username,phone, nickname} = req.body
+        const {username,phone, nickname,isAdmin} = req.body
         if(typeof username!=="string") return res.status(400).send({err:"username은 필수입니다"})
         if(typeof phone!=="string") return res.status(400).send({err:"phone은 필수입니다"})
         if(typeof nickname!=="string") return res.status(400).send({err:"nickname은 필수입니다"})
-        
+        if(isAdmin&&typeof isAdmin !=="boolean") return res.status(400).send({err:"isAdmin은 boolean이어야합니다"})
+
         if(nickname.length>10) return res.status(400).send({err:"nickname 길이가 10이 넘습니다"})
         if(username.length>10) return res.status(400).send({err:"username 길이가 10이 넘습니다"})
 
@@ -55,6 +47,7 @@ authRouter.post('/signup', async (req, res) => {
         let user = new User(req.body)
         let follow = new Follow({ ...req.body, user})
         user.follow = follow._id
+        if(isAdmin) user.isAdmin = isAdmin
         const {accessToken,refreshToken} = generateTokens(user._id)
         await Promise.all([ 
             follow.save(),       
