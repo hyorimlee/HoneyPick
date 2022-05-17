@@ -13,13 +13,13 @@ function HorizontalList({data, title}: IProps) {
   const {userId} = useAppSelector(state => state.profile)
 
   const pressedList = useCallback(
-    (collectionId: string, voteId?: string) => () => {
+    (collectionId: string, voteId?: string, isClosed?: boolean) => () => {
       title.includes('투표') && voteId
         ? navigation.navigate('Vote', {
             accountId: userId,
             collectionId,
             voteId,
-            isClosed: true,
+            isClosed: isClosed,
           })
         : navigation.navigate('Collection', {
             accountId: userId,
@@ -34,7 +34,7 @@ function HorizontalList({data, title}: IProps) {
       <ItemContainer
         onPress={
           title.includes('투표')
-            ? pressedList(item.collectionId, item._id)
+            ? pressedList(item.collectionId, item._id, item.isClosed)
             : pressedList(item._id)
         }
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
