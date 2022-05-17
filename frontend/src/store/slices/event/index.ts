@@ -18,6 +18,14 @@ const initialState: EventInitialState = {
     items: [],
     createdAt: '',
     updatedAt: '',
+    vote: {
+      eventId: '',
+      title: '',
+      result: [],
+      isPublic: true,
+      isClosed: false,
+      participants: []
+    }
   },
   eventList: []
 }

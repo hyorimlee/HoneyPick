@@ -6,14 +6,26 @@ export interface EventInitialState {
 }
 
 export interface EventState {
-  user: {_id: string, username: string, nickname: string}
+  event: {
+    user: {_id: string, username: string, nickname: string}
+    title: string
+    description: string
+    additional: string
+    _id: string
+    items: ItemState[]
+    createdAt: string
+    updatedAt: string
+    vote: EventVoteState
+  }
+}
+
+export interface EventVoteState {
+  eventId: string
   title: string
-  description: string
-  additional: string
-  _id: string
-  items: ItemState[]
-  createdAt: string
-  updatedAt: string
+  result: { _id: string, count: number }[]
+  isPublic: boolean
+  isClosed: boolean
+  participants: { _id: string }[]
 }
 
 export interface ISaveEventParameter {
