@@ -11,6 +11,10 @@ const CollectionSchema = new Schema(
     description: { type: String, required: false },
     items: [{
       _id: { type: ObjectId, required: true, ref: 'item'},
+      title: { type: String, required: true },
+      thumbnail: { type: String, required: true },
+      priceBefore: { type: Number, required: true },
+      priceAfter: { type: Number, required: false },
       recommend: { type: Number, required: true, default: 0}
     }],
     isPublic: { type: Boolean, required: true }
