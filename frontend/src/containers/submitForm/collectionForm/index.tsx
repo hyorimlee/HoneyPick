@@ -51,10 +51,12 @@ function CollectionForm() {
             isPublic: true,
           }),
         )
-
-        isModal === 'clipboardCreateCollection'
-          ? dispatch(uiSlice.actions.setIsModal('clipboard'))
-          : dispatch(uiSlice.actions.setIsModal(false))
+          .unwrap()
+          .then(() => {
+            isModal === 'clipboardCreateCollection'
+              ? dispatch(uiSlice.actions.setIsModal('clipboard'))
+              : dispatch(uiSlice.actions.setIsModal(false))
+          })
       } else if (isModal === 'editCollection') {
         dispatch(
           editCollection({
@@ -67,7 +69,10 @@ function CollectionForm() {
             },
           }),
         )
-        dispatch(uiSlice.actions.setIsModal(false))
+          .unwrap()
+          .then(() => {
+            dispatch(uiSlice.actions.setIsModal(false))
+          })
       }
     } catch (error: any) {
       Alert.alert(error.err)

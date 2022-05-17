@@ -10,7 +10,14 @@ import {getEvent} from '~/store/slices/event/asyncThunk'
 import VoteItems from '../../../vote/components/voteItems'
 
 import {Container} from './styles'
-import {MainEvent, InfoTop, EventImage, InfoContainer, NormalText, TitleText} from '../default/styles'
+import {
+  MainEvent,
+  InfoTop,
+  EventImage,
+  InfoContainer,
+  NormalText,
+  TitleText,
+} from '../default/styles'
 
 function EventItem() {
   const dispatch = useAppDispatch()
@@ -23,7 +30,7 @@ function EventItem() {
   useEffect(() => {
     dispatch(getEvent(eventId))
   }, [])
-  
+
   return (
     <SafeAreaView style={{height: '100%'}}>
       <Container>
@@ -32,8 +39,7 @@ function EventItem() {
             <MainEvent>
               <InfoTop>
                 <EventImage
-                  source={require('~/assets/images/sampleimage2.jpg')}
-                ></EventImage>
+                  source={require('~/assets/images/sampleimage2.jpg')}></EventImage>
                 <InfoContainer>
                   <NormalText>directed by {event.user.nickname}</NormalText>
                   <TitleText>{event.title}</TitleText>
@@ -42,7 +48,10 @@ function EventItem() {
               </InfoTop>
               <NormalText>{event.additional}</NormalText>
             </MainEvent>
-            <VoteItems onVote={true} eventId={event._id} voteId={''}></VoteItems>
+            <VoteItems
+              onVote={true}
+              eventId={event._id}
+              voteId={''}></VoteItems>
           </>
         ) : null}
       </Container>
@@ -54,7 +63,7 @@ function EventItem() {
         marginHorizontal={30}
         paddingVertical={15}
         position="absolute"
-        width={windowWidth-60}
+        width={windowWidth - 60}
         bottom={0}
       />
     </SafeAreaView>
