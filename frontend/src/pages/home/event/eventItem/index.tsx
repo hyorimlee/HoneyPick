@@ -18,11 +18,9 @@ function EventItem() {
   const {eventId} = route.params!
   const event = useAppSelector(state => state.event.event)
 
-  console.log('페이지 넘어옴')
-
   useEffect(() => {
     dispatch(getEvent(eventId))
-  })
+  }, [])
   
   return (
     <SafeAreaView style={{height: '100%'}}>
@@ -31,7 +29,7 @@ function EventItem() {
           <MainEvent>
             <InfoTop>
               <EventImage
-                source={require('../../../../assets/images/sampleimage2.jpg')}
+                source={require('~/assets/images/sampleimage2.jpg')}
               ></EventImage>
               <InfoContainer>
                 <NormalText>directed by {event.user.nickname}</NormalText>

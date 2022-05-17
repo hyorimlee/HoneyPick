@@ -54,6 +54,6 @@ export const TitleText = styled.Text`
 `
 
 export const NormalText = styled.Text`
-  color: #00000;
+  color: #000000;
   font-size: 12px;
 `

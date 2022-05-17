@@ -30,10 +30,10 @@ function EventList() {
   const SubEvents = events.map((event, idx) => {
     if (idx > 0) {
       return (
-        <SubEvent onPress={() => onClick(event._id)}>
+        <SubEvent onPress={() => onClick(event._id)} key={idx}>
           <InfoTop>
             <SubEventImage
-              source={require('../../../assets/images/sampleimage2.jpg')}
+              source={require('~/assets/images/sampleimage2.jpg')}
             ></SubEventImage>
             <InfoContainer>
               <NormalText style={{color: '#8C8C8C'}}>directed by {event.user.nickname}</NormalText>
@@ -54,7 +54,7 @@ function EventList() {
             <MainEvent onPress={() => onClick(events[0]._id)}>
               <InfoTop>
                 <EventImage
-                  source={require('../../../assets/images/sampleimage2.jpg')}
+                  source={require('~/assets/images/sampleimage2.jpg')}
                 ></EventImage>
                 <InfoContainer>
                   <NormalText>directed by {events[0].user.nickname}</NormalText>
