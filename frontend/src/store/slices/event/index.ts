@@ -12,12 +12,12 @@ const initialState: EventInitialState = {
       nickname: '',
     },
     title: '',
-    isPublic: true,
+    description: '',
+    additional: '',
     _id: '',
     items: [],
     createdAt: '',
     updatedAt: '',
-    __v: 0
   },
   eventList: []
 }

@@ -10,6 +10,7 @@ export type RootStackParamList = {
   Vote: undefined
   SignIn: undefined
   SignUp: undefined
+  Event: undefined
 }
 
 // 최상단 스택간 이동하는 navigation type

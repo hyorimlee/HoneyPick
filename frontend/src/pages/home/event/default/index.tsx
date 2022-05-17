@@ -1,47 +1,75 @@
 import * as React from 'react'
-import {memo} from 'react'
-import {SafeAreaView, Dimensions} from 'react-native'
+import {memo, useEffect} from 'react'
+import {SafeAreaView, Alert} from 'react-native'
 
-import BaseButton from '../../../../components/button/base'
-import CollectionInfo from '~/pages/collection/components/collectionInfo'
+import {useIsFocused} from '@react-navigation/native'
+import {useAppSelector, useAppDispatch} from '~/store/types'
+import {getEventList} from '~/store/slices/event/asyncThunk'
+import {useNavigation} from '@react-navigation/native'
+import {EventDefaultNavigationProp, EventItemNavigationProp} from './types'
 
-import {Container} from './styles'
-import {MainEvent, InfoTop, EventImage, InfoContainer, NormalText, TitleText} from '../styles'
 
-function Event() {
-  const windowWidth = Dimensions.get('window').width
+import {Container, MainEvent, SubEvent, EventImage, SubEventImage, InfoContainer, InfoTop, TitleText, NormalText} from './styles'
 
-  return (
-    <SafeAreaView style={{height: '100%'}}>
-      <Container>
-        <MainEvent>
+function EventList() {
+  const isFocused = useIsFocused()
+  const dispatch = useAppDispatch()
+  const navigation = useNavigation<EventDefaultNavigationProp>()
+  const events = useAppSelector(state => state.event.eventList)
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(getEventList())
+    }
+  }, [isFocused])
+
+  const onClick = (eventId: string) => {
+    navigation.navigate('EventItem', {eventId: eventId})
+  }
+  
+  const SubEvents = events.map((event, idx) => {
+    if (idx > 0) {
+      return (
+        <SubEvent onPress={() => onClick(event._id)}>
           <InfoTop>
-            <EventImage
-              source={require('../../../../assets/images/sampleimage2.jpg')}
-            ></EventImage>
+            <SubEventImage
+              source={require('../../../assets/images/sampleimage2.jpg')}
+            ></SubEventImage>
             <InfoContainer>
-              <NormalText>directed by</NormalText>
-              <TitleText>어드민 유저 닉네임</TitleText>
-              <NormalText>짧은 설명 (1~2줄)</NormalText>
+              <NormalText style={{color: '#8C8C8C'}}>directed by {event.user.nickname}</NormalText>
+              <TitleText style={{color: '#8C8C8C'}}>{event.title}</TitleText>
             </InfoContainer>
           </InfoTop>
-          <NormalText>설명이짱길거예요그러니까마음의준비를하시고 어쩌구저쩌구븢ㄹ라블라야호야호ㅏㄴ아러</NormalText>
-        </MainEvent>
-        {/* <CollectionInfo></CollectionInfo> */}
+          <NormalText style={{color: '#8C8C8C'}}>{event.description}</NormalText>
+        </SubEvent>
+      )
+    }
+  })
+  
+  return (
+    <SafeAreaView>
+      <Container>
+        {events.length > 0 ? (
+          <>
+            <MainEvent onPress={() => onClick(events[0]._id)}>
+              <InfoTop>
+                <EventImage
+                  source={require('../../../assets/images/sampleimage2.jpg')}
+                ></EventImage>
+                <InfoContainer>
+                  <NormalText>directed by {events[0].user.nickname}</NormalText>
+                  <TitleText>{events[0].title}</TitleText>
+                  <NormalText>{events[0].description}</NormalText>
+                </InfoContainer>
+              </InfoTop>
+              <NormalText>{events[0].additional}</NormalText>
+            </MainEvent>
+            {SubEvents}
+          </>
+        ) : null}
       </Container>
-      <BaseButton
-        text={'투표하기'}
-        onPress={() => console.log('얍')}
-        borderRadius={25}
-        marginVertical={10}
-        marginHorizontal={30}
-        paddingVertical={15}
-        position="absolute"
-        width={windowWidth-60}
-        bottom={0}
-      />
     </SafeAreaView>
   )
 }
 
-export default memo(Event)
+export default memo(EventList)

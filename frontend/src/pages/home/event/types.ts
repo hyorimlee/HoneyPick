@@ -1,11 +1,12 @@
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 import {BottomTabParamList} from '../types'
 
-// export type EventStackParamList = {
-//   Default: undefined
-// }
+export type EventStackParamList = {
+  Default: undefined
+  EventItem: {eventId: string}
+}
 
-// export type BottomTabEvent = BottomTabNavigationProp<
-//   BottomTabParamList,
-//   'Event'
-// >
+export type BottomTabEvent = BottomTabNavigationProp<
+  BottomTabParamList,
+  'Event'
+>
