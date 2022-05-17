@@ -21,17 +21,20 @@ import {
 import SearchResult from './components/searchResult'
 
 import { search } from '~/store/slices/search/asyncThunk'
+import { scrollProps } from './types'
 
 function SearchStack() {
 
   const dispatch = useAppDispatch()
-  const getSearchList = () => {
-    dispatch(search({keyword}))
-  }
-  const {collections, items} = useAppSelector(state => state.search)
+  const {collections, items, page} = useAppSelector(state => state.search)
 
   const [keyword, setKeyword] = useState('')
   const [keywordEntered, setkeywordEntered] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const getSearchList = (keyword: string, page: number) => {
+    dispatch(search({ keyword, page })).then(()=>setLoading(false))
+  }
 
   const keywordChanged = useCallback(
     (text: string) => {
@@ -42,12 +45,25 @@ function SearchStack() {
 
   const searchRecommend = () => {
     setkeywordEntered(keyword)
-    getSearchList()
+    getSearchList(keyword, 1)
   }
+  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize} : scrollProps) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement!.height + contentOffset!.y >=
+      contentSize!.height - paddingToBottom;
+  };
 
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
-      <Container>
+      <Container
+        onScroll={({nativeEvent}) => {
+        if (!(items.length%18) && !loading && isCloseToBottom(nativeEvent)) {
+          // console.log('end reached', loading)
+          setLoading(true)
+          getSearchList(keywordEntered, page+1)
+        }
+      }}
+      scrollEventThrottle={0}>
         <>
           <SearchBarImage
             source={require('../../../assets/images/search.png')}
