@@ -27,14 +27,13 @@ const initialState: EventInitialState = {
       participants: []
     }
   },
-  eventList: []
+  eventList: [],
 }
 
 const eventSlice = createSlice({
   name: 'event',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(getEventList.fulfilled, (state, action) => {

@@ -10,6 +10,6 @@ export type EventDefaultNavigationProp = CompositeNavigationProp<
 >
 
 export type EventItemNavigationProp = CompositeNavigationProp<
-BottomTabNavigationProp<BottomTabParamList, 'Event'>,
-NativeStackNavigationProp<EventStackParamList, 'EventItem'>
+  BottomTabNavigationProp<BottomTabParamList, 'Event'>,
+  NativeStackNavigationProp<EventStackParamList, 'EventItem'>
 >
