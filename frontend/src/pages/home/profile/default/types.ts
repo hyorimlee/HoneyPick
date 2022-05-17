@@ -6,7 +6,7 @@ import {ProfileStackParamList} from '../types'
 
 export type ProfileDefaultNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'Profile'>,
-  NativeStackNavigationProp<ProfileStackParamList, 'Default'>
+  NativeStackNavigationProp<ProfileStackParamList, 'ProfileDefault'>
 >
 
 export type ProfileDefaultRoute = RouteProp<ProfileStackParamList>
