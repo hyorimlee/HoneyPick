@@ -69,8 +69,11 @@ recommendRouter.get('/item', authAccessToken, async (req, res) => {
         const result = await Promise.all(promises)
         const items = result.map((item, idx) => {
             return {
+                // rec로 배열에 추가가 가능했으면 좋겠네
+                rec: recs[idx],
                 title: recommends[idx].title,
-                itemList: item
+                itemList: item,
+                page
             }
         })
         
