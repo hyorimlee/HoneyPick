@@ -1,7 +1,7 @@
 import { ItemState } from "../item/types"
 
 export interface VoteInitialState {
-  currentVote: IVoteState | undefined,
+  currentVote: IVoteState,
   selectedItems: ItemState[] | Array<any>,
 }
 
@@ -9,7 +9,7 @@ export interface IVoteState {
   _id: string,
   collectionId: string,
   title: string,
-  result: { _id: string, count: number }[],
+  result: { _id: string, count: number, title?: string, priceBefore?: number, priceAfter?: number, }[],
   isPublic: boolean,
   isClosed: boolean,
   participants: { _id: string }[],
