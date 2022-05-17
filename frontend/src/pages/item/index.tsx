@@ -1,6 +1,13 @@
 import * as React from 'react'
 import {memo, useState, useEffect, useCallback, useRef} from 'react'
-import {SafeAreaView, StatusBar, Linking, Pressable, Text, View} from 'react-native'
+import {
+  SafeAreaView,
+  StatusBar,
+  Linking,
+  Pressable,
+  Text,
+  View,
+} from 'react-native'
 import Config from 'react-native-config'
 import ActionSheet from 'react-native-actions-sheet'
 
@@ -12,7 +19,7 @@ import {useAppSelector, useAppDispatch} from '~/store/types'
 import {useIsFocused, useRoute} from '@react-navigation/native'
 import {Container, ImageContainer, MenuContainer, DashedBorder} from './styles'
 import ItemInfo from './components/itemInfo'
-import {isDashOn} from '~/store/slices/item'
+import {isDashOn, setSaveCollection} from '~/store/slices/item'
 import RecommendBar from './components/recommendInfo/recommendBar'
 import RecommendInfo from './components/recommendInfo'
 import RecommendSettings from './components/recommendSettings'
@@ -67,6 +74,10 @@ function ItemStack() {
     // }
   }, [item.url])
 
+  const saveMyCollection = () => {
+    dispatch(setSaveCollection('yet'))
+  }
+
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
       <ActionSheet
@@ -80,7 +91,7 @@ function ItemStack() {
             marginVertical={5}
             paddingVertical={15}
           />
-          {review ?
+          {review ? (
             <BaseButton
               text={'추천 정보 수정하기'}
               onPress={toggleIsRecommendMode}
@@ -88,7 +99,7 @@ function ItemStack() {
               marginVertical={5}
               paddingVertical={15}
             />
-            :
+          ) : (
             <BaseButton
               text={'이 상품 추천하기'}
               onPress={toggleIsRecommendMode}
@@ -96,7 +107,7 @@ function ItemStack() {
               marginVertical={5}
               paddingVertical={15}
             />
-          }
+          )}
         </MenuContainer>
       </ActionSheet>
 
@@ -112,7 +123,10 @@ function ItemStack() {
             borderRadius: 20,
           }}
         />
-        <ItemInfo openSheet={openSheet} isRecommendMode={isRecommendMode} collectionId={collectionId}></ItemInfo>
+        <ItemInfo
+          openSheet={openSheet}
+          isRecommendMode={isRecommendMode}
+          collectionId={collectionId}></ItemInfo>
         {dashOn ? <DashedBorder /> : null}
         {isRecommendMode ? (
           <RecommendSettings toggleIsRecommendMode={toggleIsRecommendMode} />
@@ -138,7 +152,7 @@ function ItemStack() {
                 />
                 <BaseButton
                   text={'내 컬렉션에 담기'}
-                  onPress={() => console.log('내 컬렉션에 담기')}
+                  onPress={saveMyCollection}
                   borderRadius={25}
                   marginVertical={10}
                   paddingVertical={15}

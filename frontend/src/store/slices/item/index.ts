@@ -1,11 +1,6 @@
 import {createSelector, createSlice} from '@reduxjs/toolkit'
 import {ItemState} from './types'
-import {
-  saveItem,
-  getItem,
-  saveReview,
-  editReview,
-} from './asyncThunk'
+import {saveItem, getItem, saveReview, editReview} from './asyncThunk'
 import {RootState, useAppSelector} from '~/store/types'
 
 const initialState: ItemState = {
@@ -28,13 +23,13 @@ const initialState: ItemState = {
     user: {
       _id: '',
       username: '',
-      nickname: ''
+      nickname: '',
     },
     item: '',
     isRecommend: 0, // 0-일반, 1-굿템, 2-꿀템
     stickers: [],
   },
-  collections: []
+  collections: [],
 }
 
 const itemSlice = createSlice({
@@ -44,7 +39,7 @@ const itemSlice = createSlice({
     setCollectionId(state, action) {
       state.collectionId = action.payload
     },
-    setSaveCollection(state, action) {
+    setSaveCollection(state, action: {payload: 'no' | 'yet'}) {
       state.saveCollection = action.payload
     },
   },
@@ -73,7 +68,7 @@ const itemSlice = createSlice({
 
 export const filteredStickers = createSelector(
   [(state: RootState) => state.item.item.stickers],
-  (stickers) => stickers.filter(s => s[1])
+  stickers => stickers.filter(s => s[1]),
 )
 export const isDashOn = createSelector(
   [
