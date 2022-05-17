@@ -7,7 +7,7 @@ import {useAppSelector, useAppDispatch} from '../../store/types'
 import {itemToCollection} from '../../store/slices/item/asyncThunk'
 import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
 import {CollectionState} from '../../store/slices/collection/types'
-import {setCollectionId, setSaveCollection} from '../../store/slices/item'
+import {setCollectionId} from '../../store/slices/item'
 import {ChooseCollectionNavigationProp} from './types'
 
 import {useNavigation} from '@react-navigation/native'
@@ -20,7 +20,7 @@ import {
   RadioContainer,
   NormalText,
 } from './styles'
-import CreateCollection from '../../pages/createCollection'
+import CreateCollection from '../submitForm/collectionForm'
 
 const radioButtonsData: RadioButtonProps[] = [
   {
@@ -68,8 +68,10 @@ function ChooseCollectionModal() {
     const selected = radioButtonsArray.filter(
       button => button.selected === true,
     )
+
     if (selected[0].id === 'new') {
-      setOpenCreationForm(true)
+      // 모달은 이미 띄워짐, 내용을 바꿔야함
+      // dispatch(uiSlice.actions.setIsModalOn(true))
     } else {
       setSelectedValue(selected[0].id)
     }
@@ -82,7 +84,7 @@ function ChooseCollectionModal() {
         collectionId: selectedValue,
       }
       dispatch(itemToCollection(data))
-      dispatch(setSaveCollection('no'))
+      // dispatch(setSaveCollection('no'))
       dispatch(setCollectionId(selectedValue))
       Alert.alert('저장이 완료되었습니다.')
       navigation.navigate('Default', data)
@@ -92,35 +94,27 @@ function ChooseCollectionModal() {
   }
 
   const onPressBackground = () => {
-    dispatch(setSaveCollection('no'))
+    // dispatch(setSaveCollection('no'))
   }
 
   return (
     <CenteredView>
       <Background onPress={onPressBackground} />
       <ModalView style={{overflow: 'scroll'}}>
-        {openCreationForm ? (
-          <CreateCollection
-            isModal
-            setOpenCreationForm={setOpenCreationForm}></CreateCollection>
-        ) : (
-          <>
-            <NormalText>아이템을 저장할 컬렉션을 선택해주세요.</NormalText>
-            <RadioContainer>
-              <RadioGroup
-                radioButtons={radioButtons}
-                onPress={onPressRadioButton}
-                containerStyle={{alignItems: 'flex-start'}}></RadioGroup>
-            </RadioContainer>
-            <BaseButton
-              text={'선택된 컬렉션에 아이템 추가하기'}
-              onPress={submitItemToCollection}
-              borderRadius={25}
-              marginVertical={10}
-              paddingVertical={15}
-            />
-          </>
-        )}
+        <NormalText>아이템을 저장할 컬렉션을 선택해주세요.</NormalText>
+        <RadioContainer>
+          <RadioGroup
+            radioButtons={radioButtons}
+            onPress={onPressRadioButton}
+            containerStyle={{alignItems: 'flex-start'}}></RadioGroup>
+        </RadioContainer>
+        <BaseButton
+          text={'선택된 컬렉션에 아이템 추가하기'}
+          onPress={submitItemToCollection}
+          borderRadius={25}
+          marginVertical={10}
+          paddingVertical={15}
+        />
       </ModalView>
     </CenteredView>
   )
