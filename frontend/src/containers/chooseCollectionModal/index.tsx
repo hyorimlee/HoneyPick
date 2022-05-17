@@ -7,11 +7,7 @@ import {useAppSelector, useAppDispatch} from '../../store/types'
 import {itemToCollection} from '../../store/slices/item/asyncThunk'
 import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
 import {CollectionState} from '../../store/slices/collection/types'
-import {
-  collectionsItemId,
-  setCollectionId,
-  setSaveCollection,
-} from '../../store/slices/item'
+import {setCollectionId, setSaveCollection} from '../../store/slices/item'
 import {ChooseCollectionNavigationProp} from './types'
 
 import {useNavigation} from '@react-navigation/native'

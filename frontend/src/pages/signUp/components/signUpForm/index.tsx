@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback, useRef} from 'react'
-import {Text, TextInput, View} from 'react-native'
+import {Alert, Text, TextInput, View} from 'react-native'
 import BaseTextInput from '~/components/textInput/base'
 import BaseButton from '~/components/button/base'
 import PhoneForm from '~/containers/submitForm/phoneForm/index'
@@ -65,6 +65,10 @@ function SignUpForm({paddingHorizontal}: {paddingHorizontal: number}) {
 
   const signUpSubmit = useCallback(() => {
     dispatch(requestSignUp({username, password, nickname, phone}))
+      .unwrap()
+      .catch(error => {
+        Alert.alert(error.err)
+      })
   }, [username, password, passwordConfirm, phone, nickname])
 
   const buttonDisabled = !(username && password === passwordConfirm && phone)

@@ -52,17 +52,17 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     //USER가 ADMIN 권한을 가졌는지 확인
     if(user.isAdmin == false) return res.status(401).send({err:'user is not admin'})
     // title, description, isPublic 추출 및 검증
-    const { title, description, additional} = req.body
+    const { title, description, additional } = req.body
+    let { items } = req.body
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"})
     if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be string type"})
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"})
-    // console.log(user.events.length)
+    if (items && !Array.isArray(items)) return res.status(400).send({ err: "items must be array"})
 
-    // // 기존 컬렉션이 30개 이상이면, 생성 차단
-    // if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
+    items = await Item.find({ _id: { $in: items } })
 
     // event 자체 추가 
-    const event = new Event({ ...req.body, user })
+    const event = new Event({ ...req.body, user, items })
     await event.save()
     return res.status(201).send({ event })
   } catch (error) {

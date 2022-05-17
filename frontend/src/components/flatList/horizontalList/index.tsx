@@ -3,28 +3,44 @@ import {memo, useCallback} from 'react'
 import {IProps} from './types'
 import {useNavigation} from '@react-navigation/native'
 import {useAppSelector} from '../../../store/types'
-import {CustomFlatList, ItemContainer, Title} from './styles'
+import {CustomFlatList, ItemContainer, NoneView, Title} from './styles'
 import {RootStackNavigationProp} from '~/../types/navigation'
 import {Image, Text} from 'react-native'
 import Config from 'react-native-config'
 
-function HorizontalList({data}: IProps) {
+function HorizontalList({data, title}: IProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
   const {userId} = useAppSelector(state => state.profile)
 
   const pressedList = useCallback(
-    (id: string) => () => {
-      navigation.navigate('Collection', {accountId: userId, collectionId: id})
+    (collectionId: string, voteId?: string) => () => {
+      title.includes('투표') && voteId
+        ? navigation.navigate('Vote', {
+            accountId: userId,
+            collectionId,
+            voteId,
+            isClosed: true,
+          })
+        : navigation.navigate('Collection', {
+            accountId: userId,
+            collectionId,
+          })
     },
     [userId],
   )
 
-  const renderItem = ({item}: {item: any}) => {
+  const renderItem = ({item, index}: {item: any; index: number}) => {
     return (
-      <ItemContainer onPress={pressedList(item._id)}>
+      <ItemContainer
+        onPress={
+          title.includes('투표')
+            ? pressedList(item.collectionId, item._id)
+            : pressedList(item._id)
+        }
+        style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
         <Image
           source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
-          style={{width: 75, height: 75, borderRadius: 10}}></Image>
+          style={{width: 100, height: 100, borderRadius: 10}}></Image>
         <Title>{item.title}</Title>
       </ItemContainer>
     )
@@ -39,7 +55,12 @@ function HorizontalList({data}: IProps) {
           horizontal={true}
           showsHorizontalScrollIndicator={false}></CustomFlatList>
       ) : (
-        <Text style={{color: 'black'}}>비어있습니다.</Text>
+        <NoneView>
+          <Text style={{color: 'black', fontSize: 18, alignSelf: 'center'}}>
+            {title}
+            {title === '진행한 투표' ? '가' : '이'} 없어요.
+          </Text>
+        </NoneView>
       )}
     </>
   )
