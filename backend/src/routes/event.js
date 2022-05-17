@@ -101,7 +101,7 @@ eventRouter.get('/', authAccessToken, async (req, res) => {
     let returnVals = []
     for(let i=0;i<events.length;i++){
       let event = events[i]
-      returnVals.push({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote })
+      returnVals.push({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:await Vote.findById(event.vote._id) })
     }
     return res.status(200).send({ events: returnVals })
   } catch (error) {
