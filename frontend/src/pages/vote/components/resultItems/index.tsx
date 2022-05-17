@@ -1,43 +1,60 @@
 import * as React from 'react'
 import {memo, useCallback, useState} from 'react'
-import {Image, View, Text, FlatList, Alert, ScrollView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-import {Container, LargeItem, MediumItem, SmallItem} from './styles'
-import {useAppDispatch, useAppSelector} from '../../../../store/types'
-import ItemComponent from '../../../collection/components/itemComponent'
+import {Container, LargeItem, MediumItem, SmallItem, LargeItemFlex, LargeItemImage, LargeItemInfoContainer, MediumItemFlex, MediumItemImage, MediumItemInfoContainer, SmallItemFlex, TitleText, NormalText} from './styles'
 import { IComponentProps } from './types'
 import { RootStackNavigationProp } from '../../../../../types/navigation'
-import { setSelectedItems } from '../../../../store/slices/vote'
+import Config from 'react-native-config'
 
-function ResultItems({accountId, collectionId, voteId, result}: IComponentProps) {
-  const dispatch = useAppDispatch()
+function ResultItems({accountId, collectionId, eventId, voteId, result}: IComponentProps) {
   const itemNavigation = useNavigation<RootStackNavigationProp>()
-  const {selectedItems} = useAppSelector(state => state.vote)
-  const {currentCollection} = useAppSelector(state => state.collection)
 
   const pushToItemPage = useCallback((itemId: string) => {
-    itemNavigation.push('Item', {itemId: itemId, collectionId: collectionId})
+    if (collectionId) {
+      itemNavigation.push('Item', {itemId: itemId, collectionId: collectionId})
+    } else {
+      itemNavigation.push('Item', {itemId: itemId, collectionId: '' })
+    }
   }, [])
 
   return (
     <Container>
-      {result.map((item, index) => {
+      {result.map((item: any, index: number) => {
         if (index === 0) {
           return(
-            <LargeItem key={index}>
-              <View><Text>{item.count}</Text></View>
+            <LargeItem key={index} onPress={() => pushToItemPage(item._id)}>
+              <LargeItemFlex>
+                <LargeItemImage
+                  source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
+                ></LargeItemImage>
+                <LargeItemInfoContainer>
+                  <TitleText>{item.title}</TitleText>
+                  <NormalText>{item.count} 표</NormalText>
+                </LargeItemInfoContainer>
+              </LargeItemFlex>
             </LargeItem>
           )
         } else if (index === 1 || index === 2) {
           return(
-            <MediumItem key={index}>
-              <View><Text>{item._id}</Text></View>
+            <MediumItem key={index} onPress={() => pushToItemPage(item._id)}>
+              <MediumItemFlex>
+                <MediumItemImage
+                  source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
+                ></MediumItemImage>
+                <MediumItemInfoContainer>
+                  <TitleText>{item.title}</TitleText>
+                  <NormalText>{item.count} 표</NormalText>
+                </MediumItemInfoContainer>
+              </MediumItemFlex>
             </MediumItem>
           )
         } else {
           return(
-            <SmallItem key={index}>
-              <View><Text>etc</Text></View>
+            <SmallItem key={index} onPress={() => pushToItemPage(item._id)}>
+              <SmallItemFlex>
+                <TitleText>{item.title}</TitleText>
+                <NormalText>{item.count} 표</NormalText>
+              </SmallItemFlex>
             </SmallItem>
           )
         }
@@ -46,5 +63,6 @@ function ResultItems({accountId, collectionId, voteId, result}: IComponentProps)
     </Container>
   )
 }
+
 
 export default memo(ResultItems)

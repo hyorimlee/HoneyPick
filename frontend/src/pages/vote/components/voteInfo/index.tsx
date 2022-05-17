@@ -16,9 +16,7 @@ import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import { deleteCollection } from '../../../../store/slices/collection/asyncThunk'
 import { endVote, deleteVote } from '../../../../store/slices/vote/asyncThunk'
-import {configureStore} from '@reduxjs/toolkit'
 import { setFollow } from '../../../../store/slices/profile/asyncThunk'
 import profileSlice from '../../../../store/slices/profile'
 import {VoteNavigationProp, VoteStackParamList} from '../../../vote/types'
@@ -27,14 +25,12 @@ import { RootStackNavigationProp } from '../../../../../types/navigation'
 
 function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
-  const voteNavigation = useNavigation<VoteNavigationProp>()
   const dispatch = useAppDispatch()
 
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
   const {currentVote} = useAppSelector(state => state.vote)
-  // const isMyList = currentCollection?.user._id === userId
-  const isMyList = true
+  const isMyList = currentCollection?.user._id === userId
 
   const actionSheetRef = createRef<ActionSheet>()
   const username = currentCollection?.user?.username
@@ -51,8 +47,8 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
   }, [])
 
   const closeVote = useCallback(async () => {
-    await dispatch(endVote({accountId: accountId, voteId: currentVote?._id}))
-    voteNavigation.push('VoteResult')
+    await dispatch(endVote({accountId: accountId, voteId: voteId}))
+    navigation.navigate('Vote', {accountId: accountId, collectionId: collectionId, voteId: voteId, isClosed: true})
   }, [])
 
   const followChange = useCallback(() => {
@@ -65,11 +61,11 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
       <InfoContainer>
         <InfoTextContainer>
           <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
-            {currentCollection?.title ?currentCollection.title : 'Notitle'}
+            {currentVote?.title ?currentVote.title : 'Notitle'}
           </Text>
-          <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>
+          {/* <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>
             {currentCollection?.description ?currentCollection.description : 'Notitle'}
-          </Text>
+          </Text> */}
         </InfoTextContainer>
         <Image
           source={require('~/assets/images/honeybee.png')}

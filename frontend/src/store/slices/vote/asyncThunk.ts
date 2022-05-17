@@ -32,7 +32,7 @@ export const getVoteList = createAsyncThunk<any, IVoteListQuery, {state: RootSta
       const {accessToken} = thunkAPI.getState().user
       const response = await axios({
         method: 'GET',
-        url: `${Config.API_BASE_URL}/vote/${accountId}?page=${page}`,
+        url: `${Config.API_BASE_URL}/vote?accountId=${accountId}`,
         headers: {
           authorization: `Bearer ${accessToken}`
         }
@@ -53,7 +53,7 @@ export const getVote = createAsyncThunk<any, IVoteQuery, {state: RootState}>(
       const {accessToken} = thunkAPI.getState().user
       const response = await axios({
         method: 'GET',
-        url: `${Config.API_BASE_URL}/vote/${accountId}/${voteId}`,
+        url: `${Config.API_BASE_URL}/vote/${voteId}?accountId=${accountId}`,
         headers: {
           authorization: `Bearer ${accessToken}`
         }
@@ -73,12 +73,12 @@ export const endVote = createAsyncThunk<any, IVoteQuery, {state: RootState}>(
       const {accessToken} = thunkAPI.getState().user
       const response = await axios({
         method: 'PATCH',
-        url: `${Config.API_BASE_URL}/vote/${accountId}/${voteId}`,
+        url: `${Config.API_BASE_URL}/vote/${voteId}`,
+        data: {accountId: accountId},
         headers: {
           authorization: `Bearer ${accessToken}`
         }
       })
-
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
@@ -94,6 +94,7 @@ export const deleteVote = createAsyncThunk<any, IVoteQuery, {state: RootState}>(
       const response = await axios({
         method: 'DELETE',
         url: `${Config.API_BASE_URL}/vote/${accountId}/${voteId}`,
+        data: {accountId: accountId},
         headers: {
           authorization: `Bearer ${accessToken}`
         }
@@ -113,7 +114,7 @@ export const vote = createAsyncThunk<any, IItemVoteQuery, {state: RootState}>(
       const {accessToken} = thunkAPI.getState().user
       const response = await axios({
         method: 'PATCH',
-        url: `${Config.API_BASE_URL}/vote/${accountId}/${voteId}/${itemId}`,
+        url: `${Config.API_BASE_URL}/vote/${voteId}/${itemId}`,
         headers: {
           authorization: `Bearer ${accessToken}`
         }

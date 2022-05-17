@@ -8,6 +8,7 @@ import ResultItems from '../components/resultItems'
 import { useAppDispatch, useAppSelector } from '../../../store/types'
 import { getCollection } from '../../../store/slices/collection/asyncThunk'
 import { getVote } from '../../../store/slices/vote/asyncThunk'
+import { Container, TitleContainer, TitleText, NormalText } from './styles'
 
 function VoteResult() {
   const dispatch = useAppDispatch()
@@ -15,9 +16,6 @@ function VoteResult() {
   const {accountId, collectionId, voteId} = route.params!
   const {currentVote} = useAppSelector(state => state.vote)
   const {currentCollection} = useAppSelector(state => state.collection)
-  // const result = currentVote!.result.sort((a, b) => {return b.count - a.count})
-  const result = [{_id: '1', count: '10'},{_id: '2', count: '9'},{_id: '3', count: '8'},{_id: '4', count: '8'},{_id: '5', count: '5'},
-                  {_id: '6', count: '4'},{_id: '7', count: '3'},{_id: '8', count: '3'},{_id: '9', count: '1'},{_id: '10', count: '0'}]
 
   useEffect(() => {
     dispatch(getCollection({accountId: accountId, collectionId: collectionId}))
@@ -26,8 +24,14 @@ function VoteResult() {
 
   return (
     <KeyboardAwareScrollView>
-      <View><Text>투표결과</Text></View>
-      <ResultItems accountId={accountId} collectionId={collectionId} voteId={voteId} result={result}></ResultItems>
+      <Container>
+        <TitleContainer>
+          <TitleText>{currentVote.title}</TitleText>
+          <NormalText>의</NormalText>
+        </TitleContainer>
+        <NormalText>결과를 확인하세요!</NormalText>
+      </Container>
+      <ResultItems accountId={accountId} collectionId={collectionId} voteId={voteId} result={currentVote.result}></ResultItems>
     </KeyboardAwareScrollView>
   )
 }
