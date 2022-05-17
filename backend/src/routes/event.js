@@ -63,14 +63,14 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     // if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
 
     // event 자체 추가 
-    const event = new Event({ ...req.body, user })
+    let event = new Event({ ...req.body, user })
     await event.save()
     console.log(`event created! _id=${event._id}`)
     //vote 추가하는 로직 시작~
     // 이벤트 투표는 admin만 생성 가능
     let results = []
-    const itemCount = 4
-    for (i=0; i < itemCount; i++) {
+    const itemCount = 3
+    for (i=6; i < itemCount; i++) {
       // Get the count of all users
       let item = await Item.findOne().skip(i)
       console.log(`${i} ==> ${item.title}`)
@@ -78,9 +78,11 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
       results.push(result)
     }
     const vote = new Vote({ eventId:event._id, title, result: results, isPublic: true })
-    await vote.save()
-
-    return res.status(201).send({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote })
+    event.vote = vote._id
+    await Promise.all[vote.save(),event.save()]
+    
+    const returnVal = {user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote }
+    return res.status(201).send({event:returnVal})
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -97,7 +99,13 @@ eventRouter.get('/', authAccessToken, async (req, res) => {
     if(user.withdraw == true) return res.status(401).send({err:"withdrawn user"})
 
     const events = await Event.find({})
-    return res.status(200).send({ events: events })
+    let returnVals = []
+    for(let i=0;i<events.length;i++){
+      let event = events[i]
+      let returnVal = {user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:await Vote.findById(event.vote) }
+      returnVals.push({event:returnVal})
+    }
+    return res.status(200).send({ events: returnVals })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
