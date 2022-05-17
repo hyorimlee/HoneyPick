@@ -2,7 +2,7 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 import {BottomTabParamList} from '../types'
 
 export type ProfileStackParamList = {
-  ProfileDefault: {userId: string}
+  Default: {userId: string}
   EditProfile: undefined
 }
 
