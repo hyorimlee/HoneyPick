@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback, useEffect } from "react"
 import { View } from 'react-native'
 import HorizontalList from '~/components/flatList/horizontalList'
 import { BoldText } from '../../styles'
@@ -10,7 +10,7 @@ import { RootStackNavigationProp } from '~/../types/navigation'
 import { ImageContainer, ItemBox, ItemContainer, NormalText } from './styles'
 import Config from 'react-native-config'
 
-function SearchResult({ keywordEntered, collections, items }: IProps) {
+function SearchResult({ keywordEntered, collections, items}: IProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
   const {userId} = useAppSelector(state => state.user)
 
