@@ -13,8 +13,18 @@ function HorizontalList({data, title}: IProps) {
   const {userId} = useAppSelector(state => state.profile)
 
   const pressedList = useCallback(
-    (id: string) => () => {
-      navigation.navigate('Collection', {accountId: userId, collectionId: id})
+    (collectionId: string, voteId?: string) => () => {
+      title.includes('투표') && voteId
+        ? navigation.navigate('Vote', {
+            accountId: userId,
+            collectionId,
+            voteId,
+            isClosed: true,
+          })
+        : navigation.navigate('Collection', {
+            accountId: userId,
+            collectionId,
+          })
     },
     [userId],
   )
@@ -22,7 +32,11 @@ function HorizontalList({data, title}: IProps) {
   const renderItem = ({item, index}: {item: any; index: number}) => {
     return (
       <ItemContainer
-        onPress={pressedList(item._id)}
+        onPress={
+          title.includes('투표')
+            ? pressedList(item.collectionId, item._id)
+            : pressedList(item._id)
+        }
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
         <Image
           source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
