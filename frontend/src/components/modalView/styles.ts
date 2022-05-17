@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
 
-export const CenteredView = styled.View`
+export const Screen = styled.View`
   height: 100%;
   align-items: center;
   justify-content: center;
@@ -13,7 +13,7 @@ export const Background = styled.Pressable`
   position: absolute;
 `
 
-export const ModalView = styled.View`
+export const Modal = styled.View`
   width: 80%;
   max-height: 70%;
   border-radius: 20px;
@@ -21,13 +21,5 @@ export const ModalView = styled.View`
   padding-vertical: 15px;
   padding-horizontal: 20px;
   justify-content: space-between;
-`
-
-export const RadioContainer = styled.ScrollView`
-  margin-vertical: 10px;
-`
-
-export const NormalText = styled.Text`
-  color: #000000;
-  margin-top: 5px;
+  overflow: scroll;
 `

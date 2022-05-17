@@ -6,7 +6,6 @@ import {RootState, useAppSelector} from '~/store/types'
 const initialState: ItemState = {
   itemId: '',
   collectionId: '',
-  saveCollection: 'no',
   item: {
     _id: '',
     brand: '',
@@ -38,9 +37,6 @@ const itemSlice = createSlice({
   reducers: {
     setCollectionId(state, action) {
       state.collectionId = action.payload
-    },
-    setSaveCollection(state, action: {payload: 'no' | 'yet'}) {
-      state.saveCollection = action.payload
     },
   },
   extraReducers: builder => {
@@ -79,5 +75,5 @@ export const isDashOn = createSelector(
     return stickers.filter(s => s[1]).length > 0 || review ? true : false
   },
 )
-export const {setCollectionId, setSaveCollection} = itemSlice.actions
+export const {setCollectionId} = itemSlice.actions
 export default itemSlice
