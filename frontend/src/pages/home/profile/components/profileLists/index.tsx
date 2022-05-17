@@ -7,6 +7,7 @@ import {useAppSelector} from '~/store/types'
 import {useNavigation} from '@react-navigation/native'
 import {
   CollectionHorizontalView,
+  CustomActivityIndicator,
   DivisionContainer,
   DivisionText,
 } from './styles'
@@ -22,35 +23,38 @@ function ProfileLists() {
 
   return (
     <View>
-      {collections && votes && likes ? (
-        <>
-          <DivisionContainer>
-            <CollectionHorizontalView>
-              <DivisionText>컬렉션</DivisionText>
-              <BaseButton
-                text="추가하기"
-                onPress={addCollection}
-                paddingVertical={5}
-                paddingHorizontal={20}
-                fontSize={16}
-              />
-            </CollectionHorizontalView>
-          </DivisionContainer>
-          <HorizontalList data={collections} title={'컬렉션'}></HorizontalList>
-          <DivisionContainer>
-            <DivisionText>진행한 투표</DivisionText>
-            <HorizontalList data={votes} title={'진행한 투표'}></HorizontalList>
-          </DivisionContainer>
-          <DivisionContainer>
-            <DivisionText>찜한 컬렉션</DivisionText>
-            <HorizontalList data={likes} title={'찜한 컬렉션'}></HorizontalList>
-          </DivisionContainer>
-        </>
+      <DivisionContainer>
+        <CollectionHorizontalView>
+          <DivisionText>컬렉션</DivisionText>
+          <BaseButton
+            text="추가하기"
+            onPress={addCollection}
+            paddingVertical={5}
+            paddingHorizontal={20}
+            fontSize={16}
+          />
+        </CollectionHorizontalView>
+      </DivisionContainer>
+      {collections ? (
+        <HorizontalList data={collections} title={'컬렉션'} />
       ) : (
-        <ActivityIndicator
-          size="large"
-          color="#FFD669"
-          style={{marginVertical: 20}}></ActivityIndicator>
+        <CustomActivityIndicator />
+      )}
+      <DivisionContainer>
+        <DivisionText>진행한 투표</DivisionText>
+      </DivisionContainer>
+      {votes ? (
+        <HorizontalList data={votes} title={'진행한 투표'} />
+      ) : (
+        <CustomActivityIndicator />
+      )}
+      <DivisionContainer>
+        <DivisionText>찜한 컬렉션</DivisionText>
+      </DivisionContainer>
+      {likes ? (
+        <HorizontalList data={likes} title={'찜한 컬렉션'} />
+      ) : (
+        <CustomActivityIndicator />
       )}
     </View>
   )

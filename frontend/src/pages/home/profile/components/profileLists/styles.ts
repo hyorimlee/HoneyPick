@@ -14,3 +14,10 @@ export const DivisionText = styled.Text`
   font-size: 26px;
   font-weight: 600;
 `
+
+export const CustomActivityIndicator = styled.ActivityIndicator.attrs(() => ({
+  size: 'large',
+  color: '#FFD669',
+}))`
+  margin-vertical: 20px;
+`
