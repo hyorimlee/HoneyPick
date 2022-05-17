@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useCallback, useState} from 'react'
+import {memo, useCallback, useState, useEffect} from 'react'
 import {
   SafeAreaView,
   StatusBar,
@@ -29,7 +29,7 @@ function SearchStack() {
   const {collections, items, page} = useAppSelector(state => state.search)
 
   const [keyword, setKeyword] = useState('')
-  const [keywordEntered, setkeywordEntered] = useState('')
+  const [keywordEntered, setKeywordEntered] = useState('')
   const [loading, setLoading] = useState(false)
 
   const getSearchList = (keyword: string, page: number) => {
@@ -44,7 +44,7 @@ function SearchStack() {
   )
 
   const searchRecommend = () => {
-    setkeywordEntered(keyword)
+    setKeywordEntered(keyword)
     getSearchList(keyword, 1)
   }
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize} : scrollProps) => {
@@ -58,7 +58,6 @@ function SearchStack() {
       <Container
         onScroll={({nativeEvent}) => {
         if (!(items.length%18) && !loading && isCloseToBottom(nativeEvent)) {
-          // console.log('end reached', loading)
           setLoading(true)
           getSearchList(keywordEntered, page+1)
         }
@@ -72,7 +71,7 @@ function SearchStack() {
             <SearchBarContainer>
               <BaseTextInput
                 placeholderTextColor="white"
-                color={'white'}
+                color='white'
                 value={keyword}
                 onChangeText={keywordChanged}
                 onSubmitEditing={searchRecommend}
@@ -81,9 +80,10 @@ function SearchStack() {
                 returnKeyType={'next'}
                 maxLength={15}
                 borderBottomColor={'transparent'}
+                fontSize={16}
               />
               <TouchableOpacity
-                style={{paddingLeft: 15, paddingBottom: 5}}
+                style={{position: 'absolute', right: 30}}
                 onPress={searchRecommend}>
                 <FontAwesomeIcon
                   icon={faMagnifyingGlass as IconProp}
@@ -97,12 +97,15 @@ function SearchStack() {
         </>
 
         { keywordEntered ?
-        <SearchResult keywordEntered={keywordEntered} collections={collections} items={items}></SearchResult> :
+        <SearchResult
+          keywordEntered={keywordEntered}
+          collections={collections}
+          items={items}
+        ></SearchResult> :
           <BoldText style={{textAlign:'center'}}>
             찾고싶은 아이템, 컬렉션을 검색해주세요.
           </BoldText>
         }
-        
         {/* 검색결과 */}
       </Container>
     </SafeAreaView>

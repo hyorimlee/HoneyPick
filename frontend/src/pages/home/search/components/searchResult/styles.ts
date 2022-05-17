@@ -17,7 +17,7 @@ const ItemBox = styled.TouchableOpacity`
 
 const NormalText = styled.Text`
   color: #000000;
-  font-size: 12px;
+  font-size: 14px;
   margin-top: 5px;
 `
 

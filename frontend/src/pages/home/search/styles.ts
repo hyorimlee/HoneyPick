@@ -1,7 +1,6 @@
 import styled from 'styled-components/native'
 
 const Container = styled.ScrollView`
-  padding-top: 5px;
   padding-bottom: 50px;
   padding-horizontal: 30px;
 `
@@ -23,7 +22,7 @@ const SearchBarContainer = styled.View`
 const BoldText = styled.Text`
   color: #000000;
   margin-top: 5px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
 `
 
