@@ -14,6 +14,16 @@ export interface EventState {
   items: ItemState[]
   createdAt: string
   updatedAt: string
+  vote: EventVoteState
+}
+
+export interface EventVoteState {
+  eventId: string
+  title: string
+  result: { _id: string, count: number }[]
+  isPublic: boolean
+  isClosed: boolean
+  participants: { _id: string }[]
 }
 
 export interface ISaveEventParameter {
