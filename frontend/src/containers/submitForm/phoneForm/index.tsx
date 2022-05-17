@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useState, useCallback} from 'react'
-import {View} from 'react-native'
+import {Alert, View} from 'react-native'
 import {HorizontalView} from './styles'
 import BaseTextInput from '~/components/textInput/base'
 import BaseButton from '~/components/button/base'
@@ -62,8 +62,9 @@ function PhoneForm({setValidPhone}: IComponentProps) {
         setStatus('success')
         setValidPhone(phoneNumber)
       })
-      .catch(() => {
+      .catch(error => {
         setStatus('fail')
+        Alert.alert(error.err)
       })
   }, [verificationCode, phoneId])
 
