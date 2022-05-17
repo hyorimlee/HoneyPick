@@ -9,9 +9,10 @@ import {useNavigation, useRoute, RouteProp} from '@react-navigation/native'
 import {useAppSelector} from '../../../store/types'
 import {RootStackNavigationProp} from '../../../../types/navigation'
 import { createVote } from '../../../store/slices/vote/asyncThunk'
+import { CollectionNavigationProp } from '../types'
 
 function CreateVote() {
-  const navigation = useNavigation<RootStackNavigationProp>()
+  const navigation = useNavigation<CollectionNavigationProp>()
   const collection = useAppSelector(state => state.collection.currentCollection)
   const vote = useAppSelector(state => state.vote.currentVote)
   const dispatch = useAppDispatch()
@@ -41,7 +42,7 @@ function CreateVote() {
     )
       .unwrap()
       .then(res => {
-        navigation.push('Collection', {
+        navigation.navigate('Default', {
           accountId: collection.user._id,
           collectionId: collection._id,
         })

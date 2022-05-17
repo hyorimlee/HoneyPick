@@ -14,23 +14,27 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
 import {
   Container,
+  SearchBarImage,
   SearchBarContainer,
   BoldText
 } from './styles'
 import SearchResult from './components/searchResult'
 
 import { search } from '~/store/slices/search/asyncThunk'
+import { scrollProps } from './types'
 
 function SearchStack() {
 
   const dispatch = useAppDispatch()
-  const getSearchList = () => {
-    dispatch(search({keyword}))
-  }
-  const {collections, items} = useAppSelector(state => state.search)
+  const {collections, items, page} = useAppSelector(state => state.search)
 
   const [keyword, setKeyword] = useState('')
   const [keywordEntered, setkeywordEntered] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const getSearchList = (keyword: string, page: number) => {
+    dispatch(search({ keyword, page })).then(()=>setLoading(false))
+  }
 
   const keywordChanged = useCallback(
     (text: string) => {
@@ -41,37 +45,55 @@ function SearchStack() {
 
   const searchRecommend = () => {
     setkeywordEntered(keyword)
-    getSearchList()
+    getSearchList(keyword, 1)
   }
+  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize} : scrollProps) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement!.height + contentOffset!.y >=
+      contentSize!.height - paddingToBottom;
+  };
 
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
-      <Container>
+      <Container
+        onScroll={({nativeEvent}) => {
+        if (!(items.length%18) && !loading && isCloseToBottom(nativeEvent)) {
+          // console.log('end reached', loading)
+          setLoading(true)
+          getSearchList(keywordEntered, page+1)
+        }
+      }}
+      scrollEventThrottle={0}>
         <>
-          <SearchBarContainer>
-            <BaseTextInput
-              placeholderTextColor="white"
-              color={'white'}
-              flex={5}
-              value={keyword}
-              onChangeText={keywordChanged}
-              onSubmitEditing={searchRecommend}
-              placeholder={'검색어를 입력해주세요'}
-              importantForAutofill={'auto'} // Android
-              returnKeyType={'next'}
-              maxLength={100}
-              marginVertical={10}
-            />
-            <TouchableOpacity
-              style={{flex: 1, paddingLeft: 15, paddingRight: 0}}
-              onPress={searchRecommend}>
-              <FontAwesomeIcon
-                icon={faMagnifyingGlass as IconProp}
-                color="#FFFFFF"
-                size={24}
+          <SearchBarImage
+            source={require('../../../assets/images/search.png')}
+            imageStyle={{resizeMode: 'stretch'}}
+          >
+            <SearchBarContainer>
+              <BaseTextInput
+                placeholderTextColor="white"
+                color={'white'}
+                value={keyword}
+                onChangeText={keywordChanged}
+                onSubmitEditing={searchRecommend}
+                placeholder={'검색어를 입력해주세요'}
+                importantForAutofill={'auto'} // Android
+                returnKeyType={'next'}
+                maxLength={15}
+                borderBottomColor={'transparent'}
               />
-            </TouchableOpacity>
-          </SearchBarContainer>
+              <TouchableOpacity
+                style={{paddingLeft: 15, paddingBottom: 5}}
+                onPress={searchRecommend}>
+                <FontAwesomeIcon
+                  icon={faMagnifyingGlass as IconProp}
+                  color="#FFFFFF"
+                  size={20}
+                />
+              </TouchableOpacity>
+            </SearchBarContainer>
+
+          </SearchBarImage>
         </>
 
         { keywordEntered ?

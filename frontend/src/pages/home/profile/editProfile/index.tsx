@@ -87,30 +87,32 @@ function EditProfile() {
   }, [isPhoneChange])
 
   const setProfileChange = useCallback(() => {
-    dispatch(setProfile({nickname, description, phone, imageType}))
-      .unwrap()
-      .then(response => {
-        if (response.profileImage !== undefined) {
-          const presigned = response.profileImage
+    nickname.length === 0
+      ? Alert.alert('별명은 1글자 이상 필요합니다.')
+      : dispatch(setProfile({nickname, description, phone, imageType}))
+          .unwrap()
+          .then(response => {
+            if (response.profileImage !== undefined) {
+              const presigned = response.profileImage
 
-          const formData = new FormData()
-          for (const key in presigned.fields) {
-            formData.append(key, presigned.fields[key])
-          }
-          formData.append('Content-Type', imageType)
-          formData.append('file', {uri: profileImage, type: imageType})
+              const formData = new FormData()
+              for (const key in presigned.fields) {
+                formData.append(key, presigned.fields[key])
+              }
+              formData.append('Content-Type', imageType)
+              formData.append('file', {uri: profileImage, type: imageType})
 
-          fetch(presigned.url, {
-            method: 'POST',
-            body: formData,
+              fetch(presigned.url, {
+                method: 'POST',
+                body: formData,
+              })
+            }
+
+            navigation.navigate('Default', {userId})
           })
-        }
-
-        navigation.navigate('Default', {userId})
-      })
-      .catch(error => {
-        console.log(error)
-      })
+          .catch(error => {
+            Alert.alert(error.err)
+          })
   }, [nickname, description, phone, profileImage])
 
   return (

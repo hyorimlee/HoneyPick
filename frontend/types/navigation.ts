@@ -7,7 +7,7 @@ export type RootStackParamList = {
   Collection: {accountId: string; collectionId: string} | undefined
   CreateCollection: undefined
   Follow: {type: 'following' | 'follower'}
-  Vote: undefined
+  Vote: {accountId: string; collectionId: string; voteId: string; isClosed: boolean}
   SignIn: undefined
   SignUp: undefined
   Event: undefined

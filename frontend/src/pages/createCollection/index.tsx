@@ -1,13 +1,14 @@
 import * as React from 'react'
-import {memo, useCallback, useRef, useState} from 'react'
+import {memo, useCallback, useState} from 'react'
 import {Text, View} from 'react-native'
 import BaseTextInput from '../../components/textInput/base/index'
 import BaseButton from '../../components/button/base/index'
 import {useAppDispatch, useAppSelector} from '../../store/types'
 import {createCollection} from '../../store/slices/collection/asyncThunk'
 import {useNavigation} from '@react-navigation/native'
-import {ProfileNavigationProp} from '../../containers/profileInfo/types'
 import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
+import {ProfileDefaultNavigationProp} from '../home/profile/default/types'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 function CreateCollectionStack({
   isModal,
@@ -16,7 +17,7 @@ function CreateCollectionStack({
   isModal?: boolean
   setOpenCreationForm?: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const navigation = useNavigation<ProfileNavigationProp>()
+  const navigation = useNavigation<ProfileDefaultNavigationProp>()
   const dispatch = useAppDispatch()
   const userId = useAppSelector(state => state.user.userId)
   const [collectionName, setCollectionName] = useState('')
@@ -53,29 +54,47 @@ function CreateCollectionStack({
   }, [collectionName, collectionDescription])
 
   return (
-    <View style={{paddingHorizontal: 20}}>
-      <Text style={{fontWeight: 'bold'}}>
-        생성할 컬렉션의 이름을 적어주세요
-      </Text>
-      <BaseTextInput
-        value={collectionName}
-        onChangeText={collectionNameChanged}
-        placeholder={'컬렉션 이름'}
-        returnKeyType={'next'}
-        maxLength={10}
-      />
-      <Text style={{fontWeight: 'bold'}}>컬렉션에 대한 설명이 있나요?</Text>
-      <BaseTextInput
-        value={collectionDescription}
-        onChangeText={collectionDescChanged}
-        placeholder={'컬렉션에 대한 설명'}
-        returnKeyType={'next'}
-        maxLength={50}
-      />
+    <KeyboardAwareScrollView style={{paddingHorizontal: 30}}>
+      <View style={isModal ? {marginVertical: 10} : {marginVertical: 30}}>
+        <Text
+          style={{
+            fontWeight: '600',
+            color: 'black',
+            fontSize: 20,
+            marginVertical: 10,
+          }}>
+          생성할 컬렉션의 이름을 적어주세요
+        </Text>
+        <BaseTextInput
+          value={collectionName}
+          onChangeText={collectionNameChanged}
+          placeholder={'컬렉션 이름'}
+          returnKeyType={'next'}
+          maxLength={10}
+        />
+      </View>
+      <View style={isModal ? {marginVertical: 10} : {marginVertical: 30}}>
+        <Text
+          style={{
+            fontWeight: '600',
+            color: 'black',
+            fontSize: 20,
+            marginVertical: 10,
+          }}>
+          컬렉션에 대한 설명이 있나요?
+        </Text>
+        <BaseTextInput
+          value={collectionDescription}
+          onChangeText={collectionDescChanged}
+          placeholder={'컬렉션에 대한 설명'}
+          returnKeyType={'next'}
+          maxLength={50}
+        />
+      </View>
       <BaseButton
         text={'컬렉션 생성하기'}
         onPress={createNewCollection}
-        marginVertical={10}
+        marginVertical={isModal ? 10 : 30}
         paddingVertical={10}
         borderRadius={5}
         disabled={!collectionName}
@@ -84,12 +103,12 @@ function CreateCollectionStack({
         <BaseButton
           text={'돌아가기'}
           onPress={() => setOpenCreationForm(false)}
-          marginVertical={10}
+          marginVertical={isModal ? 10 : 30}
           paddingVertical={10}
           borderRadius={5}
         />
       ) : null}
-    </View>
+    </KeyboardAwareScrollView>
   )
 }
 

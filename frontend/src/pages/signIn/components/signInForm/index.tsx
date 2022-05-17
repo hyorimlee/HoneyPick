@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useCallback, useRef, useState} from 'react'
-import {TextInput, View} from 'react-native'
+import {Alert, TextInput, View} from 'react-native'
 import BaseTextInput from '~/components/textInput/base/index'
 import BaseButton from '~/components/button/base/index'
 import {
@@ -34,6 +34,10 @@ function SignInForm({paddingHorizontal}: {paddingHorizontal: number}) {
 
   const loginSubmit = useCallback(() => {
     dispatch(requestSignIn({username, password}))
+      .unwrap()
+      .catch(error => {
+        Alert.alert(error.err)
+      })
   }, [username, password])
 
   const focusPassword = () => {

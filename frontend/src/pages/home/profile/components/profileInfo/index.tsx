@@ -73,12 +73,12 @@ function ProfileInfo() {
               onPress={logout}
               paddingVertical={5}
               marginVertical={10}
-              fontSize={12}></BaseButton>
+              fontSize={16}></BaseButton>
             <BaseButton
               text="프로필 수정"
               onPress={editProfile}
               paddingVertical={5}
-              fontSize={12}></BaseButton>
+              fontSize={16}></BaseButton>
           </>
         ) : null}
       </EditContainer>

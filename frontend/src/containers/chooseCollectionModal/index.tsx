@@ -1,17 +1,13 @@
 import * as React from 'react'
 import {memo, useState, useEffect} from 'react'
-import {Alert} from 'react-native'
+import {Alert, Text} from 'react-native'
 
 import BaseButton from '../../components/button/base'
 import {useAppSelector, useAppDispatch} from '../../store/types'
 import {itemToCollection} from '../../store/slices/item/asyncThunk'
 import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
 import {CollectionState} from '../../store/slices/collection/types'
-import {
-  collectionsItemId,
-  setCollectionId,
-  setSaveCollection,
-} from '../../store/slices/item'
+import {setCollectionId, setSaveCollection} from '../../store/slices/item'
 import {ChooseCollectionNavigationProp} from './types'
 
 import {useNavigation} from '@react-navigation/native'
@@ -29,7 +25,7 @@ import CreateCollection from '../../pages/createCollection'
 const radioButtonsData: RadioButtonProps[] = [
   {
     id: 'new', //string
-    label: '새 컬렉션 만들기',
+    label: <Text style={{color: '#000000'}}>새 컬렉션 만들기</Text>,
     value: 'newCollection',
     selected: false,
     color: '#F9C12E',
@@ -58,7 +54,7 @@ function ChooseCollectionModal() {
     if (openCreationForm === false && collections.length > 0) {
       const newButtonData = collections.map((collection: CollectionState) => ({
         id: collection._id,
-        label: collection.title,
+        label: <Text style={{color: '#000000'}}>{collection.title}</Text>,
         value: collection._id,
         color: '#F9C12E',
       }))
@@ -102,7 +98,7 @@ function ChooseCollectionModal() {
   return (
     <CenteredView>
       <Background onPress={onPressBackground} />
-      <ModalView>
+      <ModalView style={{overflow: 'scroll'}}>
         {openCreationForm ? (
           <CreateCollection
             isModal

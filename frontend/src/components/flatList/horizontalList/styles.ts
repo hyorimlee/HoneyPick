@@ -5,8 +5,7 @@ export const CustomFlatList = styles.FlatList`
 `
 
 export const ItemContainer = styles.Pressable`
-  width: 75px;
-  margin-right: 10px;
+  margin-right: 30px;
 `
 
 export const ListItem = styles.View`
@@ -17,6 +16,12 @@ export const ListItem = styles.View`
 `
 export const Title = styles.Text`
   color: #000000;
-  font-size: 12px;
+  font-size: 16px;
   padding-vertical: 5px;
+  align-self: center;
+`
+export const NoneView = styles.View`
+  height: 100px;
+  widht: 100%;
+  justify-content: center;
 `

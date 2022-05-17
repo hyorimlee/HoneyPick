@@ -22,7 +22,7 @@ function ItemComponent({
   textAlign = 'left',
   backgroundColor='#123456',
   borderRadius = 20,
-  borderWidth,
+  borderWidth = 4,
   borderColor,
   flex,
   disabled,
@@ -60,7 +60,7 @@ function ItemComponent({
       color={color}
     >
       <Image
-        style={{width: 90, height:90, borderRadius, backgroundColor}}
+        style={{width: 90, height:90, borderRadius, backgroundColor, borderColor, borderWidth}}
         source={{uri: `${Config.IMAGE_BASE_URL}/raw/${uri}`}}
         />
       <Text style={{fontSize, textAlign, color, fontWeight}}>{price}</Text>
