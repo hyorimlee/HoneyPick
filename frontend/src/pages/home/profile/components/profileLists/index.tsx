@@ -30,20 +30,20 @@ function ProfileLists() {
               <BaseButton
                 text="추가하기"
                 onPress={addCollection}
-                paddingVertical={2}
+                paddingVertical={5}
                 paddingHorizontal={20}
-                fontSize={12}
+                fontSize={16}
               />
             </CollectionHorizontalView>
-            <HorizontalList data={collections}></HorizontalList>
           </DivisionContainer>
+          <HorizontalList data={collections} title={'컬렉션'}></HorizontalList>
           <DivisionContainer>
             <DivisionText>진행한 투표</DivisionText>
-            <HorizontalList data={votes}></HorizontalList>
+            <HorizontalList data={votes} title={'진행한 투표'}></HorizontalList>
           </DivisionContainer>
           <DivisionContainer>
             <DivisionText>찜한 컬렉션</DivisionText>
-            <HorizontalList data={likes}></HorizontalList>
+            <HorizontalList data={likes} title={'찜한 컬렉션'}></HorizontalList>
           </DivisionContainer>
         </>
       ) : (
