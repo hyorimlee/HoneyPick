@@ -69,7 +69,8 @@ voteRouter.get('/', authAccessToken, async (req, res) => {
       const account = await User.findById(accountId)
       // 팔로워 혹은 본인이면 모든 투표 조회, 아니라면 public 투표만 조회
       if (await isFollower(accountId, userId) === true || accountId == userId ) {
-        const allVotes = await account.votes.sort((a,b) => {
+        const votes = await account.votes.filter(vote => vote['collectionId'])
+        const allVotes = await votes.sort((a,b) => {
           if (a. createdAt > b. createdAt) {
             return -1
           } else if (a. createdAt < b. createdAt) {
@@ -79,7 +80,7 @@ voteRouter.get('/', authAccessToken, async (req, res) => {
         })
         return res.status(200).send({ votes: allVotes })
       } else {
-        const unsortedVotes = await account.votes.filter(vote => vote['isPublic'] == true)
+        const unsortedVotes = await account.votes.filter(vote => vote['isPublic'] == true && vote['collectionId'])
         const publicVotes = await unsortedVotes.sort((a,b) => {
           if (a.createdAt > b.createdAt) {
             return -1
@@ -94,7 +95,8 @@ voteRouter.get('/', authAccessToken, async (req, res) => {
     else {
       // 이벤트 투표 목록
       const adminUser = await User.findOne({ isAdmin: true })
-      return res.status(200).send({ votes: adminUser.votes })
+      const votes = await adminUser.votes.filter(vote => vote['eventId'])
+      return res.status(200).send({ votes })
     }
   } catch (error) {
     console.log(error)
