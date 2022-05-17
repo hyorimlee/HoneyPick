@@ -4,9 +4,8 @@ import {
   SafeAreaView,
   StatusBar,
   Linking,
-  Pressable,
-  Text,
   View,
+  Dimensions,
 } from 'react-native'
 import Config from 'react-native-config'
 import ActionSheet from 'react-native-actions-sheet'
@@ -20,9 +19,10 @@ import {useIsFocused, useRoute} from '@react-navigation/native'
 import {Container, ImageContainer, MenuContainer, DashedBorder} from './styles'
 import ItemInfo from './components/itemInfo'
 import {isDashOn, setSaveCollection} from '~/store/slices/item'
-import RecommendBar from './components/recommendInfo/recommendBar'
 import RecommendInfo from './components/recommendInfo'
 import RecommendSettings from './components/recommendSettings'
+
+const {width} = Dimensions.get('window')
 
 function ItemStack() {
   const isFocused = useIsFocused()
@@ -31,11 +31,13 @@ function ItemStack() {
   const route = useRoute<ItemRoute>()
   const {itemId, collectionId} = route.params!
   const actionSheetRef = useRef<ActionSheet>(null)
+
   const {item, review} = useAppSelector(state => state.item)
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
-  const [isRecommendMode, setIsRecommendMode] = useState(false)
+
   const isMyItem = userId === currentCollection!.user._id
+  const [isRecommendMode, setIsRecommendMode] = useState(false)
 
   useEffect(() => {
     if (isFocused && !isRecommendMode) {
@@ -126,7 +128,8 @@ function ItemStack() {
         <ItemInfo
           openSheet={openSheet}
           isRecommendMode={isRecommendMode}
-          collectionId={collectionId}></ItemInfo>
+          collectionId={collectionId}
+        ></ItemInfo>
         {dashOn ? <DashedBorder /> : null}
         {isRecommendMode ? (
           <RecommendSettings toggleIsRecommendMode={toggleIsRecommendMode} />
@@ -144,6 +147,7 @@ function ItemStack() {
             ) : (
               <View style={{flexDirection: 'row'}}>
                 <BaseButton
+                  flex={1}
                   text={'사이트로 이동하기'}
                   onPress={goToSite}
                   borderRadius={25}
@@ -151,11 +155,13 @@ function ItemStack() {
                   paddingVertical={15}
                 />
                 <BaseButton
+                  flex={1}
                   text={'내 컬렉션에 담기'}
                   onPress={saveMyCollection}
                   borderRadius={25}
                   marginVertical={10}
                   paddingVertical={15}
+                  marginLeft={10}
                 />
               </View>
             )}

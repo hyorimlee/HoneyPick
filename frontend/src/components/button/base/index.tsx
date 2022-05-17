@@ -78,7 +78,7 @@ function BaseButton({
       position={position}
       bottom={bottom}
       width={width}>
-      <Text style={{textAlign, color, fontSize}}>{text}</Text>
+      <Text style={{textAlign, color, fontSize: 16}}>{text}</Text>
     </CustomBaseButtonPressable>
   )
 }
