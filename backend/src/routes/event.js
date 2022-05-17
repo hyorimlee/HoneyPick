@@ -81,8 +81,7 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     event.vote = vote._id
     await Promise.all[vote.save(),event.save()]
     
-    const returnVal = {user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote }
-    return res.status(201).send({event:returnVal})
+    return res.status(201).send({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -102,8 +101,7 @@ eventRouter.get('/', authAccessToken, async (req, res) => {
     let returnVals = []
     for(let i=0;i<events.length;i++){
       let event = events[i]
-      let returnVal = {user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:await Vote.findById(event.vote) }
-      returnVals.push({event:returnVal})
+      returnVals.push({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote })
     }
     return res.status(200).send({ events: returnVals })
   } catch (error) {
