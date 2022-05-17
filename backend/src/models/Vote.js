@@ -7,9 +7,9 @@ const VoteSchema = new Schema(
     title: { type: String, required: false },
     result: [{
       _id: { type: ObjectId, required: true, ref: 'item' },
-      title: { type: String, required: true },
-      thumbnail: { type: String, required: true },
-      priceBefore: { type: Number, required: true },
+      title: { type: String, required: false },
+      thumbnail: { type: String, required: false },
+      priceBefore: { type: Number, required: false },
       priceAfter: { type: Number, required: false },
       count: { type: Number, required: true, default: 0 }
     }],
