@@ -5,8 +5,8 @@ import { RootStackParamList } from '../../../types/navigation'
 
 export type VoteStackParamList = {
   Default: {accountId: string, collectionId: string, voteId: string}
-  VoteResult: undefined
-}r
+  VoteResult: {accountId: string, collectionId: string, voteId: string}
+}
 
 export type VoteNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<RootStackParamList, 'Vote'>,
