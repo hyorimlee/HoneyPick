@@ -19,6 +19,12 @@ function VoteStack() {
         options={{headerShown: false}}
         initialParams={{accountId, collectionId, voteId}}
       />
+      <Stack.Screen
+        name="VoteResult"
+        component={VoteResult}
+        options={{headerShown: false}}
+        initialParams={{accountId, collectionId, voteId}}
+      />
     </Stack.Navigator>
   )
 }
