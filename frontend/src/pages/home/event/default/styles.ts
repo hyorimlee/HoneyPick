@@ -11,10 +11,10 @@ export const MainEvent = styled.TouchableOpacity`
   border-radius: 20px;
   background-color: #F7F7F7;
   elevation: 3;
-  shadowOpacity: 0.75,
-  shadowRadius: 5,
-  shadowColor: 'red',
-  shadowOffset: { height: 0, width: 0 }
+  shadowOpacity: 0.75;
+  shadowRadius: 5px;
+  shadowColor: 'red';
+  shadowOffset: { height: 0, width: 0 };
 `
 // shadowOpacity부터 ios라서 확인 필요
 
