@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const voteRouter = Router()
 const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
-const { Vote, Collection, User, Follow, Event } = require('../models')
+const { Vote, Collection, User, Follow, Event, Item } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
@@ -31,7 +31,14 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
       if (!target) return res.status(400).send({ err: "wrong collectionId" })
       const accountId = target.user._id
       if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
-      vote = new Vote({ collectionId, title, result: target.items, isPublic })
+
+      let results = []
+      for (i=0; i < target.items.length; i++) {
+        let item = await Item.findById(target.items[i]._id)
+        let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
+        results.push(result)
+      }
+      vote = new Vote({ collectionId, title, result: results, isPublic })
     } else if (eventId) {
       if (!isValidObjectId(eventId)) return res.status(400).send({ err: "invalid eventId" })
       // 이벤트 투표는 admin만 생성 가능
@@ -41,7 +48,14 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
       if (!target) return res.status(400).send({ err: "wrong eventId" })
       const accountId = target.user._id
       if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
-      vote = new Vote({ eventId, title, result: target.items, isPublic: true })
+
+      let results = []
+      for (i=0; i < target.items.length; i++) {
+        let item = await Item.findById(target.items[i]._id)
+        let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
+        results.push(result)
+      }
+      vote = new Vote({ eventId, title, result: results, isPublic: true })
     } else {
       return res.status(400).send({ err: "either collectionId or eventId is required"})
     }
