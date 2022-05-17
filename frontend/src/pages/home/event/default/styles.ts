@@ -13,7 +13,7 @@ export const MainEvent = styled.TouchableOpacity`
   elevation: 3;
   shadowOpacity: 0.75;
   shadowRadius: 5px;
-  shadowColor: 'red';
+  shadowColor: 'black';
   shadowOffset: { height: 0, width: 0 };
 `
 // shadowOpacity부터 ios라서 확인 필요
@@ -27,7 +27,7 @@ export const SubEvent = styled(MainEvent)`
 export const EventImage = styled.Image`
   width: 100px;
   height: 100px;
-  resizemode: contain;
+  resizeMode: contain;
   border-radius: 15px;
 `
 

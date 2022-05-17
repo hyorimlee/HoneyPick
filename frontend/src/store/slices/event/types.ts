@@ -6,7 +6,7 @@ export interface EventInitialState {
 }
 
 export interface EventState {
-  user: {_id: string; username: string; nickname: string}
+  user: {_id: string, username: string, nickname: string}
   title: string
   description: string
   additional: string
