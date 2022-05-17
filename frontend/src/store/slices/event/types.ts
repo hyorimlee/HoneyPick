@@ -6,17 +6,15 @@ export interface EventInitialState {
 }
 
 export interface EventState {
-  event: {
-    user: {_id: string, username: string, nickname: string}
-    title: string
-    description: string
-    additional: string
-    _id: string
-    items: ItemState[]
-    createdAt: string
-    updatedAt: string
-    vote: EventVoteState
-  }
+  user: {_id: string, username: string, nickname: string}
+  title: string
+  description: string
+  additional: string
+  _id: string
+  items: ItemState[]
+  createdAt: string
+  updatedAt: string
+  vote: EventVoteState
 }
 
 export interface EventVoteState {

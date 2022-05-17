@@ -30,17 +30,17 @@ function EventList() {
   const SubEvents = events.map((event, idx) => {
     if (idx > 0) {
       return (
-        <SubEvent onPress={() => onClick(event.event._id)} key={idx}>
+        <SubEvent onPress={() => onClick(event._id)} key={idx}>
           <InfoTop>
             <SubEventImage
               source={require('~/assets/images/sampleimage2.jpg')}
             ></SubEventImage>
             <InfoContainer>
-              <NormalText style={{color: '#8C8C8C'}}>directed by {event.event.user.nickname}</NormalText>
-              <TitleText style={{color: '#8C8C8C'}}>{event.event.title}</TitleText>
+              <NormalText style={{color: '#8C8C8C'}}>directed by {event.user.nickname}</NormalText>
+              <TitleText style={{color: '#8C8C8C'}}>{event.title}</TitleText>
             </InfoContainer>
           </InfoTop>
-          <NormalText style={{color: '#8C8C8C'}}>{event.event.description}</NormalText>
+          <NormalText style={{color: '#8C8C8C'}}>{event.description}</NormalText>
         </SubEvent>
       )
     }
@@ -51,18 +51,18 @@ function EventList() {
       <Container>
         {events.length > 0 ? (
           <>
-            <MainEvent onPress={() => onClick(events[0].event._id)}>
+            <MainEvent onPress={() => onClick(events[0]._id)}>
               <InfoTop>
                 <EventImage
                   source={require('~/assets/images/sampleimage2.jpg')}
                 ></EventImage>
                 <InfoContainer>
-                  <NormalText>directed by {events[0].event.user.nickname}</NormalText>
-                  <TitleText>{events[0].event.title}</TitleText>
-                  <NormalText>{events[0].event.description}</NormalText>
+                  <NormalText>directed by {events[0].user.nickname}</NormalText>
+                  <TitleText>{events[0].title}</TitleText>
+                  <NormalText>{events[0].description}</NormalText>
                 </InfoContainer>
               </InfoTop>
-              <NormalText>{events[0].event.additional}</NormalText>
+              <NormalText>{events[0].additional}</NormalText>
             </MainEvent>
             {SubEvents}
           </>

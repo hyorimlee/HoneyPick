@@ -56,7 +56,7 @@ export const getEvent = createAsyncThunk<any, string, {state: RootState}>(
           authorization: `Bearer ${accessToken}`,
         }
       })
-      return response.data
+      return response.data.event
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
     }
