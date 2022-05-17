@@ -6,7 +6,7 @@ export const InfoContainer = styled.View`
 `
 export const PriceText = styled.Text`
   color: #f9c12e;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   margin-top: 5px;
   margin-right: 3px;
@@ -14,7 +14,7 @@ export const PriceText = styled.Text`
 
 export const PriceTextGray = styled.Text`
   color: #8c8c8c;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   margin-top: 5px;
   margin-right: 3px;

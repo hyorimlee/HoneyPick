@@ -8,7 +8,8 @@ export const Container = styled.ScrollView`
 export const BoldText = styled.Text`
   color: #000000;
   margin-top: 5px;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 16px;
 `
 
 export const TextContainer = styled.View`
@@ -19,6 +20,7 @@ export const TextContainer = styled.View`
 export const NormalText = styled.Text`
   color: #000000;
   margin-top: 5px;
+  font-size: 16px;
 `
 
 export const RowTextContainer = styled.View`

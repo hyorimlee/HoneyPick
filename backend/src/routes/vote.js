@@ -14,51 +14,27 @@ async function isFollower(accountId, userId) {
   return false
 }
 
-// 투표 생성: 투표 만들기 & 회원의 투표 목록에 추가
+// 컬렉션 투표 생성: 투표 만들기 & 회원의 투표 목록에 추가
 voteRouter.post('/', authAccessToken, async (req, res) => {
   try {
     const { userId } = req
-    const { collectionId, eventId, title, isPublic } = req.body
+    const { collectionId, title, isPublic } = req.body
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId"})
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
 
-    let target;
-    let vote;
-    if (collectionId) {
-      if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
-      target = await Collection.findById(collectionId)
-      if (!target) return res.status(400).send({ err: "wrong collectionId" })
-      const accountId = target.user._id
-      if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
+    if (!isValidObjectId(collectionId)) return res.status(400).send({ err: "invalid collectionId" })
+    const collection = await Collection.findById(collectionId)
+    const accountId = collection.user._id
+    if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
 
-      let results = []
-      for (i=0; i < target.items.length; i++) {
-        let item = await Item.findById(target.items[i]._id)
-        let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
-        results.push(result)
-      }
-      vote = new Vote({ collectionId, title, result: results, isPublic })
-    } else if (eventId) {
-      if (!isValidObjectId(eventId)) return res.status(400).send({ err: "invalid eventId" })
-      // 이벤트 투표는 admin만 생성 가능
-      const user = await User.findById(userId)
-      if (user.isAdmin == false) return res.status(403).send({ err: "Unauthorized" })
-      target = await Event.findById(eventId)
-      if (!target) return res.status(400).send({ err: "wrong eventId" })
-      const accountId = target.user._id
-      if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
-
-      let results = []
-      for (i=0; i < target.items.length; i++) {
-        let item = await Item.findById(target.items[i]._id)
-        let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
-        results.push(result)
-      }
-      vote = new Vote({ eventId, title, result: results, isPublic: true })
-    } else {
-      return res.status(400).send({ err: "either collectionId or eventId is required"})
+    let results = []
+    for (i=0; i < collection.items.length; i++) {
+      let item = await Item.findById(collection.items[i]._id)
+      let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
+      results.push(result)
     }
+    const vote = new Vote({ collectionId, title, result: results, isPublic })
     await Promise.all([
       vote.save(),
       User.updateOne({ _id: userId }, { $push: { votes: vote } })
