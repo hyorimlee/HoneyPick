@@ -7,21 +7,79 @@ export const Container = styled.View`
   padding: 10px
 `
 
-export const LargeItem = styled.View`
+export const LargeItem = styled.TouchableOpacity`
   width: 92%;
   margin-vertical: 2%;
-  background-color: #123456;
+  border-radius: 20px;
+  background-color: #F7F7F7;
+`
+export const LargeItemFlex = styled.View`
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 6%;
 `
 
-export const MediumItem = styled.View`
-  width: 45%;
+export const LargeItemImage = styled.Image`
+  width: 100px;
+  height: 100px;
+  resizeMode: contain;
+  border-radius: 15px;
+`
+
+export const LargeItemInfoContainer = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 20px;
+`
+
+export const MediumItem = styled.TouchableOpacity`
+  width: 44%;
+  justify-content: center;
   margin-vertical: 2%;
-  margin-horizontal: 1%;
-  background-color: #baab00;
+  margin-horizontal: 2%;
+  border-radius: 20px;
+  background-color: #F7F7F7;
+`
+export const MediumItemFlex = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10%;
 `
 
-export const SmallItem = styled.View`
+export const MediumItemImage = styled.Image`
+  width: 100px;
+  height: 100px;
+  resizeMode: contain;
+  border-radius: 15px;
+`
+
+export const MediumItemInfoContainer = styled.View`
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 10px;
+`
+
+export const SmallItem = styled.TouchableOpacity`
   width: 92%;
   margin-vertical: 2%;
-  background-color: #aa1011;
+  border-radius: 10px;
+  background-color: #F7F7F7;
+`
+
+export const SmallItemFlex = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 4%;
+`
+
+export const TitleText = styled.Text`
+  color: #000000;
+  font-size: 12px;
+  font-weight: 600;
+`
+
+export const NormalText = styled.Text`
+  color: #000000;
+  font-size: 12px;
 `
