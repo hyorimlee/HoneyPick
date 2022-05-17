@@ -26,11 +26,11 @@ function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   }, [route])
 
   useEffect(() => {
-    const screenFocus = navigation.addListener('focus', () => {
+    const screenStateChange = navigation.addListener('state', () => {
       dispatch(getLists({accountId: userId}))
     })
 
-    return screenFocus
+    return screenStateChange
   }, [navigation, userId])
 
   return (
