@@ -93,7 +93,7 @@ export const getLists = createAsyncThunk<
     const getVotes = () =>
       axios({
         method: 'GET',
-        url: `${Config.API_BASE_URL}/vote/${accountId}`,
+        url: `${Config.API_BASE_URL}/vote/?accountId=${accountId}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
         },
