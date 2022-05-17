@@ -14,15 +14,8 @@ function VoteItems({onVote, accountId, collectionId, eventId, voteId}: IComponen
   const dispatch = useAppDispatch()
   const itemNavigation = useNavigation<RootStackNavigationProp>()
   const {selectedItems} = useAppSelector(state => state.vote)
-  let currentItems: any
-
-  useEffect(() => {
-    if (collectionId) {
-      currentItems = useAppSelector(state => state.collection.currentCollection)
-    } else {
-      currentItems = useAppSelector(state => state.event.event)
-    }
-  }, [])
+  const {currentItems} = useAppSelector(state => state.collection)
+  const currentEventItems = useAppSelector(state => state.event.event.items)
 
   const toggleVote = useCallback((item: any) => {
     dispatch(setSelectedItems(item))
@@ -38,8 +31,24 @@ function VoteItems({onVote, accountId, collectionId, eventId, voteId}: IComponen
 
   return (
     <Container>
-      <ItemsContainer>
-      {currentItems!.map((item: any, index: number) => {
+      {!eventId ? (
+        <ItemsContainer>
+        {currentItems!.map((item: any, index: number) => {
+          return (
+            <ItemComponent
+            key={index}
+            text={item?.title ? item.title : 'No title'}
+            price={item?.priceBefore ? item.priceBefore : 'No Price'}
+            uri={item.thumbnail}
+            borderColor={selectedItems?.find((votedItem) => votedItem._id === item._id) ? '#F9C12E' : undefined}
+            onPress={onVote ? () => toggleVote(item) : () => pushToItemPage(item._id)}
+            />
+            )
+          })}
+        </ItemsContainer>
+      ) : (
+        <ItemsContainer>
+      {currentEventItems!.map((item: any, index: number) => {
         return (
           <ItemComponent
           key={index}
@@ -52,6 +61,7 @@ function VoteItems({onVote, accountId, collectionId, eventId, voteId}: IComponen
           )
         })}
       </ItemsContainer>
+      ) }
     </Container>
   )
 }
