@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { memo, useCallback } from "react";
-import { View } from 'react-native';
-import HorizontalList from '~/components/flatList/horizontalList';
-import { BoldText } from '../../styles';
+import { memo, useCallback, useState } from "react"
+import { View } from 'react-native'
+import HorizontalList from '~/components/flatList/horizontalList'
+import { BoldText } from '../../styles'
 import {IProps} from './types'
 import {useNavigation} from '@react-navigation/native'
 import {useAppSelector} from '~/store/types'
-import { RootStackNavigationProp } from '~/../types/navigation';
-import { ImageContainer, ItemBox, ItemContainer, NormalText } from './styles';
-import Config from 'react-native-config';
+import { RootStackNavigationProp } from '~/../types/navigation'
+import { ImageContainer, ItemBox, ItemContainer, NormalText } from './styles'
+import Config from 'react-native-config'
 
-function SearchResult({keywordEntered, collections, items}: IProps) {
+function SearchResult({ keywordEntered, collections, items }: IProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
   const {userId} = useAppSelector(state => state.user)
 
@@ -22,7 +22,7 @@ function SearchResult({keywordEntered, collections, items}: IProps) {
   )
   const itemRenderItem = ({item}: {item: any}) => {
     return (
-      <ItemBox key={item._id} onPress={pressedItem(item._id)}>
+      <ItemBox style={{flex: 1}} key={item._id} onPress={pressedItem(item._id)}>
         <ImageContainer
           source={
             item.thumbnail
@@ -69,8 +69,6 @@ function SearchResult({keywordEntered, collections, items}: IProps) {
           </ItemContainer>
         : <NormalText style={{marginVertical: 20}}>검색 결과가 없습니다.</NormalText>
       }
-
-      
     </View>
   )
 }

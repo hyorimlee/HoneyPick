@@ -9,7 +9,8 @@ import {
 
 const initialState: SearchState = {
   collections: [],
-  items: []
+  items: [],
+  page: 1,
 }
 
 const searchSlice = createSlice({
@@ -21,8 +22,13 @@ const searchSlice = createSlice({
     builder
       .addCase(search.fulfilled, (state, action) => {
         console.log(action.payload)
+        
         state.collections = action.payload.collections
-        state.items = action.payload.items
+        if(action.payload.page === 1) state.items = action.payload.items
+        else state.items.push(...action.payload.items)
+        if(action.payload.items.length) { 
+          state.page = action.payload.page
+        }
       })
       .addCase(search.rejected, (state, action) => {
         console.log(action.payload)
