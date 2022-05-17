@@ -1,3 +1,10 @@
+export type IIsModal =
+  | false
+  | 'createCollection'
+  | 'editCollection'
+  | 'clipboard'
+  | 'clipboardCreateCollection'
+
 export interface IInitialState {
-  isLoading: boolean
+  isModal: IIsModal
 }

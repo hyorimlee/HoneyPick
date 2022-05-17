@@ -22,16 +22,15 @@ import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
 
 import SaveItemBtn from './src/components/saveItemBtn'
-import ChooseCollectionModal from './src/containers/chooseCollectionModal'
-import {setSaveCollection} from './src/store/slices/item'
+import ModalView from './src/components/modalView'
 import {
   Home,
   ItemStack,
   CollectionStack,
-  CreateCollectionStack,
   FollowStack,
   VoteStack,
 } from './src/pages/'
+import uiSlice from '~/store/slices/ui'
 
 const Stack = createNativeStackNavigator()
 
@@ -92,13 +91,14 @@ const MyTheme = {
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
-  const {saveCollection} = useAppSelector(state => state.item)
+  const {isModal} = useAppSelector(state => state.ui)
   const [copiedUrl, setCopiedUrl] = useState('')
   const appState = useRef(AppState.currentState)
 
   useEffect(() => {
     getRefreshToken(dispatch)
     axiosInterceptor(dispatch)
+    Clipboard.setString('')
 
     const listener = AppState.addEventListener('change', nextAppState => {
       const isNowInactive = appState.current.match(/inactive|background/)
@@ -126,7 +126,7 @@ const InnerApp = memo(({}) => {
   }, [])
 
   const modalClose = useCallback(() => {
-    dispatch(setSaveCollection('no'))
+    dispatch(uiSlice.actions.setIsModal(false))
   }, [])
 
   return (
@@ -149,11 +149,6 @@ const InnerApp = memo(({}) => {
                 name="Collection"
                 component={CollectionStack}
                 options={{title: '컬렉션 상세', headerShown: false}}
-              />
-              <Stack.Screen
-                name="CreateCollection"
-                component={CreateCollectionStack}
-                options={{title: '컬렉션 추가', headerShown: false}}
               />
               <Stack.Screen
                 name="Follow"
@@ -187,9 +182,9 @@ const InnerApp = memo(({}) => {
         <Modal
           animationType="fade"
           transparent={true}
-          visible={saveCollection === 'yet' ? true : false}
+          visible={!!isModal}
           onRequestClose={modalClose}>
-          <ChooseCollectionModal />
+          <ModalView />
         </Modal>
       </NavigationContainer>
     </View>

@@ -1,21 +1,19 @@
 import * as React from 'react'
 import {memo, useCallback} from 'react'
 import {useAppDispatch, useAppSelector} from '../../store/types'
-
 import BaseButton from '../button/base'
 import {saveItem} from '../../store/slices/item/asyncThunk'
-import {setSaveCollection} from '../../store/slices/item'
-
 import {Container} from './styles'
 import {IComponentProps} from './types'
 import {TouchableWithoutFeedback} from 'react-native'
+import uiSlice from '~/store/slices/ui'
 
 function saveItemBtn({copiedUrl, btnShowHandler}: IComponentProps) {
   const dispatch = useAppDispatch()
 
   const submitItem = useCallback(() => {
     dispatch(saveItem(copiedUrl))
-    dispatch(setSaveCollection('yet'))
+    dispatch(uiSlice.actions.setIsModal('clipboard'))
     btnShowHandler()
   }, [copiedUrl])
 

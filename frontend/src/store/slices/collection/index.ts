@@ -8,7 +8,7 @@ import {
   getCollection,
   createCollection,
   editCollection,
-  deleteCollection
+  deleteCollection,
 } from './asyncThunk'
 
 const initialState: CollectionInitialState = {
@@ -16,7 +16,7 @@ const initialState: CollectionInitialState = {
     user: {
       _id: '-1',
       username: 'sample user',
-      nickname: 'sample nickname'
+      nickname: 'sample nickname',
     },
     title: '',
     description: 'Description of Collection',
@@ -27,14 +27,13 @@ const initialState: CollectionInitialState = {
     updatedAt: '2022-05-07',
     __v: 1,
   },
-  currentItems: []
+  currentItems: [],
 }
 
 const collectionSlice = createSlice({
-  name: 'item',
+  name: 'collection',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(editCollection.fulfilled, (state, action) => {

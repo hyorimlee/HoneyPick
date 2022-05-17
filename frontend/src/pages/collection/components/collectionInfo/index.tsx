@@ -11,20 +11,18 @@ import {
   MenuButtonContainer,
   MenuContainer,
 } from './styles'
-import { useAppSelector, useAppDispatch } from '../../../../store/types'
+import {useAppSelector, useAppDispatch} from '../../../../store/types'
 import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import { deleteCollection } from '../../../../store/slices/collection/asyncThunk'
-import { endVote } from '../../../../store/slices/vote/asyncThunk'
-import {configureStore} from '@reduxjs/toolkit'
-import { setFollow } from '../../../../store/slices/profile/asyncThunk'
+import {deleteCollection} from '../../../../store/slices/collection/asyncThunk'
+import {setFollow} from '../../../../store/slices/profile/asyncThunk'
 import profileSlice from '../../../../store/slices/profile'
-import { CollectionNavigationProp, CollectionStackParamList } from '../../types'
-import { RootStackNavigationProp, RootStackParamList } from '../../../../../types/navigation'
-import {VoteNavigationProp} from '../../../vote/types'
-import { IComponentProps } from './types'
+import {CollectionNavigationProp} from '../../types'
+import {RootStackNavigationProp} from '../../../../../types/navigation'
+import {IComponentProps} from './types'
+import uiSlice from '~/store/slices/ui'
 
 function CollectionInfo({accountId, collectionId}: IComponentProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
@@ -44,12 +42,15 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
     actionSheetRef.current?.show()
   }
 
-  const editCurrentCollection = useCallback(() => {
-    collectionNavigation.navigate('EditCollection')
-  }, [])
+  const editCurrentCollection = () => {
+    actionSheetRef.current?.hide()
+    dispatch(uiSlice.actions.setIsModal('editCollection'))
+  }
 
   const deleteCurrentCollection = useCallback(async () => {
-    await dispatch(deleteCollection({accountId: accountId, collectionId: collectionId}))
+    await dispatch(
+      deleteCollection({accountId: accountId, collectionId: collectionId}),
+    )
     navigation.navigate('Home')
   }, [])
 
@@ -67,10 +68,12 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
       <InfoContainer>
         <InfoTextContainer>
           <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
-            {currentCollection?.title ?currentCollection.title : 'Notitle'}
+            {currentCollection?.title ? currentCollection.title : 'Notitle'}
           </Text>
           <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>
-            {currentCollection?.description ?currentCollection.description : 'Notitle'}
+            {currentCollection?.description
+              ? currentCollection.description
+              : 'Notitle'}
           </Text>
         </InfoTextContainer>
         <Image
@@ -88,14 +91,12 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
       </InfoContainer>
       <ButtonContainer>
         {isMyList ? (
-          (
-            <BaseButton
-              text={'투표 진행하기'}
-              onPress={openVote}
-              fontSize={8}
-              paddingVertical={5}
-              paddingHorizontal={10}></BaseButton>
-          )
+          <BaseButton
+            text={'투표 진행하기'}
+            onPress={openVote}
+            fontSize={8}
+            paddingVertical={5}
+            paddingHorizontal={10}></BaseButton>
         ) : null}
         {!isMyList ? (
           <>
@@ -107,7 +108,9 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
               paddingHorizontal={10}
               marginHorizontal={6}></BaseButton>
             <BaseButton
-              text={true ? `${username}님을 팔로우` : `${username}님을 언팔로우`}
+              text={
+                true ? `${username}님을 팔로우` : `${username}님을 언팔로우`
+              }
               onPress={followChange}
               fontSize={8}
               paddingVertical={5}
@@ -117,7 +120,8 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
       </ButtonContainer>
       {/* Dashed Line 나중에 svg나 다른 라이브러리로 교체해야함 */}
       <Text ellipsizeMode="clip" numberOfLines={1}>
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        -
       </Text>
       {isMyList ? (
         <>

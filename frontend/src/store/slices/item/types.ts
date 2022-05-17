@@ -1,16 +1,15 @@
 export interface ItemState {
   itemId: string
   collectionId: string
-  saveCollection: 'no' | 'yet'
   item: IItem
   review?: {
     _id: string
-    user: {_id: string, username: string, nickname: string}
+    user: {_id: string; username: string; nickname: string}
     item: string
     isRecommend: 0 | 1 | 2
     stickers: string[]
   }
-  collections? : ItemCollectionState[]
+  collections?: ItemCollectionState[]
 }
 
 export interface ItemCollectionState {
