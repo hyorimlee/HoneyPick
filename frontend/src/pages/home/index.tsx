@@ -5,7 +5,6 @@ import ProfileStack from './profile'
 import RecommendStack from './recommend'
 import SearchStack from './search'
 import EventStack from './event'
-import Event from './event/default'
 
 const Tab = createBottomTabNavigator()
 
@@ -38,11 +37,6 @@ function Home() {
         name="Event"
         component={EventStack}
         options={{title: '이벤트', headerShown: false}}
-      />
-      <Tab.Screen
-        name="EventComp"
-        component={Event}
-        options={{title: '이벤트comp', headerShown: false}}
       />
     </Tab.Navigator>
   )
