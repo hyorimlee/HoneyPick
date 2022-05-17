@@ -24,8 +24,10 @@ export interface Item {
 }
 
 export interface RItemState {
+  rec: string,
   title: string,
   itemList: Item[],
+  page: number
 }
 
 export interface IRecommendItemQuery {
