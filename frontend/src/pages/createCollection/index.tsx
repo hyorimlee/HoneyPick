@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useCallback, useRef, useState} from 'react'
+import {memo, useCallback, useState} from 'react'
 import {Text, View} from 'react-native'
 import BaseTextInput from '../../components/textInput/base/index'
 import BaseButton from '../../components/button/base/index'
@@ -8,6 +8,7 @@ import {createCollection} from '../../store/slices/collection/asyncThunk'
 import {useNavigation} from '@react-navigation/native'
 import {getUserCollectionList} from '../../store/slices/user/asyncThunk'
 import {ProfileDefaultNavigationProp} from '../home/profile/default/types'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 function CreateCollectionStack({
   isModal,
@@ -53,8 +54,8 @@ function CreateCollectionStack({
   }, [collectionName, collectionDescription])
 
   return (
-    <View style={{paddingHorizontal: 30}}>
-      <View style={{marginVertical: 30}}>
+    <KeyboardAwareScrollView style={{paddingHorizontal: 30}}>
+      <View style={isModal ? {marginVertical: 10} : {marginVertical: 30}}>
         <Text
           style={{
             fontWeight: '600',
@@ -72,7 +73,7 @@ function CreateCollectionStack({
           maxLength={10}
         />
       </View>
-      <View style={{marginVertical: 30}}>
+      <View style={isModal ? {marginVertical: 10} : {marginVertical: 30}}>
         <Text
           style={{
             fontWeight: '600',
@@ -93,7 +94,7 @@ function CreateCollectionStack({
       <BaseButton
         text={'컬렉션 생성하기'}
         onPress={createNewCollection}
-        marginVertical={30}
+        marginVertical={isModal ? 10 : 30}
         paddingVertical={10}
         borderRadius={5}
         disabled={!collectionName}
@@ -102,12 +103,12 @@ function CreateCollectionStack({
         <BaseButton
           text={'돌아가기'}
           onPress={() => setOpenCreationForm(false)}
-          marginVertical={10}
+          marginVertical={isModal ? 10 : 30}
           paddingVertical={10}
           borderRadius={5}
         />
       ) : null}
-    </View>
+    </KeyboardAwareScrollView>
   )
 }
 
