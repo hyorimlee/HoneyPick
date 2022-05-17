@@ -10,6 +10,7 @@ export type RootStackParamList = {
   Vote: {accountId: string; collectionId: string; voteId: string; isClosed: boolean}
   SignIn: undefined
   SignUp: undefined
+  Event: undefined
 }
 
 // 최상단 스택간 이동하는 navigation type

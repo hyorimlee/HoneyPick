@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useCallback, useState} from 'react'
+import {memo, useCallback, useState, useEffect} from 'react'
 import {Image, View, Text, FlatList, Alert, ScrollView} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {Container, ItemsContainer, VoteButtonContainer} from './styles'
@@ -8,25 +8,38 @@ import ItemComponent from '../../../collection/components/itemComponent'
 import { IComponentProps } from './types'
 import { RootStackNavigationProp } from '../../../../../types/navigation'
 import { setSelectedItems } from '../../../../store/slices/vote'
+import { IItem } from '~/store/slices/item/types'
 
-function VoteItems({onVote, accountId, collectionId, voteId}: IComponentProps) {
+function VoteItems({onVote, accountId, collectionId, eventId, voteId}: IComponentProps) {
   const dispatch = useAppDispatch()
   const itemNavigation = useNavigation<RootStackNavigationProp>()
   const {selectedItems} = useAppSelector(state => state.vote)
-  const {currentCollection, currentItems} = useAppSelector(state => state.collection)
+  let currentItems: any
+
+  useEffect(() => {
+    if (collectionId) {
+      currentItems = useAppSelector(state => state.collection.currentCollection)
+    } else {
+      currentItems = useAppSelector(state => state.event.event)
+    }
+  }, [])
 
   const toggleVote = useCallback((item: any) => {
     dispatch(setSelectedItems(item))
   }, [])
 
   const pushToItemPage = useCallback((itemId: string) => {
-    itemNavigation.push('Item', { itemId: itemId, collectionId: collectionId})
+    if (collectionId) {
+      itemNavigation.push('Item', {itemId: itemId, collectionId: collectionId})
+    } else {
+      itemNavigation.push('Item', {itemId: itemId, collectionId: '' })
+    }
   }, [])
 
   return (
     <Container>
       <ItemsContainer>
-      {currentItems!.map((item, index) => {
+      {currentItems!.map((item: any, index: number) => {
         return (
           <ItemComponent
           key={index}

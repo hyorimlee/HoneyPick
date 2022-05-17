@@ -6,14 +6,14 @@ export interface EventInitialState {
 }
 
 export interface EventState {
-  user: {_id: string, username: string}
+  user: {_id: string, username: string, nickname: string}
   title: string
-  isPublic: boolean
+  description: string
+  additional: string
   _id: string
   items: ItemState[]
   createdAt: string
   updatedAt: string
-  __v: number
 }
 
 export interface ISaveEventParameter {
