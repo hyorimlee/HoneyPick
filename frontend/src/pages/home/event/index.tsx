@@ -9,7 +9,7 @@ function EventStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Default"
+        name="EventDefault"
         component={EventList}
         options={{headerShown: false}}
       />

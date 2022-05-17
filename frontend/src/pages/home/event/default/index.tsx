@@ -21,46 +21,46 @@ import {
 } from './styles'
 
 function EventList() {
-  // const isFocused = useIsFocused()
-  // const dispatch = useAppDispatch()
-  // const navigation = useNavigation<EventDefaultNavigationProp>()
-  // const events = useAppSelector(state => state.event.eventList)
+  const isFocused = useIsFocused()
+  const dispatch = useAppDispatch()
+  const navigation = useNavigation<EventDefaultNavigationProp>()
+  const events = useAppSelector(state => state.event.eventList)
 
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     dispatch(getEventList())
-  //   }
-  // }, [isFocused])
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(getEventList())
+    }
+  }, [isFocused])
 
-  // const onClick = (eventId: string) => {
-  //   navigation.navigate('EventItem', {eventId: eventId})
-  // }
+  const onClick = (eventId: string) => {
+    navigation.navigate('EventItem', {eventId: eventId})
+  }
 
-  // const SubEvents = events.map((event, idx) => {
-  //   if (idx > 0) {
-  //     return (
-  //       <SubEvent onPress={() => onClick(event._id)} key={idx}>
-  //         <InfoTop>
-  //           <SubEventImage
-  //             source={require('~/assets/images/sampleimage2.jpg')}></SubEventImage>
-  //           <InfoContainer>
-  //             <NormalText style={{color: '#8C8C8C'}}>
-  //               directed by {event.user.nickname}
-  //             </NormalText>
-  //             <TitleText style={{color: '#8C8C8C'}}>{event.title}</TitleText>
-  //           </InfoContainer>
-  //         </InfoTop>
-  //         <NormalText style={{color: '#8C8C8C'}}>
-  //           {event.description}
-  //         </NormalText>
-  //       </SubEvent>
-  //     )
-  //   }
-  // })
+  const SubEvents = events.map((event, idx) => {
+    if (idx > 0) {
+      return (
+        <SubEvent onPress={() => onClick(event._id)} key={idx}>
+          <InfoTop>
+            <SubEventImage
+              source={require('~/assets/images/sampleimage2.jpg')}></SubEventImage>
+            <InfoContainer>
+              <NormalText style={{color: '#8C8C8C'}}>
+                directed by {event.user.nickname}
+              </NormalText>
+              <TitleText style={{color: '#8C8C8C'}}>{event.title}</TitleText>
+            </InfoContainer>
+          </InfoTop>
+          <NormalText style={{color: '#8C8C8C'}}>
+            {event.description}
+          </NormalText>
+        </SubEvent>
+      )
+    }
+  })
 
   return (
     <SafeAreaView>
-      {/* <Container>
+      <Container>
         {events.length > 0 ? (
           <>
             <MainEvent onPress={() => onClick(events[0]._id)}>
@@ -78,7 +78,7 @@ function EventList() {
             {SubEvents}
           </>
         ) : null}
-      </Container> */}
+      </Container>
     </SafeAreaView>
   )
 }

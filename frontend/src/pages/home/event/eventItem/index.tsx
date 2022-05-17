@@ -19,19 +19,19 @@ import {
 } from '../default/styles'
 
 function EventItem() {
-  // const dispatch = useAppDispatch()
-  // const windowWidth = Dimensions.get('window').width
-  // const route = useRoute<RouteProp<EventStackParamList>>()
-  // const {eventId} = route.params!
-  // const event = useAppSelector(state => state.event.event)
+  const dispatch = useAppDispatch()
+  const windowWidth = Dimensions.get('window').width
+  const route = useRoute<RouteProp<EventStackParamList>>()
+  const {eventId} = route.params!
+  const event = useAppSelector(state => state.event.event)
 
-  // useEffect(() => {
-  //   dispatch(getEvent(eventId))
-  // }, [])
+  useEffect(() => {
+    dispatch(getEvent(eventId))
+  }, [])
 
   return (
     <SafeAreaView style={{height: '100%'}}>
-      {/* <Container>
+      <Container>
         {event ? (
           <MainEvent>
             <InfoTop>
@@ -57,7 +57,7 @@ function EventItem() {
         position="absolute"
         width={windowWidth - 60}
         bottom={0}
-      /> */}
+      />
     </SafeAreaView>
   )
 }
