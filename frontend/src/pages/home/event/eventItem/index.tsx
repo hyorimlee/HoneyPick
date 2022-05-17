@@ -9,34 +9,28 @@ import {useAppDispatch, useAppSelector} from '~/store/types'
 import {getEvent} from '~/store/slices/event/asyncThunk'
 
 import {Container} from './styles'
-import {
-  MainEvent,
-  InfoTop,
-  EventImage,
-  InfoContainer,
-  NormalText,
-  TitleText,
-} from '../default/styles'
+import {MainEvent, InfoTop, EventImage, InfoContainer, NormalText, TitleText} from '../default/styles'
 
 function EventItem() {
-  // const dispatch = useAppDispatch()
-  // const windowWidth = Dimensions.get('window').width
-  // const route = useRoute<RouteProp<EventStackParamList>>()
-  // const {eventId} = route.params!
-  // const event = useAppSelector(state => state.event.event)
+  const dispatch = useAppDispatch()
+  const windowWidth = Dimensions.get('window').width
+  const route = useRoute<RouteProp<EventStackParamList>>()
+  const {eventId} = route.params!
+  const event = useAppSelector(state => state.event.event)
 
-  // useEffect(() => {
-  //   dispatch(getEvent(eventId))
-  // }, [])
-
+  useEffect(() => {
+    dispatch(getEvent(eventId))
+  }, [])
+  
   return (
     <SafeAreaView style={{height: '100%'}}>
-      {/* <Container>
+      <Container>
         {event ? (
           <MainEvent>
             <InfoTop>
               <EventImage
-                source={require('~/assets/images/sampleimage2.jpg')}></EventImage>
+                source={require('~/assets/images/sampleimage2.jpg')}
+              ></EventImage>
               <InfoContainer>
                 <NormalText>directed by {event.user.nickname}</NormalText>
                 <TitleText>{event.title}</TitleText>
@@ -55,9 +49,9 @@ function EventItem() {
         marginHorizontal={30}
         paddingVertical={15}
         position="absolute"
-        width={windowWidth - 60}
+        width={windowWidth-60}
         bottom={0}
-      /> */}
+      />
     </SafeAreaView>
   )
 }

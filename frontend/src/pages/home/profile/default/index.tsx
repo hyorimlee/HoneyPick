@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useEffect, useState} from 'react'
-import {useIsFocused, useRoute} from '@react-navigation/native'
+import {useRoute} from '@react-navigation/native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import ProfileInfo from '../components/profileInfo'
 import {getLists, getProfile} from '~/store/slices/profile/asyncThunk'
@@ -12,8 +12,7 @@ import {ProfileDefaultNavigationProp, ProfileDefaultRoute} from './types'
 
 function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   const dispatch = useAppDispatch()
-  const isFocused = useIsFocused()
-  const {isModal} = useAppSelector(state => state.ui)
+  const myUserId = useAppSelector(state => state.user.userId)
   const [isInfoDone, setIsInfoDone] = useState(false)
   const route = useRoute<ProfileDefaultRoute>()
   const userId = route.params!.userId
@@ -32,14 +31,6 @@ function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
     })
 
     return screenStateChange
-  }, [navigation, userId])
-
-  useEffect(() => {
-    const focusScreen = navigation.addListener('focus', () => {
-      dispatch(getLists({accountId: userId}))
-    })
-
-    return focusScreen
   }, [navigation, userId])
 
   return (

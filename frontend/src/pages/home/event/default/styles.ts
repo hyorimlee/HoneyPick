@@ -27,7 +27,7 @@ export const SubEvent = styled(MainEvent)`
 export const EventImage = styled.Image`
   width: 100px;
   height: 100px;
-  resizemode: contain;
+  resizeMode: contain;
   border-radius: 15px;
 `
 
