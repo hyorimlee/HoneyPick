@@ -22,7 +22,7 @@ import SignIn from './src/pages/signIn'
 import SignUp from './src/pages/signUp'
 
 import SaveItemBtn from './src/components/saveItemBtn'
-import ChooseCollectionModal from './src/containers/chooseCollectionModal'
+import ModalView from './src/components/modalView'
 import {
   Home,
   ItemStack,
@@ -91,13 +91,14 @@ const MyTheme = {
 const InnerApp = memo(({}) => {
   const dispatch = useAppDispatch()
   const isLoggined = useAppSelector(state => !!state.user.accessToken)
-  const {isModalOn} = useAppSelector(state => state.ui)
+  const {isModal} = useAppSelector(state => state.ui)
   const [copiedUrl, setCopiedUrl] = useState('')
   const appState = useRef(AppState.currentState)
 
   useEffect(() => {
     getRefreshToken(dispatch)
     axiosInterceptor(dispatch)
+    Clipboard.setString('')
 
     const listener = AppState.addEventListener('change', nextAppState => {
       const isNowInactive = appState.current.match(/inactive|background/)
@@ -125,7 +126,7 @@ const InnerApp = memo(({}) => {
   }, [])
 
   const modalClose = useCallback(() => {
-    dispatch(uiSlice.actions.setIsModalOn(false))
+    dispatch(uiSlice.actions.setIsModal(false))
   }, [])
 
   return (
@@ -181,9 +182,9 @@ const InnerApp = memo(({}) => {
         <Modal
           animationType="fade"
           transparent={true}
-          visible={isModalOn}
+          visible={!!isModal}
           onRequestClose={modalClose}>
-          <ChooseCollectionModal />
+          <ModalView />
         </Modal>
       </NavigationContainer>
     </View>

@@ -1,16 +1,16 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {IInitialState} from './types'
+import {IInitialState, IIsModal} from './types'
 
 const initialState: IInitialState = {
-  isModalOn: false,
+  isModal: false,
 }
 
 const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    setIsModalOn(state, action: {payload: boolean}) {
-      state.isModalOn = action.payload
+    setIsModal(state, action: {payload: IIsModal}) {
+      state.isModal = action.payload
     },
   },
 })

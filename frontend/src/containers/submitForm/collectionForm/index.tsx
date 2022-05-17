@@ -12,11 +12,16 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {CustomText} from './styles'
 import uiSlice from '~/store/slices/ui'
 
-function CollectionForm({type}: {type: 'create' | 'edit'}) {
+function CollectionForm() {
   const dispatch = useAppDispatch()
-  const collection = useAppSelector(state => state.collection.currentCollection)
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
+  const {isModal} = useAppSelector(state => state.ui)
+  const {currentCollection} = useAppSelector(state => state.collection)
+  const [title, setTitle] = useState(
+    isModal === 'editCollection' ? currentCollection!.title : '',
+  )
+  const [description, setDescription] = useState(
+    isModal === 'editCollection' ? currentCollection!.description : '',
+  )
 
   const titleChanged = useCallback(
     (text: string) => {
@@ -38,7 +43,7 @@ function CollectionForm({type}: {type: 'create' | 'edit'}) {
     }
 
     try {
-      if (type === 'create') {
+      if (isModal.toString().toLowerCase().includes('createcollection')) {
         dispatch(
           createCollection({
             title,
@@ -46,11 +51,15 @@ function CollectionForm({type}: {type: 'create' | 'edit'}) {
             isPublic: true,
           }),
         )
-      } else {
+
+        isModal === 'clipboardCreateCollection'
+          ? dispatch(uiSlice.actions.setIsModal('clipboard'))
+          : dispatch(uiSlice.actions.setIsModal(false))
+      } else if (isModal === 'editCollection') {
         dispatch(
           editCollection({
-            accountId: collection!.user!._id,
-            collectionId: collection!._id,
+            accountId: currentCollection!.user._id,
+            collectionId: currentCollection!._id,
             collectionInfo: {
               title,
               description,
@@ -58,16 +67,17 @@ function CollectionForm({type}: {type: 'create' | 'edit'}) {
             },
           }),
         )
+        dispatch(uiSlice.actions.setIsModal(false))
       }
     } catch (error: any) {
       Alert.alert(error.err)
-    } finally {
-      dispatch(uiSlice.actions.setIsModalOn(false))
     }
   }, [title, description])
 
   const closeModal = useCallback(() => {
-    dispatch(uiSlice.actions.setIsModalOn(false))
+    isModal === 'clipboardCreateCollection'
+      ? dispatch(uiSlice.actions.setIsModal('clipboard'))
+      : dispatch(uiSlice.actions.setIsModal(false))
   }, [])
 
   return (
@@ -93,7 +103,11 @@ function CollectionForm({type}: {type: 'create' | 'edit'}) {
         />
       </View>
       <BaseButton
-        text={`컬렉션 ${type === 'create' ? '생성' : '수정'}하기`}
+        text={`컬렉션 ${
+          isModal.toString().toLowerCase().includes('createcollection')
+            ? '생성'
+            : '수정'
+        }하기`}
         onPress={saveCollection}
         marginVertical={10}
         paddingVertical={10}

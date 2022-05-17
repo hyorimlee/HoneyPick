@@ -1,25 +1,24 @@
 import * as React from 'react'
-import {memo} from 'react'
-import {ActivityIndicator, View} from 'react-native'
+import {memo, useCallback} from 'react'
+import {View} from 'react-native'
 import HorizontalList from '~/components/flatList/horizontalList'
 import BaseButton from '~/components/button/base'
-import {useAppSelector} from '~/store/types'
-import {useNavigation} from '@react-navigation/native'
+import {useAppDispatch, useAppSelector} from '~/store/types'
 import {
   CollectionHorizontalView,
   CustomActivityIndicator,
   DivisionContainer,
   DivisionText,
 } from './styles'
-import {RootStackNavigationProp} from '~/../types/navigation'
+import uiSlice from '~/store/slices/ui'
 
 function ProfileLists() {
+  const dispatch = useAppDispatch()
   const {collections, likes, votes} = useAppSelector(state => state.profile)
-  const navigation = useNavigation<RootStackNavigationProp>()
 
-  const addCollection = () => {
-    navigation.navigate('CreateCollection')
-  }
+  const addCollection = useCallback(() => {
+    dispatch(uiSlice.actions.setIsModal('createCollection'))
+  }, [])
 
   return (
     <View>
