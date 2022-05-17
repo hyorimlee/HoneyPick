@@ -81,6 +81,9 @@ export const editCollection = createAsyncThunk<
   async ({accountId, collectionId, collectionInfo}, thunkAPI) => {
     try {
       const {accessToken} = thunkAPI.getState().user
+
+      console.log(collectionInfo)
+
       const response = await axios({
         method: 'PATCH',
         url: `${Config.API_BASE_URL}/collection/${accountId}/${collectionId}`,
