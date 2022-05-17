@@ -2,7 +2,7 @@ import axios from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
-import {RecommendState} from './types'
+import {RecommendState, RItemState} from './types'
 import {
   getItemRecommend,
   getCollectionRecommend
@@ -10,7 +10,7 @@ import {
 
 const initialState: RecommendState = {
   collections: [],
-  items: []
+  items: [],
 }
 
 const recommendSlice = createSlice({
@@ -22,9 +22,21 @@ const recommendSlice = createSlice({
     builder
       .addCase(getItemRecommend.fulfilled, (state, action) => {
         console.log(action.payload)
-        // 여기서 특정 아이템별로 추가할 수 있게 해줘야할듯?
-        state.items = action.payload.items
+        
+        action.payload.items.forEach(({ rec, page, title, itemList }: RItemState) => {
+          if(page === 1) {
+            state.items.push({ rec, title, itemList, page })
+            return
+          }
+          state.items.forEach((elem, index) => {
+            if(rec == elem.rec) {
+              state.items[index].itemList.push(...itemList)
+              state.items[index].page = page
+            }
+          })
+        });
       })
+
       .addCase(getItemRecommend.rejected, (state, action) => {
         console.log(action.payload)
       })

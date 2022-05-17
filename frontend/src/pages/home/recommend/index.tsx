@@ -63,8 +63,8 @@ function RecommendStack() {
     // 추가 데이터 요청 시 query 받기
     dispatch(getCollectionRecommend({}))
   }
-  const getItemRecommendList = () => {
-    dispatch(getItemRecommend({}))
+  const getItemRecommendList = (recs='0,1,2,3,4', page=1) => {
+    dispatch(getItemRecommend({ recs, page }))
   }
   const {collections, items} = useAppSelector(state => state.recommend )
 
@@ -148,7 +148,7 @@ function RecommendStack() {
         >
         </FlatList>
 
-        {items.map(({title, itemList}, index) => {
+        {items.map(({title, itemList, rec, page}, index) => {
           return (
           <View key={index} style={styles.viewBox}>
           <BoldText style={{width: '100%', textAlign: 'left'}}>{title}</BoldText>
@@ -158,6 +158,11 @@ function RecommendStack() {
               renderItem={itemRenderItem}
               data={itemList}
               horizontal={true}
+              onEndReached={()=>{
+                console.log(index, '끝 도달')
+                getItemRecommendList(rec.toString(), page+1)
+                
+              }}
               >
             </FlatList>
           </ItemContainer>
