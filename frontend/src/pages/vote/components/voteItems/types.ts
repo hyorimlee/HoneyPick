@@ -1,7 +1,7 @@
 export interface IComponentProps {
   onVote: boolean
-  accountId: string
+  accountId?: string
   collectionId?: string
   eventId?: string
-  voteId: string
+  voteId?: string
 }
