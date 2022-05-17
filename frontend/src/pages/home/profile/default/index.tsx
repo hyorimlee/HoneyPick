@@ -9,9 +9,6 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import ProfileLists from '../components/profileLists'
 import {Container} from './styles'
 import {ProfileDefaultNavigationProp, ProfileDefaultRoute} from './types'
-import {Alert} from 'react-native'
-
-const paddingHorizontal = 30
 
 function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   const dispatch = useAppDispatch()
