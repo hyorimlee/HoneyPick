@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const eventRouter = Router()
 const { isValidObjectId } = require('mongoose')
-const { User, Event, Review,Item } = require('../models')
+const { User, Event, Review,Item,Vote } = require('../models')
 const { authAccessToken } = require('./auth')
 const { Types: { ObjectId } } = require('mongoose')
 
@@ -52,19 +52,35 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     //USER가 ADMIN 권한을 가졌는지 확인
     if(user.isAdmin == false) return res.status(401).send({err:'user is not admin'})
     // title, description, isPublic 추출 및 검증
-    const { title, description, additional } = req.body
-    let { items } = req.body
+    const { title, description, additional} = req.body
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"})
     if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be string type"})
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"})
-    if (items && !Array.isArray(items)) return res.status(400).send({ err: "items must be array"})
-
-    items = await Item.find({ _id: { $in: items } })
+    // if(!itemCount) return res.status(400).send({err:"itemCount가 필요합니다."})
+    // console.log(user.events.length)
+    
+    // // 기존 컬렉션이 30개 이상이면, 생성 차단
+    // if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
 
     // event 자체 추가 
-    const event = new Event({ ...req.body, user, items })
+    const event = new Event({ ...req.body, user })
     await event.save()
-    return res.status(201).send({ event })
+    console.log(`event created! _id=${event._id}`)
+    //vote 추가하는 로직 시작~
+    // 이벤트 투표는 admin만 생성 가능
+    let results = []
+    const itemCount = 4
+    for (i=0; i < itemCount; i++) {
+      // Get the count of all users
+      let item = await Item.findOne().skip(i)
+      console.log(`${i} ==> ${item.title}`)
+      let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
+      results.push(result)
+    }
+    const vote = new Vote({ eventId:event._id, title, result: results, isPublic: true })
+    await vote.save()
+
+    return res.status(201).send({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
