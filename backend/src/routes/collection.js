@@ -106,7 +106,13 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
       return { ...item._doc, recommend: collection.items[idx].recommend }
     })
 
-    return res.status(200).send({ collection, items })
+    // 팔로우 관계
+    let myFollow = false
+    const account = await User.findById(accountId)
+    const myFollowing = await Follow.findOne({ _id: account.follow, 'followers._id': userId })
+    if (myFollowing) { myFollow = true }
+
+    return res.status(200).send({ collection, items, myFollow })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
