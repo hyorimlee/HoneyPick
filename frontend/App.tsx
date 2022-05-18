@@ -1,6 +1,6 @@
 import React, {memo, useCallback, useEffect, useRef, useState} from 'react'
 import {Provider} from 'react-redux'
-import {Modal, View, AppState} from 'react-native'
+import {Modal, View, AppState, BackHandler, Alert} from 'react-native'
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import axios from 'axios'
@@ -118,7 +118,9 @@ const InnerApp = memo(({}) => {
       appState.current = nextAppState
     })
 
-    return () => listener.remove()
+    return () => {
+      listener.remove()
+    }
   }, [])
 
   const btnShowHandler = useCallback(() => {

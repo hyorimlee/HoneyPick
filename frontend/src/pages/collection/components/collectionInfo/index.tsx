@@ -17,18 +17,14 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {
-  collectionLike,
+  setCollectionLike,
   deleteCollection,
-} from '../../../../store/slices/collection/asyncThunk'
-import {setFollow} from '../../../../store/slices/profile/asyncThunk'
+} from '~/store/slices/collection/asyncThunk'
 import {CollectionNavigationProp} from '../../types'
 import {RootStackNavigationProp} from '../../../../../types/navigation'
 import {goToProfile, IComponentProps} from './types'
 import uiSlice from '~/store/slices/ui'
-import collectionSlice from '~/store/slices/collection'
 import Config from 'react-native-config'
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
-import {BottomTabParamList} from '~/pages/home/types'
 
 function CollectionInfo({accountId, collectionId}: IComponentProps) {
   const dispatch = useAppDispatch()
@@ -77,7 +73,11 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
   }, [accountId, collectionId])
 
   const openVote = useCallback(() => {
-    dispatch(collectionLike({collectionId}))
+    dispatch(uiSlice.actions.setIsModal('createVote'))
+  }, [collectionId])
+
+  const collectionLike = useCallback(() => {
+    dispatch(setCollectionLike({collectionId}))
   }, [collectionId])
 
   const navigationProfile = useCallback(() => {
@@ -106,8 +106,8 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
             height: 96,
             resizeMode: 'contain',
             borderRadius: 10,
-            borderWidth: 2,
-            borderColor: 'black',
+            borderWidth: 1,
+            borderColor: '#C4C4C4',
           }}
         />
       </InfoContainer>
@@ -163,7 +163,7 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
           <>
             <BaseButton
               text={'컬렉션 찜하기'}
-              onPress={openVote}
+              onPress={collectionLike}
               paddingVertical={5}
               paddingHorizontal={10}
               marginHorizontal={6}></BaseButton>

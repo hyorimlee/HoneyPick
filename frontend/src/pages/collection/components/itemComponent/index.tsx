@@ -17,10 +17,6 @@ function ItemComponent({
   paddingVertical,
   color = '#000000',
   textAlign = 'left',
-  backgroundColor = '#123456',
-  borderRadius = 20,
-  borderWidth = 4,
-  borderColor,
 }: IComponentProps) {
   const press = useCallback(() => {
     onPress()
@@ -38,10 +34,9 @@ function ItemComponent({
         style={{
           width: 120,
           height: 120,
-          borderRadius,
-          backgroundColor,
-          borderColor,
-          borderWidth,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: '#C4C4C4',
         }}
         source={{uri: `${Config.IMAGE_BASE_URL}/raw/${uri}`}}
       />
@@ -49,7 +44,7 @@ function ItemComponent({
         {moneyComma(price)}
       </Text>
       <Text style={{fontSize: 12, textAlign, color}}>
-        {stringSlice(text, 22)}
+        {stringSlice(text, 18)}
       </Text>
     </ItemComponentContainer>
   )

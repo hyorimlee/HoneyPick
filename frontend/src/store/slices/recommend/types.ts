@@ -2,13 +2,13 @@ import {ItemState} from '../item/types'
 import {CollectionState} from '../collection/types'
 
 export interface RecommendState {
-  collections: RCollectionState[],
-  items: RItemState[],
+  collections: RCollectionState[]
+  items: RItemState[]
 }
 
 export interface RCollectionState {
-  title: string,
-  collection: CollectionState,
+  title: string
+  collection: CollectionState
 }
 
 export interface Item {
@@ -24,9 +24,9 @@ export interface Item {
 }
 
 export interface RItemState {
-  rec: string,
-  title: string,
-  itemList: Item[],
+  rec: string
+  title: string
+  itemList: Item[]
   page: number
 }
 
