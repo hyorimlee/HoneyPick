@@ -9,7 +9,7 @@ import { VoteStackParamList } from '../types'
 import {getCollection} from '../../../store/slices/collection/asyncThunk'
 import {useAppSelector, useAppDispatch} from '../../../store/types'
 import {getVote, vote} from '../../../store/slices/vote/asyncThunk'
-import {setCurrentVote} from '../../../store/slices/vote'
+import {setCurrentVote, cleanSelectedItems} from '../../../store/slices/vote'
 import BaseButton from '../../../components/button/base'
 import { IVoteState } from '../../../store/slices/vote/types'
 
@@ -43,6 +43,7 @@ function Vote() {
     })
 
     dispatch(getVote({accountId: accountId, voteId: voteId}))
+    dispatch(cleanSelectedItems())
 
     const prevState = onVote
     if (prevState) {
@@ -53,7 +54,7 @@ function Vote() {
   return (
     <>
     <KeyboardAwareScrollView style={{paddingHorizontal: 20, marginTop: 30}}>
-      <VoteInfo onVote={onVote} accountId={accountId} collectionId={collectionId} voteId={voteId}></VoteInfo>
+      <VoteInfo accountId={accountId} collectionId={collectionId} voteId={voteId}></VoteInfo>
       <VoteItems onVote={onVote} accountId={accountId} collectionId={collectionId} voteId={voteId}></VoteItems>
     </KeyboardAwareScrollView>
     {!isMyList && !isVoted ?

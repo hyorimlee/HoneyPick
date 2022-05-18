@@ -5,7 +5,7 @@ const { isValidObjectId } = require('mongoose')
 const { Collection,Item } = require('../models')
 const { authAccessToken } = require('./auth')
 
-async function searchItem(keyword, page){
+async function searchItem(keyword, page, res){
     try {
         const search = await Item.find({$text: {$search:keyword}},{score:{$meta: "textScore"}}).sort({score:{$meta:"textScore"}}).skip((page-1)*18).limit(18)
         return search
@@ -15,10 +15,10 @@ async function searchItem(keyword, page){
     }   
 }
 
-async function searchCollection(keyword){
+async function searchCollection(keyword, res){
     try {
         const search = await Collection.find({$text: {$search:keyword}},{score:{$meta: "textScore"}}).sort({score:{$meta:"textScore"}})
-        return search    
+        return search
     } catch (err) {
         console.log(err)
         return res.status(500).send({err:err.message})
@@ -33,8 +33,8 @@ searchRouter.post('/', authAccessToken, async (req, res) => {
         page = parseInt(page)
 
         const [items,collections] = await Promise.all([
-            searchItem(keyword, page),
-            searchCollection(keyword)
+            searchItem(keyword, page, res),
+            searchCollection(keyword, res)
         ])
         
         return res.status(200).send({ items, collections, page })

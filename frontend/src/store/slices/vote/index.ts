@@ -14,7 +14,18 @@ import {
 } from './asyncThunk'
 
 const initialState: VoteInitialState = {
-  currentVote: undefined,
+  currentVote: {
+    _id: '',
+    collectionId: '',
+    title: '',
+    result: [{ _id: '', count: 0, title: '', priceBefore: 0, priceAfter: 0, }],
+    isPublic: true,
+    isClosed: false,
+    participants: [{ _id: '' }],
+    createdAt: '',
+    updatedAt: '',
+    __v: 0
+  },
   selectedItems: [],
 }
 
@@ -33,6 +44,9 @@ const voteSlice = createSlice({
         state.selectedItems.push(action.payload)
       }
     },
+    cleanSelectedItems(state) {
+      state.selectedItems = []
+    }
   },
   extraReducers: builder => {
     builder
@@ -41,6 +55,7 @@ const voteSlice = createSlice({
       })
       .addCase(getVote.fulfilled, (state, action) => {
         state.currentVote = action.payload.vote
+        state.currentVote.result = state.currentVote?.result.sort((a, b) => {return b.count - a.count})
       })
       .addCase(getVoteList.fulfilled, (state, action) => {
         console.log(action.payload.votes)
@@ -50,5 +65,5 @@ const voteSlice = createSlice({
       })
   },
 })
-export const {setCurrentVote, setSelectedItems} = voteSlice.actions
+export const {setCurrentVote, setSelectedItems, cleanSelectedItems} = voteSlice.actions
 export default voteSlice

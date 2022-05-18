@@ -124,7 +124,7 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
     if (!isValidObjectId(userId)) return res.status(401).send({ err: "invalid userId" })
     if (collection.user._id.toString() !== userId || userId !== accountId) return res.status(401).send({ err: "Unauthorized" })
     if (title && typeof title !== 'string') return res.status(400).send({ err: "title must be a string" })
-    if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
+    if (description !== undefined && typeof description !== 'string') return res.status(400).send({ err: "description must be a string" })
     if (typeof isPublic !== 'undefined' && typeof isPublic !== 'boolean') return res.status(400).send({ err: "isPublic must be a boolean" })
 
     const collectionUpdate = {}
@@ -134,7 +134,7 @@ collectionRouter.patch('/:accountId/:collectionId', authAccessToken, async (req,
       collectionUpdate['title'] = title
       userUpdate['collections.$.title'] = title
     }
-    if (description) {
+    if (description !== undefined && description !== null) {
       collectionUpdate['description'] = description
     }
     if (typeof isPublic !== 'undefined') {
