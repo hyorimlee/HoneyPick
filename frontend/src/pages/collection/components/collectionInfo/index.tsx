@@ -73,8 +73,10 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
   }, [accountId, collectionId])
 
   const openVote = useCallback(() => {
-    dispatch(uiSlice.actions.setIsModal('createVote'))
-  }, [collectionId])
+    currentCollection.items.length > 0
+      ? dispatch(uiSlice.actions.setIsModal('createVote'))
+      : Alert.alert('아이템이 최소 1개 이상있어야 투표 진행이 가능합니다.')
+  }, [collectionId, currentCollection.items.length])
 
   const collectionLike = useCallback(() => {
     dispatch(setCollectionLike({collectionId}))
