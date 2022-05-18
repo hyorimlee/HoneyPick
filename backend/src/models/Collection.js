@@ -14,7 +14,8 @@ const CollectionSchema = new Schema(
       _id: { type: ObjectId, required: true, ref: 'item'},
       recommend: { type: Number, required: true, default: 0}
     }],
-    isPublic: { type: Boolean, required: true }
+    isPublic: { type: Boolean, required: true },
+    liked: { type: Number, required: true, default: 0 }
   },
   { timestamps: true })
 

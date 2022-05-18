@@ -17,10 +17,19 @@ likeRouter.post('/', authAccessToken, async (req, res) => {
       Collection.findById(collectionId),
       User.findOne({ _id: userId, 'likes._id': collectionId })
     ])
+    
     if (isLiked) {
-      await User.updateOne({ _id: userId }, { $pull: { likes: { _id: ObjectId(collectionId) } }})
+      collection.liked -= 1
+      await Promise.all([
+        User.updateOne({ _id: userId }, { $pull: { likes: { _id: ObjectId(collectionId) } }}),
+        collection.save()
+      ])
     } else {
-      await User.updateOne({ _id: userId }, { $push: { likes: collection }})
+      collection.liked += 1
+      await Promise.all([
+        User.updateOne({ _id: userId }, { $push: { likes: collection }}),
+        collection.save()
+      ]) 
     }
     const user = await User.findById(userId)
     return res.status(200).send({ likes: user.likes })

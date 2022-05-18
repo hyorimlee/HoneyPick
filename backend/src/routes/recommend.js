@@ -23,8 +23,8 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
         const collectionTitles = myFollow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
         const followUserIds = myFollow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
 
-        const [randomCollection, followCollections] = await Promise.all([
-            Collection.find({}).limit(5),
+        const [likedCollection, followCollections] = await Promise.all([
+            Collection.find({ liked: { $gt: 0 } }).sort({ liked: -1 }).limit(5),
             Collection.find({'user._id': {$in : followUserIds }})
         ])
 
@@ -35,12 +35,20 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
             }
         })
 
+        // 많은 사람들의 찜에 담긴 컬렉션
+        collections.push(...likedCollection.map(collection => {
+            return {
+                title: `${collection.liked}명의 사람들의 찜에 담긴 컬렉션`,
+                collection
+            }
+        }))
+
         // 팔로워 수가 많은 유저의 랜덤 컬렉션
-        const influencerCollection = influencers.map(({ _id, nickname, collections }) => {
+        const influencerCollection = influencers.map(({ _id, followerCount, nickname, collections }) => {
             if(collections.length) {
                 targetCollection = collections[Math.floor(Math.random() * collections.length)]
                 return {
-                    title: `팔로워 수가 많은 ${nickname}의`,
+                    title: `${followerCount}명이 팔로우중인 ${nickname}의`,
                     collection: {
                         ...targetCollection._doc,
                         user: {
@@ -54,13 +62,6 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
 
         collections.push(...influencerCollection.filter(item => item))
 
-        // 랜덤 추천 컬렉션
-        collections.push(...randomCollection.map(collection => {
-            return {
-                title: '랜덤 추천 컬렉션',
-                collection
-            }
-        }))
 
         return res.status(200).send({ collections })
     } catch (error) {
