@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const voteRouter = Router()
 const { isValidObjectId, Types: { ObjectId } } = require('mongoose')
-const { Vote, Collection, User, Follow, Event, Item } = require('../models')
+const { Vote, Collection, User, Follow, Item } = require('../models')
 const { authAccessToken } = require('./auth')
 
 // 팔로워인지 검증
@@ -28,13 +28,13 @@ voteRouter.post('/', authAccessToken, async (req, res) => {
     const accountId = collection.user._id
     if (accountId.toString() !== userId) return res.status(403).send({ err: "Unauthorized" })
 
-    let results = []
-    for (i=0; i < collection.items.length; i++) {
-      let item = await Item.findById(collection.items[i]._id)
-      let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
-      results.push(result)
-    }
-    const vote = new Vote({ collectionId, title, result: results, isPublic })
+    var idList = collection.items.map(({ _id }) => ObjectId(_id))
+    var itemList = await Item.find({ _id: { $in: idList }})
+    const items = itemList.map((item, idx) => {
+      return { ...item._doc }
+    })
+
+    const vote = new Vote({ collectionId, title, result: items, isPublic })
     await Promise.all([
       vote.save(),
       User.updateOne({ _id: userId }, { $push: { votes: vote } })
