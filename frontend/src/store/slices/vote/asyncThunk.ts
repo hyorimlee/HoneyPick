@@ -93,7 +93,7 @@ export const deleteVote = createAsyncThunk<any, IVoteQuery, {state: RootState}>(
       const {accessToken} = thunkAPI.getState().user
       const response = await axios({
         method: 'DELETE',
-        url: `${Config.API_BASE_URL}/vote/${accountId}/${voteId}`,
+        url: `${Config.API_BASE_URL}/vote/${voteId}`,
         data: {accountId: accountId},
         headers: {
           authorization: `Bearer ${accessToken}`
