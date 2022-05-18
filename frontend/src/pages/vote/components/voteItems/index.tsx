@@ -41,6 +41,7 @@ function VoteItems({onVote, accountId, collectionId, eventId, voteId}: IComponen
             price={item?.priceBefore ? item.priceBefore : 'No Price'}
             uri={item.thumbnail}
             borderColor={selectedItems?.find((votedItem) => votedItem._id === item._id) ? '#F9C12E' : undefined}
+            borderWidth={selectedItems?.find((votedItem) => votedItem._id === item._id) ? 4 : undefined}
             onPress={onVote ? () => toggleVote(item) : () => pushToItemPage(item._id)}
             />
             )
@@ -56,6 +57,7 @@ function VoteItems({onVote, accountId, collectionId, eventId, voteId}: IComponen
           price={item?.priceBefore ? item.priceBefore : 'No Price'}
           uri={item.thumbnail}
           borderColor={selectedItems?.find((votedItem) => votedItem._id === item._id) ? '#F9C12E' : undefined}
+          borderWidth={selectedItems?.find((votedItem) => votedItem._id === item._id) ? 4 : undefined}
           onPress={onVote ? () => toggleVote(item) : () => pushToItemPage(item._id)}
           />
           )

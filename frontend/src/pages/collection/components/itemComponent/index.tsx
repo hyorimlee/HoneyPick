@@ -15,6 +15,8 @@ function ItemComponent({
   marginVertical,
   paddingHorizontal,
   paddingVertical,
+  borderColor,
+  borderWidth,
   color = '#000000',
   textAlign = 'left',
 }: IComponentProps) {
@@ -35,8 +37,8 @@ function ItemComponent({
           width: 120,
           height: 120,
           borderRadius: 10,
-          borderWidth: 1,
-          borderColor: '#C4C4C4',
+          borderColor: borderColor ? borderColor : "#C4C4C4",
+          borderWidth: borderWidth ? borderWidth : 1,
         }}
         source={{uri: `${Config.IMAGE_BASE_URL}/raw/${uri}`}}
       />
