@@ -9,6 +9,7 @@ const CollectionSchema = new Schema(
     },
     title: { type: String , required: true },
     description: { type: String, required: false },
+    thumbnail: { type: String, required: true, default: process.env.DEFAULT_PROFILE_IMG },
     items: [{
       _id: { type: ObjectId, required: true, ref: 'item'},
       recommend: { type: Number, required: true, default: 0}
