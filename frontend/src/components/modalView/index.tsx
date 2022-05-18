@@ -2,6 +2,7 @@ import * as React from 'react'
 import {memo, useCallback} from 'react'
 import ChooseCollection from '~/containers/chooseCollection'
 import CollectionForm from '~/containers/submitForm/collectionForm'
+import VoteForm from '~/containers/submitForm/voteForm'
 import uiSlice from '~/store/slices/ui'
 import {useAppDispatch, useAppSelector} from '~/store/types'
 import {Screen, Background, Modal} from './styles'
@@ -18,7 +19,13 @@ function ModalView() {
     <Screen>
       <Background onPress={onPressBackground} />
       <Modal>
-        {isModal === 'clipboard' ? <ChooseCollection /> : <CollectionForm />}
+        {isModal === 'clipboard' ? (
+          <ChooseCollection />
+        ) : isModal === 'createVote' ? (
+          <VoteForm />
+        ) : (
+          <CollectionForm />
+        )}
       </Modal>
     </Screen>
   )

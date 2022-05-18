@@ -9,12 +9,14 @@ export const MainEvent = styled.TouchableOpacity`
   padding: 20px;
   margin-bottom: 30px;
   border-radius: 20px;
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
   elevation: 3;
   shadow-opacity: 0.75;
   shadow-radius: 5px;
   shadow-color: 'black';
-  shadow-offset: { height: 0, width: 0 };
+  // shadow-offset: { height: 0, width: 0 };
+  shadow-offset-height: 0;
+  shadow-offset-width: 0;
 `
 // shadowOpacity부터 ios라서 확인 필요
 

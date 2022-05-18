@@ -6,13 +6,14 @@ const ItemContainer = styled.View`
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justifyContent: flex-start;
+  justifycontent: flex-start;
 `
 
 const ItemBox = styled.TouchableOpacity`
   flex: 0 0 30%;
   margin-right: 10px;
   box-sizing: border-box;
+  margin-bottom: 30px;
 `
 
 const NormalText = styled.Text`
