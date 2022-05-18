@@ -122,3 +122,26 @@ export const deleteCollection = createAsyncThunk<
     }
   },
 )
+
+export const collectionLike = createAsyncThunk<
+  any,
+  {collectionId: string},
+  {state: RootState}
+>('collection/collectionLike', async ({collectionId}, thunkAPI) => {
+  try {
+    const {accessToken} = thunkAPI.getState().user
+
+    const response = await axios({
+      method: 'POST',
+      url: `${Config.API_BASE_URL}/like`,
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      data: {collectionId},
+    })
+
+    return response.data
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data)
+  }
+})

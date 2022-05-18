@@ -24,6 +24,7 @@ import RecommendInfo from './components/recommendInfo'
 import RecommendSettings from './components/recommendSettings'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {RootStackParamList} from '~/../types/navigation'
+import uiSlice from '~/store/slices/ui'
 
 function ItemStack({
   navigation,
@@ -43,6 +44,7 @@ function ItemStack({
 
   const isMyItem = userId === currentCollection!.user._id
   const [isRecommendMode, setIsRecommendMode] = useState(false)
+  const {isModal} = useAppSelector(state => state.ui)
 
   useEffect(() => {
     if (isFocused && !isRecommendMode) {
@@ -96,7 +98,7 @@ function ItemStack({
   }, [item.url])
 
   const saveMyCollection = () => {
-    // dispatch(setSaveCollection('yet'))
+    dispatch(uiSlice.actions.setIsModal('clipboard'))
   }
 
   return (
