@@ -18,16 +18,26 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
         const collectionTitles = follow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
         const followUserIds = follow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
 
-        const collections = await Collection.find({'user._id': {$in : followUserIds }})
-
-        const result = collectionTitles.map((title, idx) => {
+        const [randomCollection, followCollections] = await Promise.all([
+            Collection.find({}).limit(5),
+            Collection.find({'user._id': {$in : followUserIds }})
+        ])
+        const collections = collectionTitles.map((title, idx) => {
             return {
                 title,
-                collection: collections[idx]
+                collection: followCollections[idx]
             }
         })
+
+        // 랜덤 추천 컬렉션
+        collections.push(...randomCollection.map((collection, idx) => {
+            return {
+                title: '랜덤 추천 컬렉션',
+                collection
+            }
+        }))
         
-        return res.status(200).send({ collections: result })
+        return res.status(200).send({ collections })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
