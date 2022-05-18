@@ -1,8 +1,7 @@
 const { Router } = require('express')
 const profileRouter = Router()
-const mongoose = require('mongoose')
-const { isValidObjectId } = require('mongoose') 
-const { User } = require('../models')
+const { isValidObjectId } = require('mongoose')
+const { User, Follow } = require('../models')
 const bcrypt = require('bcrypt')
 const { authAccessToken } = require('./auth')
 
@@ -12,13 +11,20 @@ const { getSignedUrl } = require('../aws')
 
 profileRouter.get('/:userId', authAccessToken,async (req, res) => {
     try {
-        if(!isValidObjectId(req.userId)) return res.status(400).send({ err: "유효하지 않은 user id" })
-        const user = await User.findById(req.params.userId)
-        if(user.withdraw) return res.status(400).send({msg:"탈퇴한 회원의 정보를 조회하려 하고 있습니다"})
-        return res.status(200).send({userId:req.params.userId,username:user.username,nickname:user.nickname,description:user.description,profileImage:user.profileImage,following:user.followingCount,follower:user.followerCount})
+      if(!isValidObjectId(req.userId)) return res.status(400).send({ err: "유효하지 않은 user id" })
+      const user = await User.findById(req.params.userId)
+      if(user.withdraw) return res.status(400).send({msg:"탈퇴한 회원의 정보를 조회하려 하고 있습니다"})
+
+      // 팔로우 관계
+      let myFollow = false
+      const account = await User.findById(req.params.userId)
+      const myFollowing = await Follow.findOne({ _id: account.follow, 'followers._id': req.userId })
+      if (myFollowing) { myFollow = true }
+
+      return res.status(200).send({userId:req.params.userId,username:user.username,nickname:user.nickname,description:user.description,profileImage:user.profileImage, myFollow, following:user.followingCount,follower:user.followerCount})
     } catch (error) {
-        console.log(error)
-        return res.status(500).send({ err: error.message })
+      console.log(error)
+      return res.status(500).send({ err: error.message })
     }
 })
 
@@ -66,7 +72,7 @@ profileRouter.patch('/password', authAccessToken,async (req, res) => {
     try {
         const {newPassword} = req.body
         const user =await User.findById(req.userId)
-        if(typeof newPassword !=="string") return res.status(400).send({err:"newPassword는 필수입니다."}) 
+        if(typeof newPassword !=="string") return res.status(400).send({err:"newPassword는 필수입니다."})
         user.password = newPassword
         await user.save()
 
