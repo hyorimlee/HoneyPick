@@ -27,9 +27,11 @@ function EventItem() {
   const windowWidth = Dimensions.get('window').width
   const route = useRoute<RouteProp<EventStackParamList>>()
   const {eventId} = route.params!
+  const {userId} = useAppSelector(state => state.user)
   const event = useAppSelector(state => state.event.event)
   const [onVote, setOnVote] = useState<boolean>(false)
   const {selectedItems} = useAppSelector(state => state.vote)
+  const isVoted = event.vote.participants.some((participant: {_id: string} | undefined) => participant?._id === userId)
 
   useEffect(() => {
     dispatch(getEvent(eventId))
@@ -86,7 +88,7 @@ function EventItem() {
           </>
         ) : null}
       </Container>
-      {event.vote.isClosed ? null : <BaseButton
+      {!event.vote.isClosed && !isVoted ? <BaseButton
         text={onVote ? '투표 제출하기' : '투표 시작하기'}
         onPress={onVote ? submitVote : startVote}
         borderRadius={25}
@@ -96,7 +98,7 @@ function EventItem() {
         position="absolute"
         width={windowWidth - 60}
         bottom={0}
-      />
+      /> : null
       }
     </SafeAreaView>
   )
