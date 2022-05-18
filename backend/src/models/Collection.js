@@ -17,6 +17,8 @@ const CollectionSchema = new Schema(
   },
   { timestamps: true })
 
+CollectionSchema.index({ title: 'text', description: 'text' })
 const Collection = model('collection', CollectionSchema)
+Collection.createIndexes()
 
 module.exports = { Collection, CollectionSchema }
