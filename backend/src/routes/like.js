@@ -17,7 +17,7 @@ likeRouter.post('/', authAccessToken, async (req, res) => {
       Collection.findById(collectionId),
       User.findOne({ _id: userId, 'likes._id': collectionId })
     ])
-    
+
     if (isLiked) {
       collection.liked -= 1
       await Promise.all([
@@ -29,7 +29,7 @@ likeRouter.post('/', authAccessToken, async (req, res) => {
       await Promise.all([
         User.updateOne({ _id: userId }, { $push: { likes: collection }}),
         collection.save()
-      ]) 
+      ])
     }
     const user = await User.findById(userId)
     return res.status(200).send({ likes: user.likes })
@@ -45,7 +45,7 @@ likeRouter.get('/', authAccessToken, async (req, res) => {
     const { userId } = req
     const user = await User.findById(userId)
     let likes = []
-    if (user.likes.length > 1) {
+    if (user.likes.length > 0) {
       likes = user.likes
       .sort((a,b) => {
         if (a.updatedAt > b.updatedAt) {
