@@ -68,20 +68,21 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     console.log(`event created! _id=${event._id}`)
     //vote 추가하는 로직 시작~
     // 이벤트 투표는 admin만 생성 가능
-    let results = []
-    const itemCount = 3
-    for (i=6; i < itemCount; i++) {
+    let items = []
+    const itemCount = 10
+    for (i=5; i < itemCount; i++) {
       // Get the count of all users
       let item = await Item.findOne().skip(i)
       console.log(`${i} ==> ${item.title}`)
-      let result = { _id: item._id, title: item.title, thumbnail: item.thumbnail, priceBefore: item.priceBefore, priceAfter: item.priceAfter }
-      results.push(result)
+      items.push(item)
     }
-    const vote = new Vote({ eventId:event._id, title, result: results, isPublic: true })
+    event.items = items
+    const vote = new Vote({ eventId:event._id, title, result: items, isPublic: true })
     event.vote = vote._id
     await Promise.all[vote.save(),event.save()]
-    
-    return res.status(201).send({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote })
+    let result = {...event._doc,vote:vote}
+    result.items = items
+    return res.status(201).send({event:result})
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
@@ -101,7 +102,13 @@ eventRouter.get('/', authAccessToken, async (req, res) => {
     let returnVals = []
     for(let i=0;i<events.length;i++){
       let event = events[i]
-      returnVals.push({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:await Vote.findById(event.vote._id) })
+      var idList = event.items.map(({ _id }) => ObjectId(_id))
+      var itemList = await Item.find({ _id: { $in: idList }})
+      const items = itemList.map((item, idx) => {
+        return { ...item._doc, recommend: event.items[idx].recommend }
+      })
+      returnVals.push({...event._doc,vote:await Vote.findById(event.vote._id) })
+      returnVals[i].items = items
     }
     return res.status(200).send({ events: returnVals })
   } catch (error) {
@@ -125,8 +132,9 @@ eventRouter.get('/:eventId', authAccessToken, async (req, res) => {
     const items = itemList.map((item, idx) => {
       return { ...item._doc, recommend: event.items[idx].recommend }
     })
-
-    return res.status(200).send({ event, items })
+    const result = {...event._doc,vote:await Vote.findById(event.vote)}
+    result.items = items
+    return res.status(200).send({ event:result })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })

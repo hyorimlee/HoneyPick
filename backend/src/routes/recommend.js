@@ -14,20 +14,54 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
         const userId = req.userId
         const user = await User.findById(userId)
         const followId = user.follow
-        const follow = await Follow.findById(followId)
-        const collectionTitles = follow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
-        const followUserIds = follow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
+        const [myFollow, influencers] = await Promise.all([
+            Follow.findById(followId),
+            User.find({}).sort({ followerCount: -1 }).limit(5)
+        ])
 
-        const collections = await Collection.find({'user._id': {$in : followUserIds }})
 
-        const result = collectionTitles.map((title, idx) => {
+        const collectionTitles = myFollow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
+        const followUserIds = myFollow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
+
+        const [randomCollection, followCollections] = await Promise.all([
+            Collection.find({}).limit(5),
+            Collection.find({'user._id': {$in : followUserIds }})
+        ])
+
+        const collections = collectionTitles.map((title, idx) => {
             return {
                 title,
-                collection: collections[idx]
+                collection: followCollections[idx]
             }
         })
-        
-        return res.status(200).send({ collections: result })
+
+        // 팔로워 수가 많은 유저의 랜덤 컬렉션
+        const influencerCollection = influencers.map(({ _id, nickname, collections }) => {
+            return {
+                title: `팔로워 수가 많은 ${nickname}의`,
+                collection: {
+                    ...collections[Math.floor(Math.random() * collections.length)],
+                    user: {
+                        _id
+                    }
+                }
+            }
+        })
+
+        collections.push(...influencerCollection.filter(({ collection }) => {
+            if(collection) return true
+            else return false
+        }))
+
+        // 랜덤 추천 컬렉션
+        collections.push(...randomCollection.map((collection, idx) => {
+            return {
+                title: '랜덤 추천 컬렉션',
+                collection
+            }
+        }))
+
+        return res.status(200).send({ collections })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
