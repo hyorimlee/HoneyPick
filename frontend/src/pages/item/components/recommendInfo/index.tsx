@@ -24,9 +24,6 @@ function RecommendInfo() {
     }
   })
 
-  console.log('sticker', stickers)
-  console.log(item)
-
   return (
     <>
       {review ? (

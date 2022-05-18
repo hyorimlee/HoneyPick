@@ -37,7 +37,7 @@ function RecommendSettings({toggleIsRecommendMode}: IProps) {
   }
 
   const saveHoneyItem = async () => {
-    if (recommend !== 0 && stickers.length > 0) {
+    if (recommend !== 0 && stickers) {
       let response
       if (review) {
         const reviewId = review._id
