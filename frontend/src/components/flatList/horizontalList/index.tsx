@@ -14,12 +14,12 @@ function HorizontalList({data, title}: IProps) {
 
   const pressedList = useCallback(
     (collectionId: string, voteId?: string, isClosed?: boolean) => () => {
-      title.includes('투표') && voteId
+      title.includes('투표') && voteId && isClosed
         ? navigation.navigate('Vote', {
             accountId: userId,
             collectionId,
             voteId,
-            isClosed: isClosed,
+            isClosed,
           })
         : navigation.navigate('Collection', {
             accountId: userId,
@@ -40,7 +40,7 @@ function HorizontalList({data, title}: IProps) {
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
         <Image
           source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
-          style={{width: 100, height: 100, borderRadius: 10}}></Image>
+          style={{width: 110, height: 110, borderRadius: 10}}></Image>
         <Title>{item.title}</Title>
       </ItemContainer>
     )
@@ -56,7 +56,7 @@ function HorizontalList({data, title}: IProps) {
           showsHorizontalScrollIndicator={false}></CustomFlatList>
       ) : (
         <NoneView>
-          <Text style={{color: 'black', fontSize: 18, alignSelf: 'center'}}>
+          <Text style={{color: 'black', fontSize: 14, alignSelf: 'center'}}>
             {title}
             {title === '진행한 투표' ? '가' : '이'} 없어요.
           </Text>

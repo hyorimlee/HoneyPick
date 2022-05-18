@@ -13,7 +13,7 @@ function CollectionStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Default"
+        name="CollectionDefault"
         component={Collection}
         options={{headerShown: false}}
         initialParams={{accountId, collectionId}}

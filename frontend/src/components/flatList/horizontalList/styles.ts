@@ -8,16 +8,10 @@ export const ItemContainer = styles.Pressable`
   margin-right: 30px;
 `
 
-export const ListItem = styles.View`
-  width: 75px;
-  height: 75px;
-  border-radius: 10px;
-  background-color: green;
-`
 export const Title = styles.Text`
   color: #000000;
-  font-size: 16px;
-  padding-vertical: 5px;
+  font-size: 14px;
+  padding-vertical: 3px;
   align-self: center;
 `
 export const NoneView = styles.View`

@@ -73,7 +73,7 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
           <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>
             {currentCollection?.description
               ? currentCollection.description
-              : 'Notitle'}
+              : '컬렉션에 대한 설명이 없습니다.'}
           </Text>
         </InfoTextContainer>
         <Image

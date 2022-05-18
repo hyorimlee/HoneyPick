@@ -8,8 +8,8 @@ import {editCollection} from '../../../store/slices/collection/asyncThunk'
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native'
 import {useAppSelector} from '../../../store/types'
 import {RootStackNavigationProp} from '../../../../types/navigation'
-import { createVote } from '../../../store/slices/vote/asyncThunk'
-import { CollectionNavigationProp } from '../types'
+import {createVote} from '../../../store/slices/vote/asyncThunk'
+import {CollectionNavigationProp} from '../types'
 
 function CreateVote() {
   const navigation = useNavigation<CollectionNavigationProp>()
@@ -37,12 +37,12 @@ function CreateVote() {
       createVote({
         collectionId: collection!._id,
         title: voteTitle,
-        isPublic: isPublic
+        isPublic: isPublic,
       }),
     )
       .unwrap()
       .then(res => {
-        navigation.navigate('Default', {
+        navigation.navigate('CollectionDefault', {
           accountId: collection.user._id,
           collectionId: collection._id,
         })
@@ -51,9 +51,7 @@ function CreateVote() {
 
   return (
     <View style={{paddingHorizontal: 20}}>
-      <Text style={{fontWeight: 'bold'}}>
-        시작될 투표의 제목을 적어주세요
-      </Text>
+      <Text style={{fontWeight: 'bold'}}>시작될 투표의 제목을 적어주세요</Text>
       <BaseTextInput
         value={voteTitle}
         onChangeText={voteTitleChanged}
@@ -62,7 +60,7 @@ function CreateVote() {
         maxLength={10}
       />
       <BaseButton
-        text={isPublic? '비공개로 투표하기' : '공개 투표하기'}
+        text={isPublic ? '비공개로 투표하기' : '공개 투표하기'}
         onPress={changeIsPublic}
         marginVertical={10}
         paddingVertical={10}

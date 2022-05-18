@@ -27,11 +27,17 @@ export const getProfile = createAsyncThunk<
 
 export const setProfile = createAsyncThunk<
   any,
-  {nickname: string; description: string; phone?: string; imageType?: string},
+  {
+    nickname: string
+    description: string
+    phone?: string
+    imageType?: string
+    profileImage?: string
+  },
   {state: RootState}
 >(
   'profile/setProfile',
-  async ({nickname, description, phone, imageType}, thunkAPI) => {
+  async ({nickname, description, phone, imageType, profileImage}, thunkAPI) => {
     try {
       const {userId, accessToken} = thunkAPI.getState().user
 
@@ -43,19 +49,6 @@ export const setProfile = createAsyncThunk<
         },
         data: {userId, nickname, description, phone, imageType},
       })
-
-      return response.data
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data)
-    }
-  },
-)
-
-export const setProfileImageToServer = createAsyncThunk(
-  'profile/setProfileImageToServer',
-  async (_, thunkAPI) => {
-    try {
-      const response = await axios({})
 
       return response.data
     } catch (error: any) {

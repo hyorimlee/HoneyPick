@@ -22,7 +22,7 @@ function Collection() {
   const {votes} = useAppSelector(state => state.profile)
   const {currentVote, selectedItems} = useAppSelector(state => state.vote)
   const collection = useAppSelector(state => state.collection.currentCollection)
-  const matchedVote: IVoteState | undefined = votes.find((vote: IVoteState | undefined) => vote!.collectionId === collectionId)
+  const matchedVote: IVoteState | undefined = votes!.find((vote: IVoteState | undefined) => vote!.collectionId === collectionId)
   const isVoting = matchedVote?.isClosed === undefined ? false : !matchedVote.isClosed
   const isMyList = collection?.user._id === userId
   const isVoted = matchedVote?.participants?.some((participant: {_id: string} | undefined) => participant?._id === userId)
