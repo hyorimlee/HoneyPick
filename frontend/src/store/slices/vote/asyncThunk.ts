@@ -119,7 +119,6 @@ export const vote = createAsyncThunk<any, IItemVoteQuery, {state: RootState}>(
           authorization: `Bearer ${accessToken}`
         }
       })
-
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
