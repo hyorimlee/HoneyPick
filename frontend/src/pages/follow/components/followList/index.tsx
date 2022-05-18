@@ -33,7 +33,7 @@ function FollowList({data}: IProps) {
 
   const navigateProfile = useCallback(
     (userId: string) => () => {
-      navigation.navigate('Default', {userId})
+      navigation.navigate('ProfileDefault', {userId})
     },
     [],
   )

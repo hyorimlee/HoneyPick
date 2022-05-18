@@ -22,12 +22,3 @@ export type RootStackNavigationProp =
   NativeStackNavigationProp<RootStackParamList>
 
 export type FollowRoute = RouteProp<RootStackParamList, 'Follow'>
-
-// export type ChooseCollectionStackParamList = {
-//   Item: {itemId: string; collectionId: string}
-// }
-
-// export type ItemStackParamList = {
-//   Default: {itemId: string; collectionId: string}
-//   SetHoneyItem: undefined
-// }

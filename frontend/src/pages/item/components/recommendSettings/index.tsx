@@ -36,9 +36,9 @@ function RecommendSettings({toggleIsRecommendMode}: IProps) {
     }
   }
 
-  const saveHoneyItem = () => {
-    console.log(stickers)
-    if (recommend !== 0 && stickers) {
+  const saveHoneyItem = async () => {
+    if (recommend !== 0 && stickers.length > 0) {
+      let response
       if (review) {
         const reviewId = review._id
         const data = {
@@ -47,16 +47,19 @@ function RecommendSettings({toggleIsRecommendMode}: IProps) {
           isRecommend: recommend,
           stickers: stickers,
         }
-        dispatch(editReview(data))
+        response = await dispatch(editReview(data))
       } else {
         const data = {
           itemId,
           isRecommend: recommend,
           stickers: stickers,
         }
-        dispatch(saveReview(data))
+        response = await dispatch(saveReview(data))
       }
-      toggleIsRecommendMode()
+
+      if (response) {
+        toggleIsRecommendMode()
+      }
     } else {
       Alert.alert('추천 정도와 스티커를 선택해주세요!')
     }
@@ -66,8 +69,14 @@ function RecommendSettings({toggleIsRecommendMode}: IProps) {
     <TextContainer>
       <NormalText>추천 정도</NormalText>
       <ButtonContainer>
-        <SelectButton text="꿀템" onPress={recommendHandler(2)} selected={recommend === 2}></SelectButton>
-        <SelectButton text="굿템" onPress={recommendHandler(1)} selected={recommend === 1}></SelectButton>
+        <SelectButton
+          text="꿀템"
+          onPress={recommendHandler(2)}
+          selected={recommend === 2}></SelectButton>
+        <SelectButton
+          text="굿템"
+          onPress={recommendHandler(1)}
+          selected={recommend === 1}></SelectButton>
       </ButtonContainer>
       <NormalText>스티커</NormalText>
       <ButtonContainer>

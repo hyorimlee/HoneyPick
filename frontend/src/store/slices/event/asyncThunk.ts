@@ -1,4 +1,4 @@
-import { ProfileDefaultNavigationProp } from '~/pages/home/profile/default/types';
+import {ProfileDefaultNavigationProp} from '~/pages/home/profile/default/types'
 import axios from 'axios'
 import Config from 'react-native-config'
 import {createAsyncThunk} from '@reduxjs/toolkit'
@@ -25,25 +25,26 @@ import {ISaveEventParameter, IEditEventParameter} from './types'
 //   }
 // )
 
-export const getEventList = createAsyncThunk<any, undefined, {state: RootState}>(
-  'event/getEventList',
-  async (_, thunkAPI) => {
-    try {
-      const {accessToken} = thunkAPI.getState().user
-      const response = await axios({
-        method: 'GET',
-        url: `${Config.API_BASE_URL}/event`,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        }
-      })
-      console.log(response.data)
-      return response.data
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data)
-    }
+export const getEventList = createAsyncThunk<
+  any,
+  undefined,
+  {state: RootState}
+>('event/getEventList', async (_, thunkAPI) => {
+  try {
+    const {accessToken} = thunkAPI.getState().user
+    const response = await axios({
+      method: 'GET',
+      url: `${Config.API_BASE_URL}/event`,
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    return response.data
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response.data)
   }
-)
+})
 
 export const getEvent = createAsyncThunk<any, string, {state: RootState}>(
   'event/getEvent',
@@ -55,16 +56,20 @@ export const getEvent = createAsyncThunk<any, string, {state: RootState}>(
         url: `${Config.API_BASE_URL}/event/${eventId}`,
         headers: {
           authorization: `Bearer ${accessToken}`,
-        }
+        },
       })
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
     }
-  }
+  },
 )
 
-export const editEvent = createAsyncThunk<any, IEditEventParameter, {state: RootState}>(
+export const editEvent = createAsyncThunk<
+  any,
+  IEditEventParameter,
+  {state: RootState}
+>(
   'event/editEvent',
   async ({eventId, title, description, additional}, thunkAPI) => {
     try {
@@ -75,12 +80,11 @@ export const editEvent = createAsyncThunk<any, IEditEventParameter, {state: Root
         data: {title, description, additional},
         headers: {
           authorization: `Bearer ${accessToken}`,
-        }
+        },
       })
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
     }
-  }
+  },
 )
-

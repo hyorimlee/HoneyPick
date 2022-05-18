@@ -15,6 +15,8 @@ import uiSlice from '~/store/slices/ui'
 function ProfileLists() {
   const dispatch = useAppDispatch()
   const {collections, likes, votes} = useAppSelector(state => state.profile)
+  const {userId} = useAppSelector(state => state.profile)
+  const myUserId = useAppSelector(state => state.user.userId)
 
   const addCollection = useCallback(() => {
     dispatch(uiSlice.actions.setIsModal('createCollection'))
@@ -25,13 +27,15 @@ function ProfileLists() {
       <DivisionContainer>
         <CollectionHorizontalView>
           <DivisionText>컬렉션</DivisionText>
-          <BaseButton
-            text="추가하기"
-            onPress={addCollection}
-            paddingVertical={5}
-            paddingHorizontal={20}
-            fontSize={16}
-          />
+          {myUserId === userId ? (
+            <BaseButton
+              text="추가하기"
+              onPress={addCollection}
+              paddingVertical={5}
+              paddingHorizontal={20}
+              fontSize={16}
+            />
+          ) : null}
         </CollectionHorizontalView>
       </DivisionContainer>
       {collections ? (

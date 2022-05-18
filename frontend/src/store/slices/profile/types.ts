@@ -13,6 +13,7 @@ export interface IInitialState {
   votes: any[] | null
   followingList: IFollow[]
   followerList: IFollow[]
+  myFollow: boolean
 }
 
 export interface IFollow {

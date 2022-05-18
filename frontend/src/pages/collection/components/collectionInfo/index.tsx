@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useCallback, useState, useEffect, createRef} from 'react'
-import {Image, Text, TouchableOpacity} from 'react-native'
+import {Alert, Image, Text, TouchableOpacity, View} from 'react-native'
 import BaseButton from '../../../../components/button/base'
 import {useNavigation} from '@react-navigation/native'
 import {
@@ -18,25 +18,26 @@ import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {deleteCollection} from '../../../../store/slices/collection/asyncThunk'
 import {setFollow} from '../../../../store/slices/profile/asyncThunk'
-import profileSlice from '../../../../store/slices/profile'
 import {CollectionNavigationProp} from '../../types'
 import {RootStackNavigationProp} from '../../../../../types/navigation'
-import {IComponentProps} from './types'
+import {goToProfile, IComponentProps} from './types'
 import uiSlice from '~/store/slices/ui'
+import collectionSlice from '~/store/slices/collection'
+import Config from 'react-native-config'
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
+import {BottomTabParamList} from '~/pages/home/types'
 
 function CollectionInfo({accountId, collectionId}: IComponentProps) {
-  const navigation = useNavigation<RootStackNavigationProp>()
-  const collectionNavigation = useNavigation<CollectionNavigationProp>()
   const dispatch = useAppDispatch()
+  const navigation = useNavigation<RootStackNavigationProp>()
+  const profileNavigation = useNavigation<goToProfile>()
+  const collectionNavigation = useNavigation<CollectionNavigationProp>()
+  const actionSheetRef = createRef<ActionSheet>()
 
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
-  const isMyList = currentCollection?.user._id === userId
-
-  const actionSheetRef = createRef<ActionSheet>()
-  const username = currentCollection?.user?.username
-    ? currentCollection.user.username
-    : 'No name'
+  const username = currentCollection ? currentCollection.user.username : ''
+  const isMyList = currentCollection.user._id === userId
 
   const openSheet = () => {
     actionSheetRef.current?.show()
@@ -48,118 +49,131 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
   }
 
   const deleteCurrentCollection = useCallback(async () => {
-    await dispatch(
-      deleteCollection({accountId: accountId, collectionId: collectionId}),
+    Alert.alert(
+      '컬렉션에 속한 아이템도 모두 삭제됩니다.\n정말 삭제하시겠습니까?',
+      undefined,
+      [
+        {
+          text: '확인',
+          onPress: () => {
+            dispatch(deleteCollection({accountId, collectionId}))
+              .unwrap()
+              .then(() => navigation.navigate('Home'))
+              .catch(() =>
+                Alert.alert(
+                  '삭제가 되지 않았습니다.\n잠시후 다시 시도해주세요.',
+                ),
+              )
+          },
+        },
+        {
+          text: '취소',
+        },
+      ],
     )
-    navigation.navigate('Home')
-  }, [])
+  }, [accountId, collectionId])
 
   const openVote = useCallback(() => {
     collectionNavigation.push('CreateVote')
   }, [])
 
-  const followChange = useCallback(() => {
-    dispatch(setFollow({userId}))
-    dispatch(profileSlice.actions.changeFollow({userId, accountId}))
-  }, [])
+  const navigationProfile = useCallback(() => {
+    profileNavigation.navigate('ProfileDefault', {userId: accountId})
+  }, [accountId])
 
   return (
     <Container>
-      <InfoContainer>
+      <InfoContainer style={{marginBottom: 20}}>
         <InfoTextContainer>
-          <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
-            {currentCollection?.title ? currentCollection.title : 'Notitle'}
+          <Text style={{fontSize: 20, fontWeight: '600', color: '#000000'}}>
+            {currentCollection.title}
           </Text>
-          <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>
-            {currentCollection?.description
+          <Text style={{fontSize: 14, color: '#000000', marginTop: 10}}>
+            {currentCollection.description
               ? currentCollection.description
-              : 'Notitle'}
+              : '컬렉션에 대한 설명이 없습니다.'}
           </Text>
         </InfoTextContainer>
         <Image
-          source={require('~/assets/images/honeybee.png')}
+          source={{
+            uri: `${Config.IMAGE_BASE_URL}/raw/${currentCollection.thumbnail}`,
+          }}
           style={{
             width: 96,
             height: 96,
             resizeMode: 'contain',
             borderRadius: 10,
-            borderWidth: 4,
+            borderWidth: 2,
             borderColor: 'black',
-            backgroundColor: 'white',
           }}
         />
       </InfoContainer>
       <ButtonContainer>
         {isMyList ? (
-          <BaseButton
-            text={'투표 진행하기'}
-            onPress={openVote}
-            fontSize={8}
-            paddingVertical={5}
-            paddingHorizontal={10}></BaseButton>
-        ) : null}
-        {!isMyList ? (
+          <View
+            style={{
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+              flexDirection: 'row',
+              flex: 1,
+            }}>
+            <BaseButton
+              text={'투표 진행하기'}
+              onPress={openVote}
+              paddingVertical={5}
+              paddingHorizontal={10}></BaseButton>
+            <MenuButtonContainer>
+              <TouchableOpacity onPress={openSheet}>
+                <FontAwesomeIcon
+                  icon={faEllipsisVertical as IconProp}
+                  color="#C4C4C4"
+                  size={24}
+                  style={{marginTop: 15}}
+                />
+              </TouchableOpacity>
+            </MenuButtonContainer>
+            <ActionSheet
+              ref={actionSheetRef}
+              containerStyle={{
+                borderTopLeftRadius: 25,
+                borderTopRightRadius: 25,
+              }}>
+              <MenuContainer>
+                <BaseButton
+                  text={'컬렉션 정보 수정하기'}
+                  onPress={editCurrentCollection}
+                  borderRadius={25}
+                  marginVertical={5}
+                  paddingVertical={15}
+                />
+                <BaseButton
+                  text={'이 컬렉션 삭제하기'}
+                  onPress={deleteCurrentCollection}
+                  borderRadius={25}
+                  marginVertical={5}
+                  paddingVertical={15}
+                />
+              </MenuContainer>
+            </ActionSheet>
+          </View>
+        ) : (
           <>
             <BaseButton
               text={'컬렉션 찜하기'}
               onPress={openVote}
-              fontSize={8}
               paddingVertical={5}
               paddingHorizontal={10}
               marginHorizontal={6}></BaseButton>
             <BaseButton
-              text={
-                true ? `${username}님을 팔로우` : `${username}님을 언팔로우`
-              }
-              onPress={followChange}
-              fontSize={8}
+              text={`프로필 보러가기`}
+              backgroundColor={'default'}
+              onPress={navigationProfile}
               paddingVertical={5}
-              paddingHorizontal={10}></BaseButton>
+              paddingHorizontal={10}
+            />
           </>
-        ) : null}
+        )}
       </ButtonContainer>
-      {/* Dashed Line 나중에 svg나 다른 라이브러리로 교체해야함 */}
-      <Text ellipsizeMode="clip" numberOfLines={1}>
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        -
-      </Text>
-      {isMyList ? (
-        <>
-          <MenuButtonContainer>
-            <TouchableOpacity onPress={openSheet}>
-              <FontAwesomeIcon
-                icon={faEllipsisVertical as IconProp}
-                color="#C4C4C4"
-                size={24}
-                style={{marginTop: 15}}
-              />
-            </TouchableOpacity>
-          </MenuButtonContainer>
-          <ActionSheet
-            ref={actionSheetRef}
-            containerStyle={{
-              borderTopLeftRadius: 25,
-              borderTopRightRadius: 25,
-            }}>
-            <MenuContainer>
-              <BaseButton
-                text={'컬렉션 정보 수정하기'}
-                onPress={editCurrentCollection}
-                borderRadius={25}
-                marginVertical={5}
-                paddingVertical={15}
-              />
-              <BaseButton
-                text={'이 컬렉션 삭제하기'}
-                onPress={deleteCurrentCollection}
-                borderRadius={25}
-                marginVertical={5}
-                paddingVertical={15}
-              />
-            </MenuContainer>
-          </ActionSheet>
-        </>
-      ) : null}
     </Container>
   )
 }

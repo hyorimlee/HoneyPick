@@ -17,7 +17,7 @@ function ProfileStack({navigation}: {navigation: BottomTabProfile}) {
   useEffect(() => {
     const listener = navigation.addListener('tabPress', event => {
       event.preventDefault()
-      defaultNavigation.navigate('Default', {userId})
+      defaultNavigation.navigate('ProfileDefault', {userId})
     })
 
     return listener
@@ -26,7 +26,7 @@ function ProfileStack({navigation}: {navigation: BottomTabProfile}) {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Default"
+        name="ProfileDefault"
         component={Profile}
         options={{headerShown: false}}
         initialParams={{userId}}
