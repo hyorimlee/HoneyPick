@@ -106,6 +106,8 @@ function EditProfile() {
                 method: 'POST',
                 body: formData,
               }).then(() => navigation.navigate('ProfileDefault', {userId}))
+            } else {
+              navigation.navigate('ProfileDefault', {userId})
             }
           })
           .catch(error => {
