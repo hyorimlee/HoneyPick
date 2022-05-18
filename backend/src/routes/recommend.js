@@ -14,20 +14,36 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
         const userId = req.userId
         const user = await User.findById(userId)
         const followId = user.follow
-        const follow = await Follow.findById(followId)
-        const collectionTitles = follow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
-        const followUserIds = follow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
+        const [myFollow, influencers] = await Promise.all([
+            Follow.findById(followId),
+            User.find({}).sort({ followerCount: -1 }).limit(5)
+        ])
+
+
+        const collectionTitles = myFollow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
+        const followUserIds = myFollow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
 
         const [randomCollection, followCollections] = await Promise.all([
             Collection.find({}).limit(5),
             Collection.find({'user._id': {$in : followUserIds }})
         ])
+
         const collections = collectionTitles.map((title, idx) => {
             return {
                 title,
                 collection: followCollections[idx]
             }
         })
+
+        // 팔로워 수가 많은 유저의 랜덤 컬렉션
+        const influencerCollection = influencers.map(({ nickname, collections }) => {
+            return {
+                title: `팔로워 수가 많은 ${nickname}의`,
+                collection: collections[Math.floor(Math.random() * collections.length)]
+            }
+        })
+
+        collections.push(...influencerCollection)
 
         // 랜덤 추천 컬렉션
         collections.push(...randomCollection.map((collection, idx) => {
@@ -36,7 +52,7 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
                 collection
             }
         }))
-        
+
         return res.status(200).send({ collections })
     } catch (error) {
         console.log(error)
