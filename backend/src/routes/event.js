@@ -69,13 +69,14 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     //vote 추가하는 로직 시작~
     // 이벤트 투표는 admin만 생성 가능
     let items = []
-    const itemCount = 3
-    for (i=6; i < itemCount; i++) {
+    const itemCount = 10
+    for (i=5; i < itemCount; i++) {
       // Get the count of all users
       let item = await Item.findOne().skip(i)
       console.log(`${i} ==> ${item.title}`)
       items.push(item)
     }
+    event.items = items
     const vote = new Vote({ eventId:event._id, title, result: items, isPublic: true })
     event.vote = vote._id
     await Promise.all[vote.save(),event.save()]

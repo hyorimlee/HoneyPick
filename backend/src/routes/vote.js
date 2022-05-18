@@ -183,7 +183,7 @@ voteRouter.patch('/:voteId/:itemId', authAccessToken, async (req, res) => {
     const [vote, user, participated] = await Promise.all([
       Vote.findById(voteId),
       User.findById(userId),
-      Vote.findOne({ 'participants._id': userId })
+      Vote.findOne({ 'participants._id': userId,'_id':voteId})
     ])
     if (participated) return res.status(403).send({ err: "voting is allowed only once"})
     if (vote.isClosed == true) return res.status(403).send({ err: "closed poll"})
