@@ -19,9 +19,10 @@ const initialState: EventInitialState = {
     createdAt: '',
     updatedAt: '',
     vote: {
+      _id: '',
       eventId: '',
       title: '',
-      result: [],
+      result: [{ _id: '', count: 0, title: '', priceBefore: 0, priceAfter: 0, thumbnail: '' }],
       isPublic: true,
       isClosed: false,
       participants: []
@@ -42,6 +43,7 @@ const eventSlice = createSlice({
       })
       .addCase(getEvent.fulfilled, (state, action) => {
         state.event = action.payload.event
+        state.event.vote.result = state.event.vote.result.sort((a, b) => {return b.count - a.count})
       })
       .addCase(editEvent.fulfilled, (state, action) => {
         state.event = action.payload.event

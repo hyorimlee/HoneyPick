@@ -36,20 +36,26 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
         })
 
         // 팔로워 수가 많은 유저의 랜덤 컬렉션
-        const influencerCollection = influencers.map(({ nickname, collections }) => {
-            return {
-                title: `팔로워 수가 많은 ${nickname}의`,
-                collection: collections[Math.floor(Math.random() * collections.length)]
+        const influencerCollection = influencers.map(({ _id, nickname, collections }) => {
+            if(collections.length) {
+                targetCollection = collections[Math.floor(Math.random() * collections.length)]
+                return {
+                    title: `팔로워 수가 많은 ${nickname}의`,
+                    collection: {
+                        ...targetCollection._doc,
+                        user: {
+                            _id
+                        }
+                    }
+                }
             }
+            return false
         })
 
-        collections.push(...influencerCollection.filter(({ collection }) => {
-            if(collection) return true
-            else return false
-        }))
+        collections.push(...influencerCollection.filter(item => item))
 
         // 랜덤 추천 컬렉션
-        collections.push(...randomCollection.map((collection, idx) => {
+        collections.push(...randomCollection.map(collection => {
             return {
                 title: '랜덤 추천 컬렉션',
                 collection

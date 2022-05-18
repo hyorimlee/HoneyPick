@@ -17,8 +17,6 @@ function VoteItems({onVote, accountId, collectionId, eventId, voteId}: IComponen
   const {currentItems} = useAppSelector(state => state.collection)
   const currentEventItems = useAppSelector(state => state.event.event.items)
 
-  console.log(currentEventItems)
-
   const toggleVote = useCallback((item: any) => {
     dispatch(setSelectedItems(item))
   }, [])
