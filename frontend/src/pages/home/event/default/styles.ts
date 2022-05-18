@@ -51,9 +51,10 @@ export const InfoContainer = styled.View`
 export const TitleText = styled.Text`
   color: #000000;
   font-weight: 600;
+  font-size: 18px;
 `
 
 export const NormalText = styled.Text`
   color: #000000;
-  font-size: 12px;
+  font-size: 16px;
 `

@@ -18,9 +18,10 @@ export interface EventState {
 }
 
 export interface EventVoteState {
+  _id: string
   eventId: string
   title: string
-  result: { _id: string, count: number }[]
+  result: { _id: string, count: number, title?: string, priceBefore?: number, priceAfter?: number, thumbnail?: string }[]
   isPublic: boolean
   isClosed: boolean
   participants: { _id: string }[]
