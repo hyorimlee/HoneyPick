@@ -1,50 +1,52 @@
 import {ItemState, IItem} from '../item/types'
 
 export interface CollectionInitialState {
-  currentCollection: CollectionState | undefined,
-  currentItems: IItem[] | undefined
+  currentCollection: CollectionState
+  currentItems: IItem[] | []
 }
 
 export interface CollectionState {
-  user: CollectionUserObject,
-  title: string,
+  user: CollectionUserObject
+  title: string
   description: string
-  isPublic: boolean,
-  _id: string,
-  items: ItemState[],
-  createdAt: string,
-  updatedAt: string,
+  isPublic: boolean
+  _id: string
+  items: ItemState[]
+  createdAt: string
+  updatedAt: string
   __v: number
+  thumbnail: string
 }
 
 export interface CollectionUserObject {
-  _id: string,
-  username: string,
-  nickname: string,
+  _id: string
+  username: string
+  nickname: string
+  myFollow: boolean
 }
 
 export interface CollectionListState {
-  totalPages: number,
-  page: number,
+  totalPages: number
+  page: number
   collections: CollectionState[]
 }
 
 export interface ICollectionListQuery {
-  accountId: string,
-  page: number,
+  accountId: string
+  page: number
 }
 
 export interface ICollectionQuery {
-  accountId: string,
-  collectionId: string,
+  accountId: string
+  collectionId: string
 }
 
-export interface IEditCollectionQuery extends ICollectionQuery{
+export interface IEditCollectionQuery extends ICollectionQuery {
   collectionInfo: ICollectionInfo
 }
 
 export interface ICollectionInfo {
-  title: string,
-    description: string | null,
-    isPublic: boolean,
+  title: string
+  description: string | null
+  isPublic: boolean
 }

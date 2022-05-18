@@ -8,7 +8,7 @@ export const ItemsContainer = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
-  padding: 10px
+  padding: 10px;
 `
 
 export const VoteButtonContainer = styled.View`

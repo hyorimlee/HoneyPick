@@ -40,7 +40,13 @@ function HorizontalList({data, title}: IProps) {
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
         <Image
           source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
-          style={{width: 110, height: 110, borderRadius: 10}}></Image>
+          style={{
+            width: 110,
+            height: 110,
+            borderRadius: 10,
+            borderWidth: 2,
+            borderColor: 'black',
+          }}></Image>
         <Title>{item.title}</Title>
       </ItemContainer>
     )

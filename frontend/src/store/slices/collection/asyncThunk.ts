@@ -59,6 +59,7 @@ export const getCollection = createAsyncThunk<
 >('collection/getCollection', async ({accountId, collectionId}, thunkAPI) => {
   try {
     const {accessToken} = thunkAPI.getState().user
+
     const response = await axios({
       method: 'GET',
       url: `${Config.API_BASE_URL}/collection/${accountId}/${collectionId}`,
@@ -66,6 +67,7 @@ export const getCollection = createAsyncThunk<
         authorization: `Bearer ${accessToken}`,
       },
     })
+
     return response.data
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err.response.data)
@@ -81,8 +83,6 @@ export const editCollection = createAsyncThunk<
   async ({accountId, collectionId, collectionInfo}, thunkAPI) => {
     try {
       const {accessToken} = thunkAPI.getState().user
-
-      console.log(collectionInfo)
 
       const response = await axios({
         method: 'PATCH',

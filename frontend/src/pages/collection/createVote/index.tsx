@@ -14,11 +14,9 @@ import {CollectionNavigationProp} from '../types'
 function CreateVote() {
   const navigation = useNavigation<CollectionNavigationProp>()
   const collection = useAppSelector(state => state.collection.currentCollection)
-  const vote = useAppSelector(state => state.vote.currentVote)
   const dispatch = useAppDispatch()
   const [voteTitle, setVoteTitle] = useState<string>('')
   const [isPublic, setIsPublic] = useState<boolean>(true)
-  const {userId} = useAppSelector(state => state.user)
 
   const voteTitleChanged = useCallback(
     (text: string) => {

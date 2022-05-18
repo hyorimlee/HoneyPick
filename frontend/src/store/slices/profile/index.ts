@@ -24,12 +24,16 @@ const initialState: IInitialState = {
   votes: null,
   followingList: [],
   followerList: [],
+  myFollow: false,
 }
 
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
+    switchMyFollow: state => {
+      state.myFollow = !state.myFollow
+    },
     changeFollow: (state, action) => {
       const {userId, myUserId} = action.payload
       let followingCnt = 0
@@ -76,33 +80,16 @@ const profileSlice = createSlice({
         state.description = action.payload.description
         state.following = action.payload.following
         state.follower = action.payload.follower
-      })
-      .addCase(getProfile.rejected, (state, action) => {
-        console.log(action.payload)
-      })
-      .addCase(setProfile.rejected, (state, action) => {
-        console.log(action.payload)
+        state.myFollow = action.payload.myFollow
       })
       .addCase(getLists.fulfilled, (state, action) => {
         state.collections = action.payload[0].collections
         state.votes = action.payload[1].votes
         state.likes = action.payload.length === 3 ? action.payload[2].likes : []
       })
-      .addCase(getLists.rejected, (state, action) => {
-        console.log(action.payload)
-      })
       .addCase(getFollowList.fulfilled, (state, action) => {
         state.followingList = action.payload[0].followings
         state.followerList = action.payload[1].followers
-      })
-      .addCase(getFollowList.rejected, (state, action) => {
-        console.log(action.payload)
-      })
-      .addCase(setFollow.fulfilled, (state, action) => {
-        console.log(action.payload)
-      })
-      .addCase(setFollow.rejected, (state, action) => {
-        console.log(action.payload)
       })
   },
 })

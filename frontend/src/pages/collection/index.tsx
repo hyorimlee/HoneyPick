@@ -4,6 +4,8 @@ import Collection from './default'
 import CreateVote from './createVote'
 import {useRoute, RouteProp} from '@react-navigation/native'
 import {RootStackParamList} from '../../../types/navigation'
+import {useAppSelector} from '~/store/types'
+
 const Stack = createNativeStackNavigator()
 
 function CollectionStack() {
