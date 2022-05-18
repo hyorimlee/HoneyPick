@@ -1,32 +1,25 @@
 import * as React from 'react'
 import Config from 'react-native-config'
-import {memo, createRef, useCallback, useState, useEffect} from 'react'
+import {memo, useCallback, useEffect} from 'react'
 import {
-  Alert,
   SafeAreaView,
   StatusBar,
-  TouchableOpacity,
   View,
   Dimensions,
   StyleSheet,
   FlatList,
+  Pressable,
 } from 'react-native'
 
-import BaseTextInput from '~/components/textInput/base/index'
 import {
   getItemRecommend,
   getCollectionRecommend,
 } from '~/store/slices/recommend/asyncThunk'
 import {useAppSelector, useAppDispatch} from '~/store/types'
 
-import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
-import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
 import {
   Container,
   CollectionContainer,
-  SearchBarContainer,
-  ItemPageContainer,
   ItemContainer,
   NormalText,
   BoldText,
@@ -37,13 +30,14 @@ import {
 
 import {useNavigation} from '@react-navigation/native'
 import {RootStackNavigationProp} from '~/../types/navigation'
+import {STICKERS} from '~/modules/stickers'
+import {moneyComma, stringSlice} from '~/modules/convert'
 
-const {width, height} = Dimensions.get('window')
+const {width} = Dimensions.get('window')
 
 function RecommendStack() {
+  const dispatch = useAppDispatch()
   const navigation = useNavigation<RootStackNavigationProp>()
-
-  const {userId} = useAppSelector(state => state.profile)
 
   const pressedCollection = useCallback(
     (accountId: string, collectionId: string) => () => {
@@ -56,18 +50,17 @@ function RecommendStack() {
     (itemId: string) => () => {
       navigation.navigate('Item', {itemId: itemId, collectionId: ''})
     },
-    [userId],
+    [],
   )
 
-  const dispatch = useAppDispatch()
-
   const getCollectionRecommendList = () => {
-    // 추가 데이터 요청 시 query 받기
     dispatch(getCollectionRecommend({}))
   }
+
   const getItemRecommendList = (recs = '0,1,2,3,4', page = 1) => {
     dispatch(getItemRecommend({recs, page}))
   }
+
   const {collections, items} = useAppSelector(state => state.recommend)
 
   useEffect(() => getCollectionRecommendList(), [])
@@ -79,23 +72,21 @@ function RecommendStack() {
     }
 
     return (
-      <View key={item.collection._id} style={styles.collectionViewBox}>
+      <View key={item.collection._id} style={{marginBottom: 40}}>
         <CollectionContainer
           onPress={pressedCollection(
             item.collection.user._id,
             item.collection._id,
-          )}>
+          )}
+          style={{width: width * 0.8}}>
           <ImageContainer
-            style={{flex: 1}}
-            // collection thumbnail
-            source={require('../../../assets/images/sampleimage1.jpg')}
-            imageStyle={{
-              resizeMode: 'contain',
-              borderRadius: 10,
+            source={{
+              uri: `${Config.IMAGE_BASE_URL}/raw/${item.collection.thumbnail}`,
             }}
+            resizeMode={'contain'}
           />
           <InfoContainer style={{flex: 1}}>
-            <NormalText>{item.title}</NormalText>
+            <NormalText style={{color: 'black'}}>{item.title}</NormalText>
             <BoldText>{item.collection.title}</BoldText>
           </InfoContainer>
         </CollectionContainer>
@@ -105,56 +96,55 @@ function RecommendStack() {
 
   const getAdditionalCollection = () => {
     if (collections.length < 5) {
-      return
+      return <></>
     }
   }
 
-  const getAdditionalItem = (index: number) => {
-    // 데이터 추가하기
-  }
-
-  const itemRenderItem = ({item}: {item: any}) => {
+  const itemRenderItem = ({item, index}: {item: any; index: number}) => {
     return (
-      <ItemBox key={item._id} onPress={pressedItem(item._id)}>
-        <ImageContainer
-          source={
-            item.thumbnail
-              ? {
-                  uri: `${Config.IMAGE_BASE_URL}/w128/${item.thumbnail}`,
-                }
-              : require('~/assets/images/sampleimage1.jpg')
-          }
-          imageStyle={{
-            resizeMode: 'contain',
-            borderRadius: 10,
-          }}
-        />
-        <NormalText>
-          {item.priceAfter
-            ? item.priceAfter
-            : item.priceBefore
-            ? item.priceBefore
-            : '가격정보 없음'}
-        </NormalText>
-        <NormalText>{item.title ? item.title : 'No Title'}</NormalText>
+      <ItemBox
+        key={item._id}
+        style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
+        <Pressable onPress={pressedItem(item._id)}>
+          <ImageContainer
+            source={{
+              uri: `${Config.IMAGE_BASE_URL}/w128/${item.thumbnail}`,
+            }}
+            resizeMode={'contain'}
+          />
+          <NormalText>
+            {item.priceAfter
+              ? moneyComma(item.priceAfter)
+              : moneyComma(item.priceBefore)
+              ? moneyComma(item.priceBefore)
+              : '가격정보 없음'}
+          </NormalText>
+          <NormalText>
+            {item.title ? stringSlice(item.title, 18) : 'No Title'}
+          </NormalText>
+        </Pressable>
       </ItemBox>
     )
   }
+
   return (
-    <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
+    <SafeAreaView>
       <Container>
         <FlatList
           data={collections}
           renderItem={collectionRenderItem}
-          style={{width: '100%'}}
           horizontal={true}
-          // onScroll={scrollEvent}
-          onEndReached={getAdditionalCollection}></FlatList>
+          onEndReached={getAdditionalCollection}
+        />
         {items.map(({title, itemList, rec, page}, index) => {
           return (
-            <View key={index} style={styles.viewBox}>
-              <BoldText style={{width: '100%', textAlign: 'left'}}>
-                {title}
+            <View key={title + index.toString()}>
+              <BoldText style={{paddingLeft: 30, marginBottom: 10}}>
+                {title.slice(0, 3) === '스티커'
+                  ? `${STICKERS[parseInt(title.slice(4, 5)) - 1].emoji} (${
+                      STICKERS[parseInt(title.slice(4, 5)) - 1].label
+                    }) 가 많은 아이템`
+                  : title}
               </BoldText>
 
               <ItemContainer>
@@ -174,36 +164,35 @@ function RecommendStack() {
   )
 }
 
-const styles = StyleSheet.create({
-  viewBox: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: width * 0.9,
-    borderRadius: 20,
-    marginRight: 10,
-    marginVertical: 10,
-    // height: 200,
-  },
-  collectionViewBox: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: width * 0.8,
-    borderRadius: 20,
-    marginRight: 10,
-    height: 140,
-  },
-  slider: {
-    width: width * 0.9,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-  },
-  dotContainer: {
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    bottom: 15,
-  },
-})
+// const styles = StyleSheet.create({
+//   viewBox: {
+//     justifyContent: 'flex-start',
+//     alignItems: 'center',
+//     width: width * 0.9,
+//     borderRadius: 20,
+//     marginHorizontal: 10,
+//     marginVertical: 10,
+//   },
+//   collectionViewBox: {
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     width: width * 0.8,
+//     borderRadius: 20,
+//     marginHorizontal: 10,
+//     height: 140,
+//   },
+//   slider: {
+//     width: width * 0.9,
+//     alignSelf: 'center',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderRadius: 20,
+//   },
+//   dotContainer: {
+//     backgroundColor: 'transparent',
+//     position: 'absolute',
+//     bottom: 15,
+//   },
+// })
 
 export default memo(RecommendStack)

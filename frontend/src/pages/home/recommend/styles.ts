@@ -1,95 +1,52 @@
 import styled from 'styled-components/native'
 
 const Container = styled.ScrollView`
-  padding-top: 5px;
-  padding-bottom: 50px;
-  padding-horizontal: 30px;
+  padding-vertical: 30px;
 `
 
-// padding: 5px;
-// margin-right: 5px;
 const CollectionContainer = styled.TouchableOpacity`
-  width: 100%;
-
-  margin-vertical: 10px;
-
-  display: flex;
-  flex-direction: row;
-  justifycontent: center;
-  alignitems: center;
-  background-color: #f7f7f7;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   border-radius: 10px;
-`
-
-const SearchBarContainer = styled.View`
-  display: flex;
+  background-color: #c4c4c4;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: 60px;
-  background-color: #f9c12e;
-  padding-horizontal: 30px;
-  margin-vertical: 20px;
-  border-radius: 100px;
+  margin-horizontal: 40px;
 `
 
-const SlideContainer = styled.ScrollView`
-  background-color: #eeffff;
-  border-radius: 20px;
-  padding: 10px;
-  margin-vertical: 10px;
+const ImageContainer = styled.Image`
+  height: 100px;
+  width: 100px;
+  border-radius: 10px;
+  border-radius: 10px;
+  border-color: #c4c4c4;
+  border-width: 1px;
 `
 
-const InfoContainer = styled.View`
-  margin: 0;
-  padding: 30px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-`
-//   margin-horizontal: 5px;
-// margin-vertical: 5px;
-
-const ItemContainer = styled.View`
-  width: 100%;
-  padding: 5px;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justifycontent: center;
+const ItemBox = styled.View`
+  width: 100px;
+  margin-right: 40px;
+  margin-bottom: 40px;
 `
 
-// flex: 40%;
-const ItemBox = styled.TouchableOpacity`
-  width: 120px;
-  margin-right: 10px;
-`
+const SearchBarContainer = styled.View``
+
+const SlideContainer = styled.ScrollView``
+
+const InfoContainer = styled.View``
+
+const ItemContainer = styled.View``
+
+const ItemPageContainer = styled.ImageBackground``
 
 const NormalText = styled.Text`
-  color: #000000;
-  font-size: 12px;
-  margin-top: 5px;
+  font-size: 14px;
+  color: black;
 `
 
 const BoldText = styled.Text`
-  color: #000000;
-  margin-top: 5px;
-  font-size: 14px;
-  font-weight: bold;
-`
-
-const ImageContainer = styled.ImageBackground`
-  width: 100%;
-  aspect-ratio: 1;
-`
-
-const ItemPageContainer = styled.ImageBackground`
-  width: 100%;
-  padding-top: 50px;
-  margin-vertical: 30px;
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
 `
 
 export {
