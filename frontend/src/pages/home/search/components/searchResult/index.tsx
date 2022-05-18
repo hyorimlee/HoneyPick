@@ -9,6 +9,7 @@ import {useAppSelector} from '~/store/types'
 import {RootStackNavigationProp} from '~/../types/navigation'
 import {ImageContainer, ItemBox, ItemContainer, NormalText} from './styles'
 import Config from 'react-native-config'
+import {moneyComma, stringSlice} from '~/modules/convert'
 
 function SearchResult({keywordEntered, collections, items}: IProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
@@ -39,12 +40,14 @@ function SearchResult({keywordEntered, collections, items}: IProps) {
         />
         <NormalText>
           {item.priceAfter
-            ? item.priceAfter
-            : item.priceBefore
-            ? item.priceBefore
+            ? moneyComma(item.priceAfter)
+            : moneyComma(item.priceBefore)
+            ? moneyComma(item.priceBefore)
             : '가격정보 없음'}
         </NormalText>
-        <NormalText>{item.title ? item.title : 'No Title'}</NormalText>
+        <NormalText>
+          {item.title ? stringSlice(item.title, 18) : 'No Title'}
+        </NormalText>
       </ItemBox>
     )
   }

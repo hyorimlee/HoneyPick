@@ -123,7 +123,7 @@ export const deleteCollection = createAsyncThunk<
   },
 )
 
-export const collectionLike = createAsyncThunk<
+export const setCollectionLike = createAsyncThunk<
   any,
   {collectionId: string},
   {state: RootState}
