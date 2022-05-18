@@ -11,8 +11,7 @@ const EventSchema = new Schema(
     description: { type: String, required: false },
     additional: { type: String, required: false },
     items: [{
-      _id: { type: ObjectId, required: true, ref: 'item'},
-      recommend: { type: Number, required: true, default: 0}
+      _id: { type: ObjectId, required: true, ref: 'item'}
     }],
     vote:{type:ObjectId, required:false, ref:'vote'}
   },

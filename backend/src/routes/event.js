@@ -13,7 +13,7 @@ eventRouter.patch('/item',authAccessToken,async(req,res)=>{
         if(user.isAdmin == false) return res.status(400).send({err:"user가 admin이 아닙니다"})
         const { originalEventId, eventId,itemId } = req.body
         if(!eventId && !originalEventId) return res.status(400).send({err:"eventId 혹은 originalEventId가 필요"})
-        
+
         if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
         if(originalEventId&&!isValidObjectId(originalEventId)) return res.status(400).send({ err: "잘못된 originalEventId" })
         if(eventId && !isValidObjectId(eventId)) return res.status(400).send({ err: "잘못된 eventId" })
@@ -22,7 +22,7 @@ eventRouter.patch('/item',authAccessToken,async(req,res)=>{
         if(!item) return res.status(400).send({ err: "아이템이 존재하지 않습니다." })
 
         var promises = []
-        if(originalEventId) {            
+        if(originalEventId) {
             promises.push(Event.findOneAndUpdate({ _id: originalEventId, 'user._id': userId }, { $pull: { items: { _id: itemId } } }, { new: true }))
         }
         if(eventId) {
@@ -58,11 +58,11 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"})
     // if(!itemCount) return res.status(400).send({err:"itemCount가 필요합니다."})
     // console.log(user.events.length)
-    
+
     // // 기존 컬렉션이 30개 이상이면, 생성 차단
     // if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
 
-    // event 자체 추가 
+    // event 자체 추가
     let event = new Event({ ...req.body, user })
     await event.save()
     console.log(`event created! _id=${event._id}`)
@@ -80,7 +80,7 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     const vote = new Vote({ eventId:event._id, title, result: results, isPublic: true })
     event.vote = vote._id
     await Promise.all[vote.save(),event.save()]
-    
+
     return res.status(201).send({user:event.user, title:event.title, description:event.description, additional:event.additional, _id:event._id, createdAt:event.createdAt,updatedAt:event.updatedAt, vote:vote })
   } catch (error) {
     console.log(error)
@@ -123,7 +123,7 @@ eventRouter.get('/:eventId', authAccessToken, async (req, res) => {
     var idList = event.items.map(({ _id }) => ObjectId(_id))
     var itemList = await Item.find({ _id: { $in: idList }})
     const items = itemList.map((item, idx) => {
-      return { ...item._doc, recommend: event.items[idx].recommend }
+      return { ...item._doc }
     })
 
     return res.status(200).send({ event, items })
