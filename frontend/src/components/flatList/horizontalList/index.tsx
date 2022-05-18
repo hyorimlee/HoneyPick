@@ -14,7 +14,7 @@ function HorizontalList({data, title}: IProps) {
 
   const pressedList = useCallback(
     (collectionId: string, voteId?: string, isClosed?: boolean) => () => {
-      title.includes('투표') && voteId && isClosed !== undefined
+      title && title.includes('투표') && voteId && isClosed !== undefined
         ? navigation.navigate('Vote', {
             accountId: userId,
             collectionId,
@@ -30,16 +30,21 @@ function HorizontalList({data, title}: IProps) {
   )
 
   const renderItem = ({item, index}: {item: any; index: number}) => {
+    const thumbnail =
+      title?.includes('투표') && item.result.length > 0
+        ? item.result.slice(-1)[0].thumbnail
+        : item.thumbnail
+
     return (
       <ItemContainer
         onPress={
-          title.includes('투표')
+          title && title.includes('투표')
             ? pressedList(item.collectionId, item._id, item.isClosed)
             : pressedList(item._id)
         }
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
         <Image
-          source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
+          source={{uri: `${Config.IMAGE_BASE_URL}/raw/${thumbnail}`}}
           style={{
             width: 110,
             height: 110,
