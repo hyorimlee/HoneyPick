@@ -34,15 +34,8 @@ function ColletionItems({accountId, collectionId}: IComponentProps) {
               <ItemComponent
                 key={index}
                 text={item.title ? item.title : '이름을 찾을 수 없어요.'}
-                price={
-                  item.priceBefore ? item.priceBefore : '가격 정보가 없어요.'
-                }
+                price={item.priceAfter ? item.priceAfter : item.priceBefore}
                 uri={item.thumbnail}
-                borderColor={
-                  selectedItems?.find(votedItem => votedItem._id === item._id)
-                    ? '#F9C12E'
-                    : undefined
-                }
                 onPress={pushToItemPage(item._id)}
               />
             )

@@ -106,8 +106,8 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
             height: 96,
             resizeMode: 'contain',
             borderRadius: 10,
-            borderWidth: 2,
-            borderColor: 'black',
+            borderWidth: 1,
+            borderColor: '#C4C4C4',
           }}
         />
       </InfoContainer>
