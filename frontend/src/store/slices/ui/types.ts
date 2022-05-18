@@ -4,6 +4,7 @@ export type IIsModal =
   | 'editCollection'
   | 'clipboard'
   | 'clipboardCreateCollection'
+  | 'createVote'
 
 export interface IInitialState {
   isModal: IIsModal
