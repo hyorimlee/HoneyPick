@@ -43,7 +43,10 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
             }
         })
 
-        collections.push(...influencerCollection)
+        collections.push(...influencerCollection.filter(({ collection }) => {
+            if(collection) return true
+            else return false
+        }))
 
         // 랜덤 추천 컬렉션
         collections.push(...randomCollection.map((collection, idx) => {
