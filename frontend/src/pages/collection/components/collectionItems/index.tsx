@@ -5,33 +5,58 @@ import {useNavigation} from '@react-navigation/native'
 import {Container, ItemsContainer, VoteButtonContainer} from './styles'
 import {useAppDispatch, useAppSelector} from '../../../../store/types'
 import ItemComponent from '../itemComponent'
-import { IComponentProps } from './types'
-import { RootStackNavigationProp } from '../../../../../types/navigation'
+import {IComponentProps} from './types'
+import {RootStackNavigationProp} from '../../../../../types/navigation'
 
 function ColletionItems({accountId, collectionId}: IComponentProps) {
   const itemNavigation = useNavigation<RootStackNavigationProp>()
   const {selectedItems} = useAppSelector(state => state.vote)
-  const {currentCollection, currentItems} = useAppSelector(state => state.collection)
+  const {currentCollection, currentItems} = useAppSelector(
+    state => state.collection,
+  )
 
-  const pushToItemPage = useCallback((itemId: string) => {
-    itemNavigation.push('Item', { itemId: itemId, collectionId: currentCollection!._id})
-  }, [])
+  const pushToItemPage = useCallback(
+    (itemId: string) => () => {
+      itemNavigation.push('Item', {
+        itemId: itemId,
+        collectionId: currentCollection._id,
+      })
+    },
+    [currentCollection._id],
+  )
 
   return (
     <Container>
-      <ItemsContainer>
-      {currentItems!.map((item, index) => {
-        return (
-          <ItemComponent
-          key={index}
-          text={item?.title ? item.title : 'No title'}
-          price={item?.priceBefore ? item.priceBefore : 'No Price'}
-          uri={item.thumbnail}
-          borderColor={selectedItems?.find((votedItem) => votedItem._id === item._id) ? '#F9C12E' : undefined}
-          onPress={() => pushToItemPage(item._id)}
-          />
-          )
-        })}
+      <ItemsContainer style={{alignItems: 'flex-start'}}>
+        {currentItems.length ? (
+          currentItems.map((item, index) => {
+            return (
+              <ItemComponent
+                key={index}
+                text={item.title ? item.title : '이름을 찾을 수 없어요.'}
+                price={
+                  item.priceBefore ? item.priceBefore : '가격 정보가 없어요.'
+                }
+                uri={item.thumbnail}
+                borderColor={
+                  selectedItems?.find(votedItem => votedItem._id === item._id)
+                    ? '#F9C12E'
+                    : undefined
+                }
+                onPress={pushToItemPage(item._id)}
+              />
+            )
+          })
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: 'black', fontSize: 20}}>아이템이 없어요.</Text>
+          </View>
+        )}
       </ItemsContainer>
     </Container>
   )

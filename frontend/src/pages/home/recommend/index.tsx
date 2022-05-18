@@ -13,7 +13,10 @@ import {
 } from 'react-native'
 
 import BaseTextInput from '~/components/textInput/base/index'
-import {getItemRecommend, getCollectionRecommend} from '~/store/slices/recommend/asyncThunk'
+import {
+  getItemRecommend,
+  getCollectionRecommend,
+} from '~/store/slices/recommend/asyncThunk'
 import {useAppSelector, useAppDispatch} from '~/store/types'
 
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
@@ -33,8 +36,7 @@ import {
 } from './styles'
 
 import {useNavigation} from '@react-navigation/native'
-import { RootStackNavigationProp } from '~/../types/navigation'
-
+import {RootStackNavigationProp} from '~/../types/navigation'
 
 const {width, height} = Dimensions.get('window')
 
@@ -44,10 +46,10 @@ function RecommendStack() {
   const {userId} = useAppSelector(state => state.profile)
 
   const pressedCollection = useCallback(
-    (id: string) => () => {
-      navigation.navigate('Collection', {accountId: userId, collectionId: id})
+    (accountId: string, collectionId: string) => () => {
+      navigation.navigate('Collection', {accountId, collectionId})
     },
-    [userId],
+    [],
   )
 
   const pressedItem = useCallback(
@@ -63,19 +65,26 @@ function RecommendStack() {
     // 추가 데이터 요청 시 query 받기
     dispatch(getCollectionRecommend({}))
   }
-  const getItemRecommendList = (recs='0,1,2,3,4', page=1) => {
-    dispatch(getItemRecommend({ recs, page }))
+  const getItemRecommendList = (recs = '0,1,2,3,4', page = 1) => {
+    dispatch(getItemRecommend({recs, page}))
   }
-  const {collections, items} = useAppSelector(state => state.recommend )
+  const {collections, items} = useAppSelector(state => state.recommend)
 
   useEffect(() => getCollectionRecommendList(), [])
   useEffect(() => getItemRecommendList(), [])
 
   const collectionRenderItem = ({item}: {item: any}) => {
+    if (item.collection === undefined) {
+      return <></>
+    }
+
     return (
       <View key={item.collection._id} style={styles.collectionViewBox}>
         <CollectionContainer
-          onPress={pressedCollection(item.collection._id)}>
+          onPress={pressedCollection(
+            item.collection.user._id,
+            item.collection._id,
+          )}>
           <ImageContainer
             style={{flex: 1}}
             // collection thumbnail
@@ -95,16 +104,13 @@ function RecommendStack() {
   }
 
   const getAdditionalCollection = () => {
-    if(collections.length < 5){
+    if (collections.length < 5) {
       return
     }
-    console.log('컬렉션 더 가져오기')
   }
 
   const getAdditionalItem = (index: number) => {
-    console.log(index, '아이템 더 가져오기')
     // 데이터 추가하기
-
   }
 
   const itemRenderItem = ({item}: {item: any}) => {
@@ -130,43 +136,38 @@ function RecommendStack() {
             ? item.priceBefore
             : '가격정보 없음'}
         </NormalText>
-        <NormalText>
-          {item.title ? item.title : 'No Title'}
-        </NormalText>
+        <NormalText>{item.title ? item.title : 'No Title'}</NormalText>
       </ItemBox>
-    )}
+    )
+  }
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
       <Container>
         <FlatList
-          style={{width: '100%'}}
-          renderItem={collectionRenderItem}
           data={collections}
+          renderItem={collectionRenderItem}
+          style={{width: '100%'}}
           horizontal={true}
           // onScroll={scrollEvent}
-          onEndReached={getAdditionalCollection}
-        >
-        </FlatList>
-
+          onEndReached={getAdditionalCollection}></FlatList>
         {items.map(({title, itemList, rec, page}, index) => {
           return (
-          <View key={index} style={styles.viewBox}>
-          <BoldText style={{width: '100%', textAlign: 'left'}}>{title}</BoldText>
+            <View key={index} style={styles.viewBox}>
+              <BoldText style={{width: '100%', textAlign: 'left'}}>
+                {title}
+              </BoldText>
 
-          <ItemContainer>
-            <FlatList
-              renderItem={itemRenderItem}
-              data={itemList}
-              horizontal={true}
-              onEndReached={()=>{
-                console.log(index, '끝 도달')
-                getItemRecommendList(rec.toString(), page+1)
-                
-              }}
-              >
-            </FlatList>
-          </ItemContainer>
-        </View>)
+              <ItemContainer>
+                <FlatList
+                  renderItem={itemRenderItem}
+                  data={itemList}
+                  horizontal={true}
+                  onEndReached={() => {
+                    getItemRecommendList(rec.toString(), page + 1)
+                  }}></FlatList>
+              </ItemContainer>
+            </View>
+          )
         })}
       </Container>
     </SafeAreaView>
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
     width: width * 0.8,
     borderRadius: 20,
     marginRight: 10,
-    height: 140
+    height: 140,
   },
   slider: {
     width: width * 0.9,

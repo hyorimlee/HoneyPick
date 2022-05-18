@@ -3,7 +3,7 @@ import {memo, useCallback} from 'react'
 import {Pressable, Alert, View} from 'react-native'
 import BaseButton from '~/components/button/base'
 import {useNavigation} from '@react-navigation/native'
-import {useAppSelector} from '~/store/types'
+import {useAppDispatch, useAppSelector} from '~/store/types'
 import Config from 'react-native-config'
 import {
   Container,
@@ -17,15 +17,23 @@ import {
 import {RootStackNavigationProp} from '~/../types/navigation'
 import {ProfileDefaultNavigationProp} from '../../default/types'
 import EncryptedStorage from 'react-native-encrypted-storage'
-import {useDispatch} from 'react-redux'
 import userSlice from '~/store/slices/user'
+import {setFollow} from '~/store/slices/profile/asyncThunk'
+import profileSlice from '~/store/slices/profile'
 
 function ProfileInfo() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const profileDefaultNavigation = useNavigation<ProfileDefaultNavigationProp>()
   const followNavigation = useNavigation<RootStackNavigationProp>()
-  const {userId, nickname, profileImage, description, following, follower} =
-    useAppSelector(state => state.profile)
+  const {
+    userId,
+    nickname,
+    profileImage,
+    description,
+    following,
+    follower,
+    myFollow,
+  } = useAppSelector(state => state.profile)
   const myUserId = useAppSelector(state => state.user.userId)
 
   const logout = useCallback(async () => {
@@ -44,6 +52,11 @@ function ProfileInfo() {
   const navigateFollow = (type: 'following' | 'follower') => () => {
     followNavigation.push('Follow', {type})
   }
+
+  const followChange = useCallback(() => {
+    dispatch(setFollow({userId}))
+    dispatch(profileSlice.actions.switchMyFollow())
+  }, [userId])
 
   return (
     <Container>
@@ -80,7 +93,15 @@ function ProfileInfo() {
               paddingVertical={5}
               fontSize={16}></BaseButton>
           </>
-        ) : null}
+        ) : (
+          <BaseButton
+            text={myFollow ? `언팔로우` : `팔로우`}
+            backgroundColor={myFollow ? '#C4C4C4' : 'default'}
+            onPress={followChange}
+            paddingVertical={5}
+            paddingHorizontal={10}
+          />
+        )}
       </EditContainer>
     </Container>
   )

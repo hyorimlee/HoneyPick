@@ -13,6 +13,7 @@ import {
 } from '../../styles'
 import {InfoContainer, PriceText, PriceTextGray} from './styles'
 import {IProps} from './types'
+import {moneyComma} from '~/modules/convert'
 
 function ItemInfo({openSheet, isRecommendMode, collectionId}: IProps) {
   const {item} = useAppSelector(state => state.item)
@@ -27,16 +28,18 @@ function ItemInfo({openSheet, isRecommendMode, collectionId}: IProps) {
         {item.priceAfter !== 0 ? (
           <RowTextContainer>
             <PriceText>￦</PriceText>
-            <PriceText>{item.priceBefore}</PriceText>
+            <PriceText>{moneyComma(item.priceBefore!)}</PriceText>
           </RowTextContainer>
         ) : (
           <RowTextContainer>
             <PriceText>￦</PriceText>
-            <PriceTextGray>{item.priceBefore}</PriceTextGray>
-            <PriceText>{item.priceAfter}</PriceText>
+            <PriceTextGray>{moneyComma(item.priceBefore!)}</PriceTextGray>
+            <PriceText>{moneyComma(item.priceAfter!)}</PriceText>
           </RowTextContainer>
         )}
-        {collectionId ? <NormalText>{currentCollection!.title}</NormalText> : null}
+        {collectionId ? (
+          <NormalText>{currentCollection!.title}</NormalText>
+        ) : null}
       </TextContainer>
       {userId === currentCollection!.user._id ? (
         <TouchableOpacity onPress={openSheet}>

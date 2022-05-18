@@ -3,7 +3,7 @@ import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
 import {VoteInitialState} from './types'
-import { ItemState } from '../item/types'
+import {ItemState} from '../item/types'
 import {
   createVote,
   getVoteList,
@@ -18,13 +18,13 @@ const initialState: VoteInitialState = {
     _id: '',
     collectionId: '',
     title: '',
-    result: [{ _id: '', count: 0, title: '', priceBefore: 0, priceAfter: 0, }],
+    result: [{_id: '', count: 0, title: '', priceBefore: 0, priceAfter: 0}],
     isPublic: true,
     isClosed: false,
-    participants: [{ _id: '' }],
+    participants: [{_id: ''}],
     createdAt: '',
     updatedAt: '',
-    __v: 0
+    __v: 0,
   },
   selectedItems: [],
 }
@@ -37,16 +37,20 @@ const voteSlice = createSlice({
       state.currentVote = action.payload
     },
     setSelectedItems(state, action) {
-      const isExist = state.selectedItems.find((item) => item._id === action.payload._id)
+      const isExist = state.selectedItems.find(
+        item => item._id === action.payload._id,
+      )
       if (isExist) {
-        state.selectedItems = state.selectedItems.filter((item) => item._id !== action.payload._id)
+        state.selectedItems = state.selectedItems.filter(
+          item => item._id !== action.payload._id,
+        )
       } else {
         state.selectedItems.push(action.payload)
       }
     },
     cleanSelectedItems(state) {
       state.selectedItems = []
-    }
+    },
   },
   extraReducers: builder => {
     builder
@@ -55,15 +59,18 @@ const voteSlice = createSlice({
       })
       .addCase(getVote.fulfilled, (state, action) => {
         state.currentVote = action.payload.vote
-        state.currentVote.result = state.currentVote?.result.sort((a, b) => {return b.count - a.count})
+        state.currentVote.result = state.currentVote?.result.sort((a, b) => {
+          return b.count - a.count
+        })
       })
       .addCase(getVoteList.fulfilled, (state, action) => {
-        console.log(action.payload.votes)
+        // console.log(action.payload.votes)
       })
       .addCase(endVote.fulfilled, (state, action) => {
         state.currentVote = action.payload.vote
       })
   },
 })
-export const {setCurrentVote, setSelectedItems, cleanSelectedItems} = voteSlice.actions
+export const {setCurrentVote, setSelectedItems, cleanSelectedItems} =
+  voteSlice.actions
 export default voteSlice

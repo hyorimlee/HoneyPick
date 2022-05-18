@@ -1,15 +1,15 @@
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 import {CompositeNavigationProp} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../../types/navigation'
+import {RootStackParamList} from '../../../types/navigation'
 
 export type CollectionStackParamList = {
-  Default: {accountId: string, collectionId: string} | undefined,
-  EditCollection: undefined,
+  CollectionDefault: {accountId: string; collectionId: string} | undefined
+  EditCollection: undefined
   CreateVote: undefined
 }
 
 export type CollectionNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<RootStackParamList, 'Collection'>,
-  NativeStackNavigationProp<CollectionStackParamList, 'Default'>
+  NativeStackNavigationProp<CollectionStackParamList, 'CollectionDefault'>
 >

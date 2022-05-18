@@ -10,14 +10,14 @@ const Container = styled.ScrollView`
 // margin-right: 5px;
 const CollectionContainer = styled.TouchableOpacity`
   width: 100%;
-  
+
   margin-vertical: 10px;
-  
+
   display: flex;
   flex-direction: row;
-  justifyContent: center;
-  alignItems: center;
-  background-color: #F7F7F7;
+  justifycontent: center;
+  alignitems: center;
+  background-color: #f7f7f7;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   border-radius: 10px;
 `
@@ -29,7 +29,7 @@ const SearchBarContainer = styled.View`
   align-items: center;
   width: 100%;
   height: 60px;
-  background-color: #F9C12E;
+  background-color: #f9c12e;
   padding-horizontal: 30px;
   margin-vertical: 20px;
   border-radius: 100px;
@@ -59,8 +59,7 @@ const ItemContainer = styled.View`
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justifyContent: center;
-
+  justifycontent: center;
 `
 
 // flex: 40%;
@@ -93,4 +92,16 @@ const ItemPageContainer = styled.ImageBackground`
   margin-vertical: 30px;
 `
 
-export {Container, CollectionContainer, SearchBarContainer, SlideContainer, ItemContainer, NormalText, BoldText, InfoContainer, ImageContainer, ItemBox, ItemPageContainer}
+export {
+  Container,
+  CollectionContainer,
+  SearchBarContainer,
+  SlideContainer,
+  ItemContainer,
+  NormalText,
+  BoldText,
+  InfoContainer,
+  ImageContainer,
+  ItemBox,
+  ItemPageContainer,
+}

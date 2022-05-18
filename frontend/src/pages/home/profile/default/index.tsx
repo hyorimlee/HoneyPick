@@ -7,12 +7,11 @@ import {getLists, getProfile} from '~/store/slices/profile/asyncThunk'
 import {useAppDispatch, useAppSelector} from '~/store/types'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import ProfileLists from '../components/profileLists'
-import {Container} from './styles'
 import {ProfileDefaultNavigationProp, ProfileDefaultRoute} from './types'
 
 function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   const dispatch = useAppDispatch()
-  const myUserId = useAppSelector(state => state.user.userId)
+  const {isModal} = useAppSelector(state => state.ui)
   const [isInfoDone, setIsInfoDone] = useState(false)
   const route = useRoute<ProfileDefaultRoute>()
   const userId = route.params!.userId
@@ -26,21 +25,26 @@ function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   }, [route])
 
   useEffect(() => {
-    const screenStateChange = navigation.addListener('state', () => {
-      dispatch(getLists({accountId: userId}))
-    })
+    if (isModal === false) {
+      navigation.addListener('state', getListsFunc)
+      navigation.addListener('focus', getListsFunc)
+      getListsFunc()
 
-    return screenStateChange
-  }, [navigation, userId])
+      return () => {
+        navigation.removeListener('state', getListsFunc)
+        navigation.removeListener('focus', getListsFunc)
+      }
+    }
+  }, [navigation, userId, isModal])
+
+  const getListsFunc = () => dispatch(getLists({accountId: userId}))
 
   return (
     <SafeAreaView>
-      <Container>
-        <KeyboardAwareScrollView>
-          {isInfoDone ? <ProfileInfo></ProfileInfo> : null}
-          <ProfileLists></ProfileLists>
-        </KeyboardAwareScrollView>
-      </Container>
+      <KeyboardAwareScrollView>
+        {isInfoDone ? <ProfileInfo></ProfileInfo> : null}
+        <ProfileLists></ProfileLists>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   )
 }

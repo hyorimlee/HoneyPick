@@ -3,9 +3,7 @@ import Config from 'react-native-config'
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {RootState} from '../../types'
 import {SearchState} from './types'
-import {
-  search,
-} from './asyncThunk'
+import {search} from './asyncThunk'
 
 const initialState: SearchState = {
   collections: [],
@@ -16,23 +14,16 @@ const initialState: SearchState = {
 const searchSlice = createSlice({
   name: 'search',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: builder => {
-    builder
-      .addCase(search.fulfilled, (state, action) => {
-        console.log(action.payload)
-        
-        state.collections = action.payload.collections
-        if(action.payload.page === 1) state.items = action.payload.items
-        else state.items.push(...action.payload.items)
-        if(action.payload.items.length) { 
-          state.page = action.payload.page
-        }
-      })
-      .addCase(search.rejected, (state, action) => {
-        console.log(action.payload)
-      })
+    builder.addCase(search.fulfilled, (state, action) => {
+      state.collections = action.payload.collections
+      if (action.payload.page === 1) state.items = action.payload.items
+      else state.items.push(...action.payload.items)
+      if (action.payload.items.length) {
+        state.page = action.payload.page
+      }
+    })
   },
 })
 

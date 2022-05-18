@@ -39,9 +39,6 @@ const userSlice = createSlice({
         state.nickname = action.payload.nickname
         state.isAdmin = action.payload.isAdmin
       })
-      .addCase(requestAccessToken.rejected, (state, action) => {
-        console.log(action.payload)
-      })
       .addCase(requestSignIn.fulfilled, (state, action) => {
         state.userId = action.payload.userId
         state.accessToken = action.payload.accessToken
@@ -51,9 +48,6 @@ const userSlice = createSlice({
         EncryptedStorage.setItem('refreshToken', action.payload.refreshToken)
           .then(() => console.log('login => refreshToken success'))
           .catch(err => console.log('login => refreshToken fail', err))
-      })
-      .addCase(requestSignIn.rejected, (state, action) => {
-        console.log(action.payload)
       })
       .addCase(requestSignUp.fulfilled, (state, action) => {
         state.userId = action.payload.userId
@@ -65,17 +59,8 @@ const userSlice = createSlice({
           .then(() => console.log('signup => refreshToken success'))
           .catch(err => console.log('signup => refreshToken fail', err))
       })
-      .addCase(requestSignUp.rejected, (state, action) => {
-        console.log(action.payload)
-      })
       .addCase(requestPhoneVerify.fulfilled, (state, action) => {
         console.log(action.payload.phone.verificationCode)
-      })
-      .addCase(requestPhoneVerify.rejected, (state, action) => {
-        console.log(action)
-      })
-      .addCase(requestPhoneVerifyCheck.rejected, (state, action) => {
-        console.log(action)
       })
       .addCase(getUserCollectionList.fulfilled, (state, action) => {
         state.collections = action.payload.collections

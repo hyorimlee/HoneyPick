@@ -17,6 +17,7 @@ const initialState: CollectionInitialState = {
       _id: '-1',
       username: '',
       nickname: '',
+      myFollow: false,
     },
     title: '',
     description: '',
@@ -26,6 +27,7 @@ const initialState: CollectionInitialState = {
     createdAt: '',
     updatedAt: '',
     __v: 1,
+    thumbnail: '',
   },
   currentItems: [],
 }
@@ -33,17 +35,25 @@ const initialState: CollectionInitialState = {
 const collectionSlice = createSlice({
   name: 'collection',
   initialState,
-  reducers: {},
+  reducers: {
+    changeMyFollow: state => {
+      state.currentCollection!.user.myFollow =
+        !state.currentCollection?.user.myFollow
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(editCollection.fulfilled, (state, action) => {
         state.currentCollection = action.payload.collection
       })
-      .addCase(editCollection.rejected, (state, action) => {
-        console.log(action.payload)
-      })
       .addCase(getCollection.fulfilled, (state, action) => {
+        const thumbnail = action.payload.collection.items.length
+          ? action.payload.items.slice(-1)[0].thumbnail
+          : action.payload.collection.thumbnail
+
         state.currentCollection = action.payload.collection
+        state.currentCollection.user.myFollow = action.payload.myFollow
+        state.currentCollection.thumbnail = thumbnail
         state.currentItems = action.payload.items
       })
   },

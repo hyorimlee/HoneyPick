@@ -6,6 +6,7 @@ import {
   Linking,
   View,
   Dimensions,
+  Alert,
 } from 'react-native'
 import Config from 'react-native-config'
 import ActionSheet from 'react-native-actions-sheet'
@@ -18,13 +19,17 @@ import {useAppSelector, useAppDispatch} from '~/store/types'
 import {useIsFocused, useRoute} from '@react-navigation/native'
 import {Container, ImageContainer, MenuContainer, DashedBorder} from './styles'
 import ItemInfo from './components/itemInfo'
-import {isDashOn, setSaveCollection} from '~/store/slices/item'
+import {isDashOn} from '~/store/slices/item'
 import RecommendInfo from './components/recommendInfo'
 import RecommendSettings from './components/recommendSettings'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {RootStackParamList} from '~/../types/navigation'
 
-const {width} = Dimensions.get('window')
-
-function ItemStack() {
+function ItemStack({
+  navigation,
+}: {
+  navigation: NativeStackNavigationProp<RootStackParamList>
+}) {
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
   const dashOn = useAppSelector(isDashOn)
@@ -45,19 +50,40 @@ function ItemStack() {
     }
   }, [isFocused, isRecommendMode])
 
-  const openSheet = () => {
+  const openSheet = useCallback(() => {
     actionSheetRef.current?.show()
-  }
+  }, [])
 
-  const deleteItem = () => {
+  const deleteItem = useCallback(() => {
     actionSheetRef.current?.hide()
-    dispatch(
-      itemToCollection({
-        itemId,
-        originalCollectionId: collectionId,
-      }),
+    Alert.alert(
+      '아이템이 컬렉션에서 삭제됩니다.\n정말 삭제하시겠습니까?',
+      undefined,
+      [
+        {
+          text: '확인',
+          onPress: () => {
+            dispatch(
+              itemToCollection({
+                itemId,
+                originalCollectionId: collectionId,
+              }),
+            )
+              .unwrap()
+              .then(() => navigation.pop())
+              .catch(() =>
+                Alert.alert(
+                  '삭제가 되지 않았습니다.\n잠시후 다시 시도해주세요.',
+                ),
+              )
+          },
+        },
+        {
+          text: '취소',
+        },
+      ],
     )
-  }
+  }, [collectionId])
 
   const toggleIsRecommendMode = useCallback(() => {
     actionSheetRef.current?.hide()
@@ -67,51 +93,46 @@ function ItemStack() {
   // 검증 로직 없으면 정상 작동, 검증 로직은 모든 링크가 유효하지 않다고 뜸
   const goToSite = useCallback(async () => {
     await Linking.openURL(item.url)
-    // if (supported) {
-    //   await Linking.openURL(item.url)
-    // } else {
-    //   Alert.alert(
-    //     '죄송합니다. 잘못된 주소이거나 오류로 이동이 불가능합니다. 다시 시도해주세요.',
-    //   )
-    // }
   }, [item.url])
 
   const saveMyCollection = () => {
-    dispatch(setSaveCollection('yet'))
+    // dispatch(setSaveCollection('yet'))
   }
 
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
-      <ActionSheet
-        ref={actionSheetRef}
-        containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
-        <MenuContainer>
-          <BaseButton
-            text={'이 컬렉션에서 삭제하기'}
-            onPress={deleteItem}
-            borderRadius={25}
-            marginVertical={5}
-            paddingVertical={15}
-          />
-          {review ? (
+      {isMyItem ? (
+        <ActionSheet
+          ref={actionSheetRef}
+          containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
+          <MenuContainer>
             <BaseButton
-              text={'추천 정보 수정하기'}
-              onPress={toggleIsRecommendMode}
+              text={'이 컬렉션에서 삭제하기'}
+              onPress={deleteItem}
               borderRadius={25}
               marginVertical={5}
               paddingVertical={15}
             />
-          ) : (
-            <BaseButton
-              text={'이 상품 추천하기'}
-              onPress={toggleIsRecommendMode}
-              borderRadius={25}
-              marginVertical={5}
-              paddingVertical={15}
-            />
-          )}
-        </MenuContainer>
-      </ActionSheet>
+            {review ? (
+              <BaseButton
+                text={'추천 정보 수정하기'}
+                onPress={toggleIsRecommendMode}
+                borderRadius={25}
+                marginVertical={5}
+                paddingVertical={15}
+              />
+            ) : (
+              <BaseButton
+                text={'이 상품 추천하기'}
+                onPress={toggleIsRecommendMode}
+                borderRadius={25}
+                marginVertical={5}
+                paddingVertical={15}
+              />
+            )}
+          </MenuContainer>
+        </ActionSheet>
+      ) : null}
 
       <Container>
         <ImageContainer
@@ -128,8 +149,7 @@ function ItemStack() {
         <ItemInfo
           openSheet={openSheet}
           isRecommendMode={isRecommendMode}
-          collectionId={collectionId}
-        ></ItemInfo>
+          collectionId={collectionId}></ItemInfo>
         {dashOn ? <DashedBorder /> : null}
         {isRecommendMode ? (
           <RecommendSettings toggleIsRecommendMode={toggleIsRecommendMode} />

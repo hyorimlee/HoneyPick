@@ -105,10 +105,10 @@ function EditProfile() {
               fetch(presigned.url, {
                 method: 'POST',
                 body: formData,
-              })
+              }).then(() => navigation.navigate('ProfileDefault', {userId}))
+            } else {
+              navigation.navigate('ProfileDefault', {userId})
             }
-
-            navigation.navigate('Default', {userId})
           })
           .catch(error => {
             Alert.alert(error.err)
@@ -126,17 +126,6 @@ function EditProfile() {
             width: 128,
             height: 128,
           }}></ProfileImage>
-        {/* <FontAwesomeIcon
-            icon={faPen as IconProp}
-            color="black"
-            size={30}
-            style={{
-              opacity: 10,
-              alignSelf: 'flex-start',
-              justifyContent: 'flex-start',
-              position: 'absolute',
-            }}
-          /> */}
       </ChangeImage>
       <BaseTextInput
         value={nickname}
