@@ -28,7 +28,7 @@ function ResultItems({accountId, collectionId, eventId, voteId, result}: ICompon
                   source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
                 ></LargeItemImage>
                 <LargeItemInfoContainer>
-                  <TitleText>{item.title}</TitleText>
+                  <TitleText numberOfLines={1}>{item.title}</TitleText>
                   <NormalText>{item.count} 표</NormalText>
                 </LargeItemInfoContainer>
               </LargeItemFlex>
@@ -42,7 +42,7 @@ function ResultItems({accountId, collectionId, eventId, voteId, result}: ICompon
                   source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
                 ></MediumItemImage>
                 <MediumItemInfoContainer>
-                  <TitleText>{item.title}</TitleText>
+                  <TitleText numberOfLines={1}>{item.title}</TitleText>
                   <NormalText>{item.count} 표</NormalText>
                 </MediumItemInfoContainer>
               </MediumItemFlex>
@@ -52,7 +52,7 @@ function ResultItems({accountId, collectionId, eventId, voteId, result}: ICompon
           return(
             <SmallItem key={index} onPress={() => pushToItemPage(item._id)}>
               <SmallItemFlex>
-                <TitleText>{item.title}</TitleText>
+                <TitleText>{item.title.length < 20 ? `${item.title}` : `${item.title.substring(0, 20)}...`}</TitleText>
                 <NormalText>{item.count} 표</NormalText>
               </SmallItemFlex>
             </SmallItem>

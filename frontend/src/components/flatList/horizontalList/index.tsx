@@ -14,7 +14,7 @@ function HorizontalList({data, title}: IProps) {
 
   const pressedList = useCallback(
     (collectionId: string, voteId?: string, isClosed?: boolean) => () => {
-      title.includes('투표') && voteId && isClosed
+      (title.includes('투표') && voteId) && (isClosed !== undefined)
         ? navigation.navigate('Vote', {
             accountId: userId,
             collectionId,

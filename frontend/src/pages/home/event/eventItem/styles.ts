@@ -1,5 +1,9 @@
 import styled from 'styled-components/native'
 
 export const Container = styled.ScrollView`
-  padding: 30px;
+
+`
+export const EventInfoContainer = styled.ScrollView`
+  margin-horizontal: 30px;
+  margin-top: 30px;
 `
