@@ -12,7 +12,7 @@ import ResultItems from '~/pages/vote/components/resultItems'
 import {vote} from '~/store/slices/vote/asyncThunk'
 import {cleanSelectedItems} from '~/store/slices/vote'
 
-import {Container} from './styles'
+import {Container, EventInfoContainer} from './styles'
 import {
   MainEvent,
   InfoTop,
@@ -61,25 +61,27 @@ function EventItem() {
       <Container>
         {event ? (
           <>
-            <MainEvent>
-              <InfoTop>
-                <EventImage
-                  source={require('~/assets/images/sampleimage2.jpg')}></EventImage>
-                <InfoContainer>
-                  <NormalText>directed by {event.user.nickname}</NormalText>
-                  <TitleText>{event.title}</TitleText>
-                  <NormalText>{event.description}</NormalText>
-                </InfoContainer>
-              </InfoTop>
-              <NormalText>{event.additional}</NormalText>
-            </MainEvent>
+            <EventInfoContainer>
+              <MainEvent>
+                <InfoTop>
+                  <EventImage
+                    source={require('~/assets/images/sampleimage2.jpg')}></EventImage>
+                  <InfoContainer>
+                    <NormalText>directed by {event.user.nickname}</NormalText>
+                    <TitleText>{event.title}</TitleText>
+                    <NormalText>{event.description}</NormalText>
+                  </InfoContainer>
+                </InfoTop>
+                <NormalText>{event.additional}</NormalText>
+              </MainEvent>
+            </EventInfoContainer>
             {event.vote.isClosed ? <ResultItems
               result={event.vote.result}
-            ></ResultItems> : <VoteItems
+            ></ResultItems> : <EventInfoContainer><VoteItems
               onVote={onVote}
               eventId={event._id}
               voteId={event.vote._id}
-            ></VoteItems>
+            ></VoteItems></EventInfoContainer>
             }
           </>
         ) : null}

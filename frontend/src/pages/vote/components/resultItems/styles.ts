@@ -4,7 +4,7 @@ export const Container = styled.View`
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 10px
+  padding: 15px
 `
 
 export const LargeItem = styled.TouchableOpacity`
@@ -27,9 +27,10 @@ export const LargeItemImage = styled.Image`
 `
 
 export const LargeItemInfoContainer = styled.View`
+  width: 75%;
   flex-direction: column;
   justify-content: center;
-  margin-left: 20px;
+  padding-horizontal: 20px;
 `
 
 export const MediumItem = styled.TouchableOpacity`
@@ -75,11 +76,13 @@ export const SmallItemFlex = styled.View`
 
 export const TitleText = styled.Text`
   color: #000000;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 600;
+  margin-vertical: 1%;
 `
 
 export const NormalText = styled.Text`
   color: #000000;
-  font-size: 12px;
+  font-size: 14px;
+  margin-vertical: 1%;
 `

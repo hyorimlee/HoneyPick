@@ -14,14 +14,14 @@ export const TitleContainer = styled.View`
 
 export const TitleText = styled.Text`
   color: #F9C12E;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   margin-right: 6px;
 `
 
 export const NormalText = styled.Text`
   color: #000000;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   margin-top: 4px;
 
