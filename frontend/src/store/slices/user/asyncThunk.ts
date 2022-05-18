@@ -73,7 +73,7 @@ export const requestPhoneVerify = createAsyncThunk(
         url: `${Config.API_BASE_URL}/phone/`,
         data: {phoneNumber},
       })
-      console.log(response.data)
+
       return response.data
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data)

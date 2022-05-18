@@ -15,7 +15,7 @@ function BaseButton({
   paddingHorizontal,
   paddingVertical,
   color = '#ffffff',
-  fontSize,
+  fontSize = 16,
   textAlign = 'center',
   backgroundColor = 'default',
   borderRadius = 20,
@@ -78,7 +78,7 @@ function BaseButton({
       position={position}
       bottom={bottom}
       width={width}>
-      <Text style={{textAlign, color, fontSize: 16}}>{text}</Text>
+      <Text style={{textAlign, color, fontSize}}>{text}</Text>
     </CustomBaseButtonPressable>
   )
 }

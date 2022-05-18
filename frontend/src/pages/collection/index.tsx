@@ -4,6 +4,8 @@ import Collection from './default'
 import CreateVote from './createVote'
 import {useRoute, RouteProp} from '@react-navigation/native'
 import {RootStackParamList} from '../../../types/navigation'
+import {useAppSelector} from '~/store/types'
+
 const Stack = createNativeStackNavigator()
 
 function CollectionStack() {
@@ -13,7 +15,7 @@ function CollectionStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Default"
+        name="CollectionDefault"
         component={Collection}
         options={{headerShown: false}}
         initialParams={{accountId, collectionId}}

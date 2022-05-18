@@ -11,9 +11,11 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {CustomText} from './styles'
 import uiSlice from '~/store/slices/ui'
+import {getLists} from '~/store/slices/profile/asyncThunk'
 
 function CollectionForm() {
   const dispatch = useAppDispatch()
+  const {userId} = useAppSelector(state => state.user)
   const {isModal} = useAppSelector(state => state.ui)
   const {currentCollection} = useAppSelector(state => state.collection)
   const [title, setTitle] = useState(
@@ -53,9 +55,13 @@ function CollectionForm() {
         )
           .unwrap()
           .then(() => {
-            isModal === 'clipboardCreateCollection'
-              ? dispatch(uiSlice.actions.setIsModal('clipboard'))
-              : dispatch(uiSlice.actions.setIsModal(false))
+            dispatch(getLists({accountId: userId}))
+              .unwrap()
+              .then(() => {
+                isModal === 'clipboardCreateCollection'
+                  ? dispatch(uiSlice.actions.setIsModal('clipboard'))
+                  : dispatch(uiSlice.actions.setIsModal(false))
+              })
           })
       } else if (isModal === 'editCollection') {
         dispatch(
@@ -86,8 +92,8 @@ function CollectionForm() {
   }, [])
 
   return (
-    <KeyboardAwareScrollView style={{paddingHorizontal: 10}}>
-      <View style={{marginVertical: 10}}>
+    <KeyboardAwareScrollView>
+      <View>
         <CustomText>컬렉션의 이름을 적어주세요.</CustomText>
         <BaseTextInput
           value={title}
@@ -97,8 +103,10 @@ function CollectionForm() {
           maxLength={10}
         />
       </View>
-      <View style={{marginVertical: 10}}>
-        <CustomText>컬렉션에 대한 설명을 적어주세요.</CustomText>
+      <View style={{marginBottom: 30}}>
+        <CustomText style={{marginTop: 20}}>
+          컬렉션에 대한 설명을 적어주세요.
+        </CustomText>
         <BaseTextInput
           value={description}
           onChangeText={descriptionChanged}
@@ -122,7 +130,6 @@ function CollectionForm() {
       <BaseButton
         text={'돌아가기'}
         onPress={closeModal}
-        marginVertical={10}
         paddingVertical={10}
         borderRadius={5}
       />

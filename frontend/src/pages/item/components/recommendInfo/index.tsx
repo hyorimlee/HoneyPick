@@ -16,14 +16,16 @@ import RecommendBar from './recommendBar'
 function RecommendInfo() {
   const stickers = useAppSelector(filteredStickers)
   const {review} = useAppSelector(state => state.item)
-
-  console.log(stickers)
+  const {item} = useAppSelector(state => state)
 
   const itemSticker = STICKERS.map(sticker => {
     if (review?.stickers.includes(sticker.id)) {
       return <EmojiText key={sticker.id}>{sticker.emoji}</EmojiText>
     }
   })
+
+  console.log('sticker', stickers)
+  console.log(item)
 
   return (
     <>

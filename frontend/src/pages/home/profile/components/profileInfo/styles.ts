@@ -1,11 +1,10 @@
 import styled from 'styled-components/native'
 
 export const Container = styled.View`
-  margin-top: 30px;
+  margin-vertical: 30px;
   margin-horizontal: 30px;
   height: 200px;
   flex-direction: row;
-  margin-bottom: 50px;
 `
 export const InfoContainer = styled.View`
   flex: 2;
@@ -28,13 +27,13 @@ export const ProfileImage = styled.Image`
 
 export const Nickname = styled.Text`
   color: #000000;
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
   margin-top: 5px;
 `
 
 export const NormalText = styled.Text`
-  font-size: 14px;
+  font-size: 16px;
   color: #000000;
   margin-top: 3px;
   margin-right: 10px;
