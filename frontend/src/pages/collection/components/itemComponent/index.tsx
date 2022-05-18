@@ -11,8 +11,8 @@ function ItemComponent({
   price,
   uri,
   onPress,
-  marginHorizontal = 5,
-  marginVertical = 5,
+  marginHorizontal,
+  marginVertical,
   paddingHorizontal,
   paddingVertical,
   color = '#000000',
@@ -36,8 +36,8 @@ function ItemComponent({
       color={color}>
       <Image
         style={{
-          width: 90,
-          height: 90,
+          width: 120,
+          height: 120,
           borderRadius,
           backgroundColor,
           borderColor,
