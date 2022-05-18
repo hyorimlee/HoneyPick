@@ -100,6 +100,13 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
         return res.status(400).send({ err: 'private collection'})
       }
     }
+
+    // 찜 여부
+    let liked = false
+    const inLikes = await User.findOne({ _id: userId, 'likes._id': ObjectId(collectionId) })
+    if (inLikes) { liked = true }
+
+    // 아이템 넣어주기
     var idList = collection.items.map(({ _id }) => ObjectId(_id))
     var itemList = await Item.find({ _id: { $in: idList }})
     const items = itemList.map((item, idx) => {
@@ -112,7 +119,7 @@ collectionRouter.get('/:accountId/:collectionId', authAccessToken, async (req, r
     const myFollowing = await Follow.findOne({ _id: account.follow, 'followers._id': userId })
     if (myFollowing) { myFollow = true }
 
-    return res.status(200).send({ collection, items, myFollow })
+    return res.status(200).send({ collection, items, myFollow, liked })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
