@@ -8,6 +8,7 @@ import {useAppDispatch, useAppSelector} from '~/store/types'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import ProfileLists from '../components/profileLists'
 import {ProfileDefaultNavigationProp, ProfileDefaultRoute} from './types'
+import {Alert, BackHandler} from 'react-native'
 
 function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   const dispatch = useAppDispatch()
