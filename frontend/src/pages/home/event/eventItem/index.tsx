@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useEffect} from 'react'
+import {memo, useEffect, useState, useCallback} from 'react'
 import {SafeAreaView, Dimensions, Text} from 'react-native'
 import {useRoute, RouteProp} from '@react-navigation/native'
 
@@ -8,6 +8,9 @@ import {EventStackParamList} from '../types'
 import {useAppDispatch, useAppSelector} from '~/store/types'
 import {getEvent} from '~/store/slices/event/asyncThunk'
 import VoteItems from '../../../vote/components/voteItems'
+import ResultItems from '~/pages/vote/components/resultItems'
+import {vote} from '~/store/slices/vote/asyncThunk'
+import {cleanSelectedItems} from '~/store/slices/vote'
 
 import {Container} from './styles'
 import {
@@ -25,11 +28,33 @@ function EventItem() {
   const route = useRoute<RouteProp<EventStackParamList>>()
   const {eventId} = route.params!
   const event = useAppSelector(state => state.event.event)
-  const {userId} = useAppSelector(state => state.user)
+  const [onVote, setOnVote] = useState<boolean>(false)
+  const {selectedItems} = useAppSelector(state => state.vote)
 
   useEffect(() => {
     dispatch(getEvent(eventId))
   }, [])
+
+  const startVote = useCallback(() => {
+    const prevState = onVote
+    if (!prevState) {
+      setOnVote(!prevState)
+    }
+  }, [onVote])
+
+  const submitVote = useCallback(() => {
+    selectedItems.map(async (item) => {
+      await dispatch(vote({accountId: '', voteId: event.vote._id, itemId: item._id}))
+    })
+
+    dispatch(getEvent(eventId))
+    dispatch(cleanSelectedItems())
+
+    const prevState = onVote
+    if (prevState) {
+      setOnVote(!prevState)
+    }
+  }, [event, onVote, selectedItems])
 
   return (
     <SafeAreaView style={{height: '100%'}}>
@@ -48,16 +73,20 @@ function EventItem() {
               </InfoTop>
               <NormalText>{event.additional}</NormalText>
             </MainEvent>
-            <VoteItems
-              onVote={true}
+            {event.vote.isClosed ? <ResultItems
+              result={event.vote.result}
+            ></ResultItems> : <VoteItems
+              onVote={onVote}
               eventId={event._id}
-              voteId={''}></VoteItems>
+              voteId={event.vote._id}
+            ></VoteItems>
+            }
           </>
         ) : null}
       </Container>
-      <BaseButton
-        text={'투표하기'}
-        onPress={() => console.log('얍')}
+      {event.vote.isClosed ? null : <BaseButton
+        text={onVote ? '투표 제출하기' : '투표 시작하기'}
+        onPress={onVote ? submitVote : startVote}
         borderRadius={25}
         marginVertical={10}
         marginHorizontal={30}
@@ -66,6 +95,7 @@ function EventItem() {
         width={windowWidth - 60}
         bottom={0}
       />
+      }
     </SafeAreaView>
   )
 }
