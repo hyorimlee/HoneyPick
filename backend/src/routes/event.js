@@ -79,7 +79,7 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     const vote = new Vote({ eventId:event._id, title, result: items, isPublic: true })
     event.vote = vote._id
     await Promise.all[vote.save(),event.save()]
-    let result = {...event,vote:vote}
+    let result = {...event._doc,vote:vote}
     result.items = items
     return res.status(201).send({event:result})
   } catch (error) {
