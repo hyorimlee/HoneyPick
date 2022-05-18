@@ -12,7 +12,7 @@ import ResultItems from '~/pages/vote/components/resultItems'
 import {vote} from '~/store/slices/vote/asyncThunk'
 import {cleanSelectedItems} from '~/store/slices/vote'
 
-import {Container, EventInfoContainer} from './styles'
+import {Container, EventInfoContainer, VoteItemsContainer} from './styles'
 import {
   MainEvent,
   InfoTop,
@@ -77,11 +77,11 @@ function EventItem() {
             </EventInfoContainer>
             {event.vote.isClosed ? <ResultItems
               result={event.vote.result}
-            ></ResultItems> : <EventInfoContainer><VoteItems
+            ></ResultItems> : <VoteItemsContainer><VoteItems
               onVote={onVote}
               eventId={event._id}
               voteId={event.vote._id}
-            ></VoteItems></EventInfoContainer>
+            ></VoteItems></VoteItemsContainer>
             }
           </>
         ) : null}
