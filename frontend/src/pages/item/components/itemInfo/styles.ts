@@ -14,7 +14,7 @@ export const PriceText = styled.Text`
 
 export const PriceTextGray = styled.Text`
   color: #8c8c8c;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   margin-top: 5px;
   margin-right: 3px;

@@ -16,7 +16,10 @@ import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import {deleteCollection} from '../../../../store/slices/collection/asyncThunk'
+import {
+  collectionLike,
+  deleteCollection,
+} from '../../../../store/slices/collection/asyncThunk'
 import {setFollow} from '../../../../store/slices/profile/asyncThunk'
 import {CollectionNavigationProp} from '../../types'
 import {RootStackNavigationProp} from '../../../../../types/navigation'
@@ -74,8 +77,8 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
   }, [accountId, collectionId])
 
   const openVote = useCallback(() => {
-    collectionNavigation.push('CreateVote')
-  }, [])
+    dispatch(collectionLike({collectionId}))
+  }, [collectionId])
 
   const navigationProfile = useCallback(() => {
     profileNavigation.navigate('ProfileDefault', {userId: accountId})
