@@ -74,7 +74,6 @@ export const requestPhoneVerify = createAsyncThunk(
         url: `${Config.API_BASE_URL}/phone/`,
         data: {phoneNumber},
       })
-      console.log('phoneVerify', response.data)
 
       return response.data
     } catch (error: any) {

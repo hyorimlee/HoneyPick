@@ -44,6 +44,9 @@ const collectionSlice = createSlice({
     changMyLike: state => {
       state.currentCollection.myLiked = !state.currentCollection.myLiked
     },
+    collectionUserReset: state => {
+      state.currentCollection.user._id = ''
+    },
   },
   extraReducers: builder => {
     builder
