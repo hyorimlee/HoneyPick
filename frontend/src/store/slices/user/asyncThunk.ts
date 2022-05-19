@@ -74,9 +74,11 @@ export const requestPhoneVerify = createAsyncThunk(
         url: `${Config.API_BASE_URL}/phone/`,
         data: {phoneNumber},
       })
+      console.log('phoneVerify', response.data)
 
       return response.data
     } catch (error: any) {
+      console.log('phoneVerify', error.response.data)
       return thunkAPI.rejectWithValue(error.response.data)
     }
   },
@@ -91,9 +93,10 @@ export const requestPhoneVerifyCheck = createAsyncThunk(
         url: `${Config.API_BASE_URL}/phone/check`,
         data: {phoneId, verificationCode},
       })
-
+      console.log('phoneVerifyCHK', response.data)
       return response.data
     } catch (error: any) {
+      console.log('phoneVerifyCHK', error.response.data)
       return thunkAPI.rejectWithValue(error.response.data)
     }
   },

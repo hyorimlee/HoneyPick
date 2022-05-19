@@ -76,9 +76,18 @@ function ChooseCollection() {
       }
 
       dispatch(itemToCollection(data))
-      dispatch(uiSlice.actions.setIsModal(false))
-      dispatch(setCollectionId(selectedValue))
-      Alert.alert('저장이 완료되었습니다.')
+        .unwrap()
+        .then(() => {
+          Alert.alert('저장이 완료되었습니다.', undefined, [
+            {
+              text: '확인',
+              onPress: () => {
+                dispatch(uiSlice.actions.setIsModal(false))
+                dispatch(setCollectionId(selectedValue))
+              },
+            },
+          ])
+        })
     } else {
       Alert.alert('컬렉션을 선택해주세요.')
     }
