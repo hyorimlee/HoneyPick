@@ -45,6 +45,7 @@ function ItemStack({
   const isMyItem = userId === currentCollection!.user._id
   const [isRecommendMode, setIsRecommendMode] = useState(false)
   const {isModal} = useAppSelector(state => state.ui)
+  const isValidItem = item.title && item.priceBefore
 
   useEffect(() => {
     if (isFocused && !isRecommendMode) {
@@ -139,9 +140,9 @@ function ItemStack({
       <Container>
         <ImageContainer
           source={
-            item.thumbnail
+            item.thumbnail && isValidItem
               ? {uri: `${Config.IMAGE_BASE_URL}/w510/${item.thumbnail}`}
-              : require('~/assets/images/sampleimage1.jpg')
+              : require('../../assets/images/honeybee.png')
           }
           imageStyle={{
             resizeMode: 'contain',
@@ -159,24 +160,30 @@ function ItemStack({
           <>
             <RecommendInfo />
             {isMyItem ? (
-              <BaseButton
+              <>
+              {isValidItem ?
+                <BaseButton
                 text={'사이트로 이동하기'}
                 onPress={goToSite}
                 borderRadius={25}
                 marginVertical={10}
                 paddingVertical={15}
-              />
+                /> : null
+              }</>
             ) : (
               <View style={{flexDirection: 'row'}}>
-                <BaseButton
+                <>
+                {isValidItem ?
+                  <>
+                  <BaseButton
                   flex={1}
                   text={'사이트로 이동하기'}
-                  onPress={goToSite}
-                  borderRadius={25}
-                  marginVertical={10}
-                  paddingVertical={15}
-                />
-                <BaseButton
+                    onPress={goToSite}
+                    borderRadius={25}
+                    marginVertical={10}
+                    paddingVertical={15}
+                    />
+                  <BaseButton
                   flex={1}
                   text={'내 컬렉션에 담기'}
                   onPress={saveMyCollection}
@@ -184,7 +191,8 @@ function ItemStack({
                   marginVertical={10}
                   paddingVertical={15}
                   marginLeft={10}
-                />
+                  /></>: null
+                }</>
               </View>
             )}
           </>
