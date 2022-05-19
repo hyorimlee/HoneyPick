@@ -31,8 +31,11 @@ function SignUp({navigation}: SignUpScreenProps) {
       </View>
       <SignUpForm paddingHorizontal={paddingHorizontal} />
       <View style={{paddingHorizontal, alignItems: 'center'}}>
+        <Text style={{color: 'grey', fontSize: 12, textAlign: 'center'}}>
+          휴대전화번호는 중복 가입을 방지하기 위해 사용되며 저장되지 않습니다.
+        </Text>
         <Pressable onPress={navigateSignIn}>
-          <Text style={{color, fontSize: 15, marginTop: 20}}>
+          <Text style={{color, fontSize: 14, marginTop: 20}}>
             로그인 하러가기
           </Text>
         </Pressable>

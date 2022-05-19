@@ -10,4 +10,9 @@ const ItemComponentContainer = styled.Pressable.attrs(
   width: 29%;
 `
 
-export {ItemComponentContainer}
+const ItemInfoContainer = styled.View`
+  flex-direction: row;
+  justify-contents: flex-end;
+`
+
+export {ItemComponentContainer, ItemInfoContainer}

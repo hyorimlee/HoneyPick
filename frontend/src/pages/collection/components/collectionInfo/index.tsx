@@ -127,7 +127,7 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
               text={'투표 진행하기'}
               onPress={openVote}
               paddingVertical={5}
-              paddingHorizontal={10}></BaseButton>
+              paddingHorizontal={15}></BaseButton>
             <MenuButtonContainer>
               <TouchableOpacity onPress={openSheet}>
                 <FontAwesomeIcon
@@ -166,21 +166,22 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
           <>
             <BaseButton
               text={`${
-                currentCollection.myLiked ? '컬렉션 찜 취소' : '컬렉션 찜'
+                currentCollection.myLiked ? '마음이 바뀌었어요' : '마음에 들어요'
               }`}
               backgroundColor={`${
                 currentCollection.myLiked ? '#C4C4C4' : 'default'
               }`}
               onPress={collectionLike}
               paddingVertical={5}
-              paddingHorizontal={10}
-              marginHorizontal={6}></BaseButton>
+              paddingHorizontal={15}
+              ></BaseButton>
             <BaseButton
               text={`${username} 님의 프로필`}
               backgroundColor={'default'}
               onPress={navigationProfile}
               paddingVertical={5}
-              paddingHorizontal={10}
+              paddingHorizontal={15}
+              marginHorizontal={10}
             />
           </>
         )}
