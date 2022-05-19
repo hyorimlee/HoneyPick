@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo} from 'react'
-import {TouchableOpacity} from 'react-native'
+import {Text, TouchableOpacity, View} from 'react-native'
 import {useAppSelector} from '~/store/types'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
@@ -20,8 +20,6 @@ function ItemInfo({openSheet, collectionId}: IProps) {
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
 
-  console.log(item)
-
   return (
     <InfoContainer>
       <TextContainer>
@@ -33,11 +31,21 @@ function ItemInfo({openSheet, collectionId}: IProps) {
             <PriceText>{moneyComma(item.priceBefore!)}</PriceText>
           </RowTextContainer>
         ) : (
-          <RowTextContainer>
-            <PriceText>￦</PriceText>
-            <PriceTextGray>{moneyComma(item.priceBefore!)}</PriceTextGray>
-            <PriceText>{moneyComma(item.priceAfter!)}</PriceText>
-          </RowTextContainer>
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <RowTextContainer>
+              <PriceText>￦</PriceText>
+              <PriceTextGray>{moneyComma(item.priceBefore!)}</PriceTextGray>
+              <PriceText>{moneyComma(item.priceAfter!)}</PriceText>
+            </RowTextContainer>
+            <Text style={{color: '#f9c12e', fontWeight: '700', fontSize: 20}}>
+              {item.discountRate}%
+            </Text>
+          </View>
         )}
         <NormalText>{currentCollection!.title}</NormalText>
       </TextContainer>
