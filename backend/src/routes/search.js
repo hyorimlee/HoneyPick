@@ -7,8 +7,12 @@ const { authAccessToken } = require('./auth')
 
 async function searchItem(keyword, page, res){
     try {
-        const search = await Item.find({$text: {$search:keyword}},{score:{$meta: "textScore"}}).sort({score:{$meta:"textScore"}}).skip((page-1)*18).limit(18)
-        return search
+        let result=new Set()
+        for(let i=0;i<keyword.length;i++){            
+            const search = await Item.find({title: new RegExp(keyword[i])})
+            for(let j=0;j<search.length;j++) result.add(search[i])
+        }
+        return [...result]
     } catch (err) {
         console.log(err)
         return res.status(500).send({err:err.message})
@@ -17,8 +21,13 @@ async function searchItem(keyword, page, res){
 
 async function searchCollection(keyword, res){
     try {
-        const search = await Collection.find({$text: {$search:keyword}},{score:{$meta: "textScore"}}).sort({score:{$meta:"textScore"}})
-        return search
+        let result=new Set()
+        for(let i=0;i<keyword.length;i++){    
+            const search = await Item.find({$or:[{title: new RegExp(keyword[i])},{description:new RegExp(keyword[i])}]})
+            for(let j=0;j<search.length;j++) result.add(search[i])
+        }
+        console.log(result)
+        return [...result]
     } catch (err) {
         console.log(err)
         return res.status(500).send({err:err.message})
@@ -28,10 +37,10 @@ async function searchCollection(keyword, res){
 
 searchRouter.post('/', authAccessToken, async (req, res) => {
     try {
-        const {keyword} = req.body        
+        let {keyword} = req.body        
         let { page=1 } = req.query
         page = parseInt(page)
-
+        keyword = keyword.split(" ");
         const [items,collections] = await Promise.all([
             searchItem(keyword, page, res),
             searchCollection(keyword, res)
