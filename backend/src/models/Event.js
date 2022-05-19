@@ -10,6 +10,7 @@ const EventSchema = new Schema(
     title: { type: String , required: true },
     description: { type: String, required: false },
     additional: { type: String, required: false },
+    thumbnail: { type: String, required: true, default: process.env.DEFAULT_PROFILE_IMG },
     items: [{ type: ObjectId, required: true, ref: 'item'}],
     vote:{type:ObjectId, required:false, ref:'vote'}
   },
