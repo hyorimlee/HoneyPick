@@ -33,6 +33,7 @@ const profileSlice = createSlice({
   reducers: {
     switchMyFollow: state => {
       state.myFollow = !state.myFollow
+      state.myFollow ? state.follower++ : state.follower--
     },
     changeFollow: (state, action) => {
       const {userId, myUserId} = action.payload

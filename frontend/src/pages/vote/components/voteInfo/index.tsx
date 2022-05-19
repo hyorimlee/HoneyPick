@@ -11,17 +11,17 @@ import {
   MenuButtonContainer,
   MenuContainer,
 } from './styles'
-import { useAppSelector, useAppDispatch } from '../../../../store/types'
+import {useAppSelector, useAppDispatch} from '../../../../store/types'
 import ActionSheet from 'react-native-actions-sheet'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
-import { endVote, deleteVote } from '../../../../store/slices/vote/asyncThunk'
-import { setFollow } from '../../../../store/slices/profile/asyncThunk'
+import {endVote, deleteVote} from '../../../../store/slices/vote/asyncThunk'
+import {setFollow} from '../../../../store/slices/profile/asyncThunk'
 import profileSlice from '../../../../store/slices/profile'
 import {VoteNavigationProp, VoteStackParamList} from '../../../vote/types'
-import { IComponentProps } from './types'
-import { RootStackNavigationProp } from '../../../../../types/navigation'
+import {IComponentProps} from './types'
+import {RootStackNavigationProp} from '../../../../../types/navigation'
 
 function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
@@ -48,7 +48,12 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
 
   const closeVote = useCallback(async () => {
     await dispatch(endVote({accountId: accountId, voteId: voteId}))
-    navigation.navigate('Vote', {accountId: accountId, collectionId: collectionId, voteId: voteId, isClosed: true})
+    navigation.navigate('Vote', {
+      accountId: accountId,
+      collectionId: collectionId,
+      voteId: voteId,
+      isClosed: true,
+    })
   }, [])
 
   const followChange = useCallback(() => {
@@ -61,7 +66,7 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
       <InfoContainer>
         <InfoTextContainer>
           <Text style={{fontSize: 18, fontWeight: '500', color: '#000000'}}>
-            {currentVote?.title ?currentVote.title : 'Notitle'}
+            {currentVote?.title ? currentVote.title : 'Notitle'}
           </Text>
           {/* <Text style={{fontSize: 10, color: '#000000', marginTop: 10}}>
             {currentCollection?.description ?currentCollection.description : 'Notitle'}
@@ -85,7 +90,7 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
           <BaseButton
             text={'투표 종료하기'}
             onPress={closeVote}
-            fontSize={8}
+            fontSize={16}
             paddingVertical={5}
             paddingHorizontal={10}></BaseButton>
         ) : (
@@ -93,22 +98,17 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
             <BaseButton
               text={'컬렉션 찜하기'}
               onPress={closeVote}
-              fontSize={8}
+              fontSize={16}
               paddingVertical={5}
               paddingHorizontal={10}
               marginHorizontal={6}></BaseButton>
-            <BaseButton
-              text={true ? `${username}님을 팔로우` : `${username}님을 언팔로우`}
-              onPress={followChange}
-              fontSize={8}
-              paddingVertical={5}
-              paddingHorizontal={10}></BaseButton>
           </>
         )}
       </ButtonContainer>
       {/* Dashed Line 나중에 svg나 다른 라이브러리로 교체해야함 */}
       <Text ellipsizeMode="clip" numberOfLines={1}>
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        -
       </Text>
       {isMyList ? (
         <>

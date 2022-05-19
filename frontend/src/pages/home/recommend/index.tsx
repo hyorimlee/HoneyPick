@@ -9,6 +9,7 @@ import {
   StyleSheet,
   FlatList,
   Pressable,
+  Text,
 } from 'react-native'
 
 import {
@@ -66,7 +67,7 @@ function RecommendStack() {
   useEffect(() => getCollectionRecommendList(), [])
   useEffect(() => getItemRecommendList(), [])
 
-  const collectionRenderItem = ({item}: {item: any}) => {
+  const collectionRenderItem = ({item, index}: {item: any; index: number}) => {
     if (item.collection === undefined) {
       return <></>
     }
@@ -78,7 +79,7 @@ function RecommendStack() {
             item.collection.user._id,
             item.collection._id,
           )}
-          style={{width: width * 0.8}}>
+          style={{width: width * 0.8, marginLeft: !index ? 30 : 0}}>
           <ImageContainer
             source={{
               uri: `${Config.IMAGE_BASE_URL}/raw/${item.collection.thumbnail}`,
@@ -141,9 +142,9 @@ function RecommendStack() {
             <View key={title + index.toString()}>
               <BoldText style={{paddingLeft: 30, marginBottom: 10}}>
                 {title.slice(0, 3) === '스티커'
-                  ? `${STICKERS[parseInt(title.slice(4, 5)) - 1].emoji} (${
+                  ? `${STICKERS[parseInt(title.slice(4, 5)) - 1].emoji} '${
                       STICKERS[parseInt(title.slice(4, 5)) - 1].label
-                    }) 가 많은 아이템`
+                    }' 가 많은 아이템`
                   : title}
               </BoldText>
 

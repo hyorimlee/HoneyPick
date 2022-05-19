@@ -1,10 +1,6 @@
 import * as React from 'react'
 import {memo, useCallback, useState, useEffect} from 'react'
-import {
-  SafeAreaView,
-  StatusBar,
-  TouchableOpacity
-} from 'react-native'
+import {SafeAreaView, StatusBar, TouchableOpacity, View} from 'react-native'
 
 import BaseTextInput from '~/components/textInput/base/index'
 import {useAppSelector, useAppDispatch} from '~/store/types'
@@ -12,19 +8,13 @@ import {useAppSelector, useAppDispatch} from '~/store/types'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
-import {
-  Container,
-  SearchBarImage,
-  SearchBarContainer,
-  BoldText
-} from './styles'
+import {Container, SearchBarImage, SearchBarContainer, BoldText} from './styles'
 import SearchResult from './components/searchResult'
 
-import { search } from '~/store/slices/search/asyncThunk'
-import { scrollProps } from './types'
+import {search} from '~/store/slices/search/asyncThunk'
+import {scrollProps} from './types'
 
 function SearchStack() {
-
   const dispatch = useAppDispatch()
   const {collections, items, page} = useAppSelector(state => state.search)
 
@@ -33,7 +23,7 @@ function SearchStack() {
   const [loading, setLoading] = useState(false)
 
   const getSearchList = (keyword: string, page: number) => {
-    dispatch(search({ keyword, page })).then(()=>setLoading(false))
+    dispatch(search({keyword, page})).then(() => setLoading(false))
   }
 
   const keywordChanged = useCallback(
@@ -47,31 +37,40 @@ function SearchStack() {
     setKeywordEntered(keyword)
     getSearchList(keyword, 1)
   }
-  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize} : scrollProps) => {
-    const paddingToBottom = 20;
-    return layoutMeasurement!.height + contentOffset!.y >=
-      contentSize!.height - paddingToBottom;
-  };
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize,
+  }: scrollProps) => {
+    const paddingToBottom = 20
+    return (
+      layoutMeasurement!.height + contentOffset!.y >=
+      contentSize!.height - paddingToBottom
+    )
+  }
 
   return (
-    <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
+    <SafeAreaView style={{flex: 1, paddingTop: 20}}>
       <Container
         onScroll={({nativeEvent}) => {
-        if (!(items.length%18) && !loading && isCloseToBottom(nativeEvent)) {
-          setLoading(true)
-          getSearchList(keywordEntered, page+1)
-        }
-      }}
-      scrollEventThrottle={0}>
-        <>
+          if (
+            !(items.length % 18) &&
+            !loading &&
+            isCloseToBottom(nativeEvent)
+          ) {
+            setLoading(true)
+            getSearchList(keywordEntered, page + 1)
+          }
+        }}
+        scrollEventThrottle={0}>
+        <View style={{paddingHorizontal: 30}}>
           <SearchBarImage
             source={require('../../../assets/images/search.png')}
-            imageStyle={{resizeMode: 'stretch'}}
-          >
+            imageStyle={{resizeMode: 'stretch'}}>
             <SearchBarContainer>
               <BaseTextInput
                 placeholderTextColor="white"
-                color='white'
+                color="white"
                 value={keyword}
                 onChangeText={keywordChanged}
                 onSubmitEditing={searchRecommend}
@@ -92,21 +91,19 @@ function SearchStack() {
                 />
               </TouchableOpacity>
             </SearchBarContainer>
-
           </SearchBarImage>
-        </>
+        </View>
 
-        { keywordEntered ?
-        <SearchResult
-          keywordEntered={keywordEntered}
-          collections={collections}
-          items={items}
-        ></SearchResult> :
-          <BoldText style={{textAlign:'center'}}>
+        {keywordEntered ? (
+          <SearchResult
+            keywordEntered={keywordEntered}
+            collections={collections}
+            items={items}></SearchResult>
+        ) : (
+          <BoldText style={{textAlign: 'center'}}>
             찾고싶은 아이템, 컬렉션을 검색해주세요.
           </BoldText>
-        }
-        {/* 검색결과 */}
+        )}
       </Container>
     </SafeAreaView>
   )

@@ -2,11 +2,10 @@ import styled from 'styled-components/native'
 
 const ItemContainer = styled.View`
   width: 100%;
-  padding: 5px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justifycontent: flex-start;
+  justify-content: flex-start;
 `
 
 const ItemBox = styled.TouchableOpacity`
@@ -22,9 +21,12 @@ const NormalText = styled.Text`
   margin-top: 5px;
 `
 
-const ImageContainer = styled.ImageBackground`
-  width: 100%;
-  aspect-ratio: 1;
+const ImageContainer = styled.Image`
+  width: 110px;
+  height: 110px;
+  border-width: 1px;
+  border-color: #c4c4c4;
+  border-radius: 10px;
 `
 
 export {ItemContainer, NormalText, ImageContainer, ItemBox}
