@@ -20,11 +20,11 @@ itemRouter.post('/', authAccessToken, async (req, res) => {
     try {
         const { url } = req.body
         if(typeof url !== 'string') return res.status(400).send({ err: "url is required" })
-        
+
         var item = await Item.findOne({ url })
 
         var needCrawl = false
-        
+
         if(!item) {
             item = new Item({ ...req.body })
             await item.save()
@@ -65,10 +65,10 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
     try {
         const { itemId } = req.params
         var { userId } = req.query
-        
+
         // query에 userId가 없을 경우 본인의 리뷰 가져오기
         if(!userId) userId = req.userId
-        
+
         if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
         if(!isValidObjectId(userId)) return res.status(400).send({ err: "잘못된 userId" })
 
@@ -77,7 +77,7 @@ itemRouter.get('/:itemId', authAccessToken, async (req, res) => {
             Item.findById(itemId),
             Review.findOne({ 'user._id': userId, item: itemId }),
             Collection.find({ 'user._id': userId, 'items._id': itemId })
-        ])        
+        ])
         if(!item) res.status(400).send({ err: "아이템이 존재하지 않습니다." })
         item.stickers = Object.entries(item.stickers).sort(([, a], [, b]) => b - a).slice(0, 3)
 
@@ -114,7 +114,7 @@ itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
             const idList = originalCollection.items.map(({_id}) => _id.toString())
             const itemList = await Item.find({ _id: { $in: idList }})
             const targetThumbnail = itemList.filter(({ _id }) => _id.toString() !== itemId ).slice(-1)[0]['thumbnail']
-            
+
             promises.push(Collection.findOneAndUpdate({ _id: originalCollectionId, 'user._id': userId }, { $pull: { items: { _id: itemId } } }, { new: true }))
             promises.push(User.updateOne({ _id: userId , 'collections._id': originalCollectionId }, { 'collections.$.thumbnail': targetThumbnail }))
         }
@@ -122,7 +122,7 @@ itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
             if(!isValidObjectId(collectionId)) return res.status(400).send({ err: "잘못된 collectionId" })
             const review = await Review.findOne({ user: userId, item: itemId })
             const recommend = review?.isRecommend
-            promises.push(Collection.findOneAndUpdate({_id: collectionId, 'user._id': userId}, { $addToSet: { items: { _id: itemId, recommend } } }))
+            promises.push(Collection.findOneAndUpdate({_id: collectionId, 'user._id': userId}, { $addToSet: { items: { _id: itemId, thumbnail: item.thumbnail, recommend } } }))
             promises.push(User.updateOne({ _id: userId, 'collections._id': collectionId }, { 'collections.$.thumbnail': item.thumbnail }))
         }
 
@@ -141,7 +141,7 @@ itemRouter.post('/:itemId/presigned', async(req, res) => {
         if(!isValidObjectId(itemId)) return res.status(400).send({ err: "잘못된 itemId" })
 
         const { contentType } = req.body
-        
+
         const imageKey = `${uuid()}.${mime.extension(contentType) ? mime.extension(contentType) : 'jpg'}`
         const key = `raw/${imageKey}`
         const presigned = await getSignedUrl({ key })
