@@ -24,9 +24,9 @@ async function searchCollection(keyword, res){
     try {
         let result=new Set()
         for(let i=0;i<keyword.length;i++){    
-            let search = await Item.find({title: new RegExp(keyword[i])})
+            let search = await Collection.find({title: new RegExp(keyword[i])})
             for(let j=0;j<search.length;j++) result.add(search[i])
-            search = await Item.find({description:new RegExp(keyword[i])})
+            search = await Collection.find({description:new RegExp(keyword[i])})
             for(let j=0;j<search.length;j++) {
                 if(search[i].description)result.add(search[i])
             }
