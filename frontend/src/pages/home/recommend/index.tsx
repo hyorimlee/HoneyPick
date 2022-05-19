@@ -30,7 +30,7 @@ import {
   ItemBox,
 } from './styles'
 
-import {useNavigation} from '@react-navigation/native'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {RootStackNavigationProp} from '~/../types/navigation'
 import {STICKERS} from '~/modules/stickers'
 import {
@@ -38,12 +38,20 @@ import {
   recommendCollectionKey,
   stringSlice,
 } from '~/modules/convert'
+import collectionSlice from '~/store/slices/collection'
 
 const {width} = Dimensions.get('window')
 
 function RecommendStack() {
   const dispatch = useAppDispatch()
   const navigation = useNavigation<RootStackNavigationProp>()
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(collectionSlice.actions.collectionUserReset())
+    }
+  }, [isFocused])
 
   const pressedCollection = useCallback(
     (accountId: string, collectionId: string) => () => {
@@ -53,9 +61,10 @@ function RecommendStack() {
   )
 
   const pressedItem = useCallback(
-    (itemId: string) => () => {
-      navigation.navigate('Item', {itemId: itemId, collectionId: ''})
-    },
+    ({itemId, collectionId}: {itemId: string; collectionId: string}) =>
+      () => {
+        navigation.navigate('Item', {itemId, collectionId})
+      },
     [],
   )
 
@@ -121,7 +130,7 @@ function RecommendStack() {
       <ItemBox
         key={item._id}
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
-        <Pressable onPress={pressedItem(item._id)}>
+        <Pressable onPress={pressedItem({itemId: item._id, collectionId: ''})}>
           <ImageContainer
             source={{
               uri: `${Config.IMAGE_BASE_URL}/w128/${item.thumbnail}`,

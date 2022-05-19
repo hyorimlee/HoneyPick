@@ -41,6 +41,8 @@ export const getItem = createAsyncThunk<any, string, {state: RootState}>(
           authorization: `Bearer ${accessToken}`,
         },
       })
+      console.log(response.data)
+
       return response.data
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response.data)
