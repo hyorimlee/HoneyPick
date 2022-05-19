@@ -12,12 +12,11 @@ async function searchItem(keyword, page, res){
         for(let i=0;i<keyword.length;i++){
             const search = await Item.find({title: {$regex:keyword[i]}}).skip((page-1)*18).limit(18)
             for(let i=0;i<search.length;i++){
-                if(chk.has(search[i].title))continue
-                chk.add(search[i].title)
+                if(chk.has(JSON.stringify(search[i]._id)))continue
+                chk.add(JSON.stringify(search[i]._id))
                 result.push(search[i])
             }
         }
-        console.log(result)
         return [...result]
     } catch (err) {
         console.log(err)
@@ -32,14 +31,14 @@ async function searchCollection(keyword, res){
         for(let i=0;i<keyword.length;i++){    
             let search = await Collection.find({title: {$regex:keyword[i]}})
             for(let i=0;i<search.length;i++){
-                if(chk.has(search[i].title))continue
-                chk.add(search[i].title)
+                if(chk.has(JSON.stringify(search[i]._id)))continue
+                chk.add(JSON.stringify(search[i]._id))
                 result.push(search[i])
             }
             search = await Collection.find({description:{$regex:keyword[i]}})
             for(let i=0;i<search.length;i++){
-                if(chk.has(search[i].title))continue
-                chk.add(search[i].title)
+                if(chk.has(JSON.stringify(search[i]._id)))continue
+                chk.add(JSON.stringify(search[i]._id))
                 result.push(search[i])
             }
         }
