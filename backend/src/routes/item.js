@@ -18,15 +18,16 @@ itemRouter.use('/:itemId/review', require('./review'))
 
 itemRouter.post('/', authAccessToken, async (req, res) => {
     try {
-        const { url } = req.body
+        let { url } = req.body
         if(typeof url !== 'string') return res.status(400).send({ err: "url is required" })
+        url = url.indexOf('?') > -1 ? url.slice(0, url.indexOf('?')) : url
 
         var item = await Item.findOne({ url })
 
         var needCrawl = false
 
         if(!item) {
-            item = new Item({ ...req.body })
+            item = new Item({ url })
             await item.save()
             needCrawl = true
         }
