@@ -12,6 +12,7 @@ async function searchItem(keyword, page, res){
             const search = await Item.find({title: new RegExp(keyword[i])})
             for(let j=0;j<search.length;j++) result.add(search[i])
         }
+        console.log("***************************************")
         return [...result]
     } catch (err) {
         console.log(err)
@@ -23,8 +24,12 @@ async function searchCollection(keyword, res){
     try {
         let result=new Set()
         for(let i=0;i<keyword.length;i++){    
-            const search = await Item.find({$or:[{title: new RegExp(keyword[i])},{description:new RegExp(keyword[i])}]})
+            let search = await Item.find({title: new RegExp(keyword[i])})
             for(let j=0;j<search.length;j++) result.add(search[i])
+            search = await Item.find({description:new RegExp(keyword[i])})
+            for(let j=0;j<search.length;j++) {
+                if(search[i].description)result.add(search[i])
+            }
         }
         console.log(result)
         return [...result]
@@ -43,6 +48,7 @@ searchRouter.post('/', authAccessToken, async (req, res) => {
         keyword = keyword.split(" ");
         const [items,collections] = await Promise.all([
             searchItem(keyword, page, res),
+            
             searchCollection(keyword, res)
         ])
         
