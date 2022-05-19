@@ -10,7 +10,7 @@ async function searchItem(keyword, page, res){
         let chk = new Set()
         let result=[]
         for(let i=0;i<keyword.length;i++){
-            const search = await Item.find({title: {$regex:keyword[i]}})
+            const search = await Item.find({title: {$regex:keyword[i]}}).skip((page-1)*18).limit(18)
             for(let i=0;i<search.length;i++){
                 if(chk.has(search[i].title))continue
                 chk.add(search[i].title)
