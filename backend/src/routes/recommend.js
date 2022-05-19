@@ -52,7 +52,9 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
                     collection: {
                         ...targetCollection._doc,
                         user: {
-                            _id
+                            _id,
+                            username,
+                            nickname,
                         }
                     }
                 }
