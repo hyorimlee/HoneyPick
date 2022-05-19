@@ -8,80 +8,89 @@ class Store:
         pass
     
     def smartstore_get_data(self, res):
-        sp = BeautifulSoup(res, 'html.parser')
-        title, brand = json.loads(sp.select_one('script').text)['name'].split(' : ')
-        thumbnail = sp.select_one('._23RpOU6xpc > img').attrs['src']
+        try:
+            sp = BeautifulSoup(res, 'html.parser')
+            title, brand = json.loads(sp.select_one('script').text)['name'].split(' : ')
+            thumbnail = sp.select_one('._23RpOU6xpc > img').attrs['src']
 
-        prices = sp.select('._1LY7DqCnwR')
-        if len(prices) > 1:
-            price_before, price_after = prices
-            price_before = price_before.text.replace(',', '')
-            price_after = price_after.text.replace(',', '')
-            discount_rate = int(100 - int(price_after) / int(price_before) * 100)
-        else:
-            price_before = prices[0].text.replace(',', '')
-            price_after = None
-            discount_rate = 0
+            prices = sp.select('._1LY7DqCnwR')
+            if len(prices) > 1:
+                price_before, price_after = prices
+                price_before = price_before.text.replace(',', '')
+                price_after = price_after.text.replace(',', '')
+                discount_rate = int(100 - int(price_after) / int(price_before) * 100)
+            else:
+                price_before = prices[0].text.replace(',', '')
+                price_after = None
+                discount_rate = 0
 
-        return {
-            'title': title,
-            'brand': brand,
-            'priceBefore': price_before,
-            'priceAfter':price_after,
-            'discountRate': discount_rate,
-            'thumbnail':thumbnail,
-        }
+            return {
+                'title': title,
+                'brand': brand,
+                'priceBefore': price_before,
+                'priceAfter':price_after,
+                'discountRate': discount_rate,
+                'thumbnail':thumbnail,
+            }
+        except:
+            return self.etc_get_data(res)
     
     def brandnaver_get_data(self, res):
-        sp = BeautifulSoup(res, 'html.parser')
-        title, brand = json.loads(sp.select_one('script').text)['name'].split(' : ')
-        thumbnail = sp.select_one('._23RpOU6xpc > img').attrs['src']
+        try:
+            sp = BeautifulSoup(res, 'html.parser')
+            title, brand = json.loads(sp.select_one('script').text)['name'].split(' : ')
+            thumbnail = sp.select_one('._23RpOU6xpc > img').attrs['src']
 
-        prices = sp.select('._1LY7DqCnwR')
-        if len(prices) > 1:
-            price_before, price_after = prices
-            price_before = price_before.text.replace(',', '')
-            price_after = price_after.text.replace(',', '')
-            discount_rate = int(100 - int(price_after) / int(price_before) * 100)
-        else:
-            price_before = prices[0].text.replace(',', '')
-            price_after = None
-            discount_rate = 0
+            prices = sp.select('._1LY7DqCnwR')
+            if len(prices) > 1:
+                price_before, price_after = prices
+                price_before = price_before.text.replace(',', '')
+                price_after = price_after.text.replace(',', '')
+                discount_rate = int(100 - int(price_after) / int(price_before) * 100)
+            else:
+                price_before = prices[0].text.replace(',', '')
+                price_after = None
+                discount_rate = 0
 
-        return {
-            'title': title,
-            'brand': brand,
-            'priceBefore': price_before,
-            'priceAfter':price_after,
-            'discountRate': discount_rate,
-            'thumbnail':thumbnail,
-        }
+            return {
+                'title': title,
+                'brand': brand,
+                'priceBefore': price_before,
+                'priceAfter':price_after,
+                'discountRate': discount_rate,
+                'thumbnail':thumbnail,
+            }
+        except:
+            return self.etc_get_data(res)
     
     def shoppingnaver_get_data(self, res):
-        sp = BeautifulSoup(res, 'html.parser')
-        title = sp.select_one('._3oDjSvLwq9').text
-        brand = sp.select_one('._2o_RMIOix6').text
-        thumbnail = sp.select_one('._23RpOU6xpc > img').attrs['src']
+        try:
+            sp = BeautifulSoup(res, 'html.parser')
+            title = sp.select_one('._3oDjSvLwq9').text
+            brand = sp.select_one('._2o_RMIOix6').text
+            thumbnail = sp.select_one('._23RpOU6xpc > img').attrs['src']
 
-        prices = sp.select('._1LY7DqCnwR')
-        if len(prices) > 1:
-            price_before, price_after = prices
-            price_before = price_before.text.replace(',', '')
-            price_after = price_after.text.replace(',', '')
-            discount_rate = int(100 - int(price_after) / int(price_before) * 100)
-        else:
-            price_before = prices[0].text.replace(',', '')
-            price_after = None
-            discount_rate = 0
+            prices = sp.select('._1LY7DqCnwR')
+            if len(prices) > 1:
+                price_before, price_after = prices
+                price_before = price_before.text.replace(',', '')
+                price_after = price_after.text.replace(',', '')
+                discount_rate = int(100 - int(price_after) / int(price_before) * 100)
+            else:
+                price_before = prices[0].text.replace(',', '')
+                price_after = None
+                discount_rate = 0
 
-        return {
-            'title': title,
-            'brand': brand,
-            'priceBefore': price_before,
-            'priceAfter':price_after,
-            'discountRate': discount_rate,
-            'thumbnail':thumbnail,
-        }
+            return {
+                'title': title,
+                'brand': brand,
+                'priceBefore': price_before,
+                'priceAfter':price_after,
+                'discountRate': discount_rate,
+                'thumbnail':thumbnail,
+            }
+        except:
+            return self.etc_get_data(res)
 
     def etc_get_data(self, res):
         sp = BeautifulSoup(res, 'html.parser')
