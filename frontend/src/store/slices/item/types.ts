@@ -10,6 +10,7 @@ export interface ItemState {
     stickers: string[]
   }
   collections?: ItemCollectionState[]
+  thumbnail?: string
 }
 
 export interface ItemCollectionState {

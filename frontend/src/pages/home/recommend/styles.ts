@@ -10,7 +10,7 @@ const CollectionContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-horizontal: 40px;
+  margin-left: 30px;
 `
 
 const ImageContainer = styled.Image`
