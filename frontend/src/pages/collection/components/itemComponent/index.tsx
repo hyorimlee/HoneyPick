@@ -2,7 +2,7 @@ import * as React from 'react'
 import {memo, useCallback, useState} from 'react'
 import {Text, Image, Dimensions} from 'react-native'
 import {IComponentProps} from './types'
-import {ItemComponentContainer} from './styles'
+import {ItemComponentContainer, ItemInfoContainer} from './styles'
 import Config from 'react-native-config'
 import {moneyComma, stringSlice} from '~/modules/convert'
 
@@ -12,6 +12,7 @@ function ItemComponent({
   text,
   price,
   uri,
+  isRecommend,
   onPress,
   marginHorizontal,
   marginVertical,
@@ -44,9 +45,31 @@ function ItemComponent({
         }}
         source={{uri: `${Config.IMAGE_BASE_URL}/w128/${uri}`}}
       />
-      <Text style={{fontSize: 14, fontWeight: '600', textAlign, color}}>
-        {moneyComma(price)}
-      </Text>
+      <ItemInfoContainer>
+        <Text style={{fontSize: 14, fontWeight: '600', textAlign, color, flex: 1}}>
+          {moneyComma(price)}
+        </Text>
+        {isRecommend === 1 ?
+          <Image
+          style={{
+            flex: 0,
+            width: '20%',
+            height: '100%',
+          }}
+          source={require('../../../../assets/images/goodstamp.png')}
+          /> : null
+        }
+        {isRecommend === 2 ?
+          <Image
+          style={{
+            flex: 0,
+            width: '20%',
+            height: '100%',
+          }}
+          source={require('../../../../assets/images/honeystamp.png')}
+          /> : null
+        }
+      </ItemInfoContainer>
       <Text style={{fontSize: 12, textAlign, color}}>
         {stringSlice(text, 18)}
       </Text>

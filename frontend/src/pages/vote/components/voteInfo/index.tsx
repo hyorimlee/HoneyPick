@@ -19,9 +19,10 @@ import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {endVote, deleteVote} from '../../../../store/slices/vote/asyncThunk'
 import {setFollow} from '../../../../store/slices/profile/asyncThunk'
 import profileSlice from '../../../../store/slices/profile'
-import {VoteNavigationProp, VoteStackParamList} from '../../../vote/types'
 import {IComponentProps} from './types'
 import {RootStackNavigationProp} from '../../../../../types/navigation'
+import { setCollectionLike } from '~/store/slices/collection/asyncThunk'
+import collectionSlice from '~/store/slices/collection'
 
 function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
@@ -45,6 +46,11 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
     await dispatch(deleteVote({accountId: accountId, voteId: voteId}))
     navigation.navigate('Home')
   }, [])
+
+  const collectionLike = useCallback(() => {
+    dispatch(setCollectionLike({collectionId}))
+    dispatch(collectionSlice.actions.changMyLike())
+  }, [collectionId])
 
   const closeVote = useCallback(async () => {
     await dispatch(endVote({accountId: accountId, voteId: voteId}))
@@ -96,12 +102,16 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
         ) : (
           <>
             <BaseButton
-              text={'컬렉션 찜하기'}
-              onPress={closeVote}
-              fontSize={16}
+              text={`${
+                currentCollection.myLiked ? '마음이 바뀌었어요' : '마음에 들어요'
+              }`}
+              backgroundColor={`${
+                currentCollection.myLiked ? '#C4C4C4' : 'default'
+              }`}
+              onPress={collectionLike}
               paddingVertical={5}
-              paddingHorizontal={10}
-              marginHorizontal={6}></BaseButton>
+              paddingHorizontal={15}
+              ></BaseButton>
           </>
         )}
       </ButtonContainer>

@@ -36,6 +36,7 @@ function ColletionItems({accountId, collectionId}: IComponentProps) {
                 text={item.title ? item.title : '이름을 찾을 수 없어요.'}
                 price={item.priceAfter ? item.priceAfter : item.priceBefore}
                 uri={item.thumbnail}
+                isRecommend={item.recommend ? item.recommend : null}
                 onPress={pushToItemPage(item._id)}
               />
             )
