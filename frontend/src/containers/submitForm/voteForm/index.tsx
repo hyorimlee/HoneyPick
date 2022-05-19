@@ -55,7 +55,7 @@ function VoteForm() {
         onChangeText={voteTitleChanged}
         placeholder={'어떤 주제로 투표하실 건가요?'}
         returnKeyType={'next'}
-        maxLength={10}
+        maxLength={20}
       />
       {/* <BaseButton
         text={isPublic ? '비공개로 투표하기' : '공개 투표하기'}

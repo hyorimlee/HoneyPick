@@ -71,7 +71,6 @@ export const itemToCollection = createAsyncThunk<
       })
       return response.data
     } catch (err: any) {
-      console.log('delete err', err.response.data)
       return thunkAPI.rejectWithValue(err.response.data)
     }
   },

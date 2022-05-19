@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {memo, useCallback, useEffect} from 'react'
-import {View} from 'react-native'
-import HorizontalList from '~/components/flatList/horizontalList'
+import {Dimensions, FlatList, Image, Pressable, Text, View} from 'react-native'
 import {BoldText} from '../../styles'
 import {IProps} from './types'
 import {useNavigation} from '@react-navigation/native'
@@ -10,6 +9,8 @@ import {RootStackNavigationProp} from '~/../types/navigation'
 import {ImageContainer, ItemBox, ItemContainer, NormalText} from './styles'
 import Config from 'react-native-config'
 import {moneyComma, stringSlice} from '~/modules/convert'
+
+const {width} = Dimensions.get('window')
 
 function SearchResult({keywordEntered, collections, items}: IProps) {
   const navigation = useNavigation<RootStackNavigationProp>()
@@ -21,6 +22,44 @@ function SearchResult({keywordEntered, collections, items}: IProps) {
     },
     [userId],
   )
+
+  const pressedCollection = useCallback(
+    ({collectionId, accountId}: {collectionId: string; accountId: string}) =>
+      () => {
+        navigation.navigate('Collection', {collectionId, accountId})
+      },
+    [],
+  )
+
+  const collectionRenderItem = ({item, index}: {item: any; index: number}) => {
+    const thumbnail =
+      item.items.length > 0 ? item.items.slice(-1)[0].thumbnail : item.thumbnail
+
+    return (
+      <View
+        style={{
+          marginRight: 30,
+          marginLeft: !index ? 30 : -20,
+          marginBottom: 30,
+        }}>
+        <Pressable
+          onPress={pressedCollection({
+            collectionId: item._id,
+            accountId: item.user._id,
+          })}>
+          <ImageContainer
+            source={{
+              uri: `${Config.IMAGE_BASE_URL}/raw/${thumbnail}`,
+            }}
+            style={{}}></ImageContainer>
+          <Text style={{color: 'black', fontSize: 14, alignSelf: 'center'}}>
+            {item.title}
+          </Text>
+        </Pressable>
+      </View>
+    )
+  }
+
   const itemRenderItem = ({item}: {item: any}) => {
     return (
       <ItemBox style={{flex: 1}} key={item._id} onPress={pressedItem(item._id)}>
@@ -32,11 +71,7 @@ function SearchResult({keywordEntered, collections, items}: IProps) {
                 }
               : require('~/assets/images/sampleimage1.jpg')
           }
-          imageStyle={{
-            resizeMode: 'contain',
-            borderRadius: 10,
-          }}
-          style={{borderRadius: 10, borderWidth: 1, borderColor: '#C4C4C4'}}
+          resizeMode={'contain'}
         />
         <NormalText>
           {item.priceAfter
@@ -57,25 +92,29 @@ function SearchResult({keywordEntered, collections, items}: IProps) {
     <View>
       <BoldText>'{keywordEntered}'이(가) 포함된 컬렉션</BoldText>
       {collections.length ? (
-        <HorizontalList data={collections}></HorizontalList>
+        <FlatList
+          data={collections}
+          renderItem={collectionRenderItem}
+          horizontal={true}></FlatList>
       ) : (
-        <NormalText style={{marginVertical: 20}}>
+        <NormalText style={{marginVertical: 30, marginHorizontal: 30}}>
           검색 결과가 없습니다.
         </NormalText>
       )}
-
       <BoldText>'{keywordEntered}'이(가) 포함된 아이템</BoldText>
-      {items.length ? (
-        <ItemContainer>
-          {items.map((item: any) => {
-            return itemRenderItem({item})
-          })}
-        </ItemContainer>
-      ) : (
-        <NormalText style={{marginVertical: 20}}>
-          검색 결과가 없습니다.
-        </NormalText>
-      )}
+      <View style={{paddingHorizontal: 30}}>
+        {items.length ? (
+          <ItemContainer>
+            {items.map((item: any) => {
+              return itemRenderItem({item})
+            })}
+          </ItemContainer>
+        ) : (
+          <NormalText style={{marginVertical: 30}}>
+            검색 결과가 없습니다.
+          </NormalText>
+        )}
+      </View>
     </View>
   )
 }
