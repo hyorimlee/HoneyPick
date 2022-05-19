@@ -4,6 +4,7 @@ export interface IComponentProps {
   text: string
   price: string | number
   uri: string | undefined
+  isRecommend: number
   onPress: () => void
   marginHorizontal?: string | number
   marginVertical?: string | number
