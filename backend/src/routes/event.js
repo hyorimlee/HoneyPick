@@ -52,37 +52,25 @@ eventRouter.post('/', authAccessToken, async (req, res) => {
     //USER가 ADMIN 권한을 가졌는지 확인
     if(user.isAdmin == false) return res.status(401).send({err:'user is not admin'})
     // title, description, isPublic 추출 및 검증
-    const { title, description, additional} = req.body
+    const { title, description, additional, thumbnail } = req.body
     if (typeof title !== 'string') return res.status(400).send({ err: "string title is required"})
     if (additional && typeof additional !== 'string') return res.status(400).send({ err: "additional must be string type"})
     if (description && typeof description !== 'string') return res.status(400).send({ err: "description must be string type"})
-    // if(!itemCount) return res.status(400).send({err:"itemCount가 필요합니다."})
-    // console.log(user.events.length)
-    
-    // // 기존 컬렉션이 30개 이상이면, 생성 차단
-    // if (user.events.length >= 30) return res.status(403).send({ err: "maximum 30 events per user" })
+    if (thumbnail && typeof thumbnail !== 'string') return res.status(400).send({ err: "thumbnail must be string type"})
 
-    // event 자체 추가 
     let event = new Event({ ...req.body, user })
-    await event.save()
-    console.log(`event created! _id=${event._id}`)
-    //vote 추가하는 로직 시작~
-    // 이벤트 투표는 admin만 생성 가능
-    let items = []
-    const itemCount = 10
-    for (i=5; i < itemCount; i++) {
-      // Get the count of all users
-      let item = await Item.findOne().skip(i)
-      console.log(`${i} ==> ${item.title}`)
-      items.push(item)
-    }
-    event.items = items
+    const [, items] = await Promise.all([
+      event.save(),
+      Item.find({ _id: { $in: req.body.items } })
+    ])
+
     const vote = new Vote({ eventId:event._id, title, result: items, isPublic: true })
+    console.log(vote._id)
+    await vote.save()
     event.vote = vote._id
-    await Promise.all[vote.save(),event.save()]
-    let result = {...event._doc,vote:vote}
-    result.items = items
-    return res.status(201).send({event:result})
+    await event.save()
+    
+    return res.status(201).send({ message: "success" })
   } catch (error) {
     console.log(error)
     return res.status(500).send({ err: error.message })
