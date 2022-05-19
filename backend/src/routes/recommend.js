@@ -62,8 +62,21 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
 
         collections.push(...influencerCollection.filter(item => item))
 
+        var uniqueCollections = []
+        var uniqueCollectionIds = []
+        collections.forEach(({ title, collection }) => {
+            stringId = collection._id.toString()
+            if(uniqueCollectionIds.indexOf(stringId) > -1){
 
-        return res.status(200).send({ collections })
+            } else {
+                uniqueCollectionIds.push(stringId)
+                uniqueCollections.push({
+                    title, collection
+                })
+            }
+        })
+
+        return res.status(200).send({ collections: uniqueCollections })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
