@@ -45,7 +45,7 @@ function ItemStack({
   const isMyItem = userId === currentCollection!.user._id
   const [isRecommendMode, setIsRecommendMode] = useState(false)
   const {isModal} = useAppSelector(state => state.ui)
-  const isValidItem = item.title && item.priceBefore
+  const isValidItem = item.title || item.priceBefore
 
   useEffect(() => {
     if (isFocused && !isRecommendMode) {
