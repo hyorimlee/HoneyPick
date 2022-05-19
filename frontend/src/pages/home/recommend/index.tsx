@@ -164,35 +164,4 @@ function RecommendStack() {
   )
 }
 
-// const styles = StyleSheet.create({
-//   viewBox: {
-//     justifyContent: 'flex-start',
-//     alignItems: 'center',
-//     width: width * 0.9,
-//     borderRadius: 20,
-//     marginHorizontal: 10,
-//     marginVertical: 10,
-//   },
-//   collectionViewBox: {
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     width: width * 0.8,
-//     borderRadius: 20,
-//     marginHorizontal: 10,
-//     height: 140,
-//   },
-//   slider: {
-//     width: width * 0.9,
-//     alignSelf: 'center',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     borderRadius: 20,
-//   },
-//   dotContainer: {
-//     backgroundColor: 'transparent',
-//     position: 'absolute',
-//     bottom: 15,
-//   },
-// })
-
 export default memo(RecommendStack)
