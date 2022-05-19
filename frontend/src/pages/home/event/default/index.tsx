@@ -19,6 +19,7 @@ import {
   TitleText,
   NormalText,
 } from './styles'
+import Config from 'react-native-config'
 
 function EventList() {
   const isFocused = useIsFocused()
@@ -37,12 +38,18 @@ function EventList() {
   }
 
   const SubEvents = events.map((event, idx) => {
+    const thumbnail =
+      event.items.length > 0
+        ? event.items.slice(-1)[0].thumbnail
+        : event.thumbnail
     if (idx > 0) {
       return (
         <SubEvent onPress={() => onClick(event._id)} key={idx}>
           <InfoTop>
             <SubEventImage
-              source={require('~/assets/images/sampleimage2.jpg')}></SubEventImage>
+              source={{
+                uri: `${Config.IMAGE_BASE_URL}/raw/${thumbnail}`,
+              }}></SubEventImage>
             <InfoContainer>
               <NormalText style={{color: '#8C8C8C'}}>
                 directed by {event.user.nickname}
@@ -66,7 +73,11 @@ function EventList() {
             <MainEvent onPress={() => onClick(events[0]._id)}>
               <InfoTop>
                 <EventImage
-                  source={require('~/assets/images/sampleimage2.jpg')}></EventImage>
+                  source={{
+                    uri: `${Config.IMAGE_BASE_URL}/raw/${
+                      events[0].items.slice(-1)[0].thumbnail
+                    }`,
+                  }}></EventImage>
                 <InfoContainer>
                   <NormalText>directed by {events[0].user.nickname}</NormalText>
                   <TitleText>{events[0].title}</TitleText>
