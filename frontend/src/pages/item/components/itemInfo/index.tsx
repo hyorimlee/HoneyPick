@@ -26,16 +26,18 @@ function ItemInfo({openSheet, collectionId}: IProps) {
       <TextContainer>
         <NormalText>{item.brand}</NormalText>
         <BoldText>
-          {isValidItem ? item.title : '유효하지 않은 상품입니다.'}
+          {item.title ? item.title : '유효하지 않은 상품입니다.'}
         </BoldText>
         {!item.priceAfter ? (
           <RowTextContainer>
-            {isValidItem ? (
+            {item.priceBefore ? (
               <>
                 <PriceText>￦</PriceText>
                 <PriceText>{moneyComma(item.priceBefore!)}</PriceText>
               </>
-            ) : null}
+            ) : (
+              <BoldText>가격 정보가 없습니다.</BoldText>
+            )}
           </RowTextContainer>
         ) : (
           <View
