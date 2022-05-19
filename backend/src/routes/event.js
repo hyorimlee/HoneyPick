@@ -86,7 +86,7 @@ eventRouter.get('/', authAccessToken, async (req, res) => {
     const user = await User.findById(userId)
     if(user.withdraw == true) return res.status(401).send({err:"withdrawn user"})
 
-    const events = await Event.find({})
+    const events = await Event.find({}).sort({ updatedAt: -1 })
     let returnVals = []
     for(let i=0;i<events.length;i++){
       let event = events[i]
