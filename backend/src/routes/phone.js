@@ -19,7 +19,7 @@ phoneRouter.post('/', async (req, res) => {
         phone.verificationCode = undefined
 
         // 문자 발송
-        send(phoneNumber.replace('-', ''), verificationCode)
+        send(phoneNumber.replace(/-/gi, ''), verificationCode)
             .then(res => console.log(res))
             .catch(err => console.log(err))
 
