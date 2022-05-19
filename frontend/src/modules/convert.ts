@@ -6,12 +6,12 @@ export const stringSlice = (text: string, num: number) => {
 }
 
 /* 숫자 3자리마다 콤마 찍기 */
-export const moneyComma = (num: number | string | undefined) => {
-  if (num === undefined) {
+export const moneyComma = (num: number | string) => {
+  try {
+    return !!parseInt(num.toString())
+      ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      : num.toString()
+  } catch {
     return num
   }
-
-  return !!parseInt(num.toString())
-    ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    : num.toString()
 }

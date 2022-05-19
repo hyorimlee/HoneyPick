@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {memo, useCallback, useState, useEffect, createRef} from 'react'
+import {memo, useCallback, createRef} from 'react'
 import {Alert, Image, Text, TouchableOpacity, View} from 'react-native'
 import BaseButton from '../../../../components/button/base'
 import {useNavigation} from '@react-navigation/native'
@@ -25,12 +25,12 @@ import {RootStackNavigationProp} from '../../../../../types/navigation'
 import {goToProfile, IComponentProps} from './types'
 import uiSlice from '~/store/slices/ui'
 import Config from 'react-native-config'
+import collectionSlice from '~/store/slices/collection'
 
 function CollectionInfo({accountId, collectionId}: IComponentProps) {
   const dispatch = useAppDispatch()
   const navigation = useNavigation<RootStackNavigationProp>()
   const profileNavigation = useNavigation<goToProfile>()
-  const collectionNavigation = useNavigation<CollectionNavigationProp>()
   const actionSheetRef = createRef<ActionSheet>()
 
   const {userId} = useAppSelector(state => state.user)
@@ -80,6 +80,7 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
 
   const collectionLike = useCallback(() => {
     dispatch(setCollectionLike({collectionId}))
+    dispatch(collectionSlice.actions.changMyLike())
   }, [collectionId])
 
   const navigationProfile = useCallback(() => {
@@ -164,13 +165,18 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
         ) : (
           <>
             <BaseButton
-              text={'컬렉션 찜하기'}
+              text={`${
+                currentCollection.myLiked ? '컬렉션 찜 취소' : '컬렉션 찜'
+              }`}
+              backgroundColor={`${
+                currentCollection.myLiked ? '#C4C4C4' : 'default'
+              }`}
               onPress={collectionLike}
               paddingVertical={5}
               paddingHorizontal={10}
               marginHorizontal={6}></BaseButton>
             <BaseButton
-              text={`프로필 보러가기`}
+              text={`${username} 님의 프로필`}
               backgroundColor={'default'}
               onPress={navigationProfile}
               paddingVertical={5}

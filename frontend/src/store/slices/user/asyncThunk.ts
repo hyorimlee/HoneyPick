@@ -21,6 +21,7 @@ export const requestAccessToken = createAsyncThunk(
         headers: {
           authorization: `Bearer ${refreshToken}`,
         },
+        timeout: 10000,
       })
 
       return response.data

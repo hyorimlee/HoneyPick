@@ -33,8 +33,9 @@ function HorizontalList({data, title}: IProps) {
     const thumbnail =
       title?.includes('투표') && item.result.length > 0
         ? item.result.slice(-1)[0].thumbnail
+        : title?.includes('찜') && item.items.length > 0
+        ? item.items.slice(-1)[0].thumbnail
         : item.thumbnail
-
     return (
       <ItemContainer
         onPress={

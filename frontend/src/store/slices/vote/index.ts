@@ -1,17 +1,6 @@
-import axios from 'axios'
-import Config from 'react-native-config'
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {RootState} from '../../types'
+import {createSlice} from '@reduxjs/toolkit'
 import {VoteInitialState} from './types'
-import {ItemState} from '../item/types'
-import {
-  createVote,
-  getVoteList,
-  getVote,
-  endVote,
-  deleteVote,
-  vote,
-} from './asyncThunk'
+import {createVote, getVoteList, getVote, endVote} from './asyncThunk'
 
 const initialState: VoteInitialState = {
   currentVote: {

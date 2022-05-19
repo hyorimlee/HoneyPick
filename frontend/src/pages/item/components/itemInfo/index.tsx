@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo} from 'react'
-import {TouchableOpacity} from 'react-native'
+import {Text, TouchableOpacity, View} from 'react-native'
 import {useAppSelector} from '~/store/types'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons'
@@ -37,11 +37,21 @@ function ItemInfo({openSheet, collectionId}: IProps) {
             }
           </RowTextContainer>
         ) : (
-          <RowTextContainer>
-            <PriceText>￦</PriceText>
-            <PriceTextGray>{moneyComma(item.priceBefore!)}</PriceTextGray>
-            <PriceText>{moneyComma(item.priceAfter!)}</PriceText>
-          </RowTextContainer>
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <RowTextContainer>
+              <PriceText>￦</PriceText>
+              <PriceTextGray>{moneyComma(item.priceBefore!)}</PriceTextGray>
+              <PriceText>{moneyComma(item.priceAfter!)}</PriceText>
+            </RowTextContainer>
+            <Text style={{color: '#f9c12e', fontWeight: '700', fontSize: 20}}>
+              {item.discountRate}%
+            </Text>
+          </View>
         )}
         <NormalText>{isValidItem ? currentCollection!.title : '우측 버튼을 눌러 상품을 삭제할 수 있습니다.'}</NormalText>
       </TextContainer>

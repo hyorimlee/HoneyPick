@@ -10,6 +10,7 @@ const CollectionContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-right: 30px;
   margin-left: 30px;
   elevation: 3;
 `
@@ -17,8 +18,7 @@ const CollectionImageContainer = styled.Image`
   height: 100px;
   width: 100px;
   margin: 10px;
-  background-color: #F9C12E;
-  border-radius: 10px;
+  background-color: #f9c12e;
   border-radius: 10px;
   border-color: #c4c4c4;
 `
@@ -26,7 +26,6 @@ const CollectionImageContainer = styled.Image`
 const ImageContainer = styled.Image`
   height: 100px;
   width: 100px;
-  border-radius: 10px;
   border-radius: 10px;
   border-color: #c4c4c4;
   border-width: 1px;
@@ -42,8 +41,7 @@ const SearchBarContainer = styled.View``
 
 const SlideContainer = styled.ScrollView``
 
-const InfoContainer = styled.View`
-`
+const InfoContainer = styled.View``
 
 const ItemContainer = styled.View``
 

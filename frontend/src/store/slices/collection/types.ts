@@ -16,6 +16,7 @@ export interface CollectionState {
   updatedAt: string
   __v: number
   thumbnail: string
+  myLiked: boolean
 }
 
 export interface CollectionUserObject {

@@ -28,6 +28,7 @@ const initialState: CollectionInitialState = {
     updatedAt: '',
     __v: 1,
     thumbnail: '',
+    myLiked: false,
   },
   currentItems: [],
 }
@@ -39,6 +40,9 @@ const collectionSlice = createSlice({
     changeMyFollow: state => {
       state.currentCollection!.user.myFollow =
         !state.currentCollection?.user.myFollow
+    },
+    changMyLike: state => {
+      state.currentCollection.myLiked = !state.currentCollection.myLiked
     },
   },
   extraReducers: builder => {
@@ -54,6 +58,7 @@ const collectionSlice = createSlice({
         state.currentCollection = action.payload.collection
         state.currentCollection.user.myFollow = action.payload.myFollow
         state.currentCollection.thumbnail = thumbnail
+        state.currentCollection.myLiked = action.payload.liked
         state.currentItems = action.payload.items
       })
   },
