@@ -20,12 +20,19 @@ import {
   NormalText,
 } from './styles'
 import Config from 'react-native-config'
+import collectionSlice from '~/store/slices/collection'
 
 function EventList() {
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
   const navigation = useNavigation<EventDefaultNavigationProp>()
   const events = useAppSelector(state => state.event.eventList)
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(collectionSlice.actions.collectionUserReset())
+    }
+  }, [isFocused])
 
   useEffect(() => {
     if (isFocused) {

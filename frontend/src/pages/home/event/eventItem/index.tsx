@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {memo, useEffect, useState, useCallback} from 'react'
 import {SafeAreaView, Dimensions, Text, Alert} from 'react-native'
-import {useRoute, RouteProp} from '@react-navigation/native'
+import {useRoute, RouteProp, useIsFocused} from '@react-navigation/native'
 
 import BaseButton from '../../../../components/button/base'
 import {EventStackParamList} from '../types'
@@ -21,6 +21,7 @@ import {
   TitleText,
 } from '../default/styles'
 import Config from 'react-native-config'
+import collectionSlice from '~/store/slices/collection'
 
 function EventItem() {
   const dispatch = useAppDispatch()
@@ -34,6 +35,13 @@ function EventItem() {
   const isVoted = event.vote.participants.some(
     (participant: {_id: string} | undefined) => participant?._id === userId,
   )
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(collectionSlice.actions.collectionUserReset())
+    }
+  }, [isFocused])
 
   useEffect(() => {
     dispatch(getEvent(eventId))

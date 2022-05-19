@@ -13,6 +13,8 @@ import SearchResult from './components/searchResult'
 
 import {search} from '~/store/slices/search/asyncThunk'
 import {scrollProps} from './types'
+import collectionSlice from '~/store/slices/collection'
+import {useIsFocused} from '@react-navigation/native'
 
 function SearchStack() {
   const dispatch = useAppDispatch()
@@ -21,6 +23,13 @@ function SearchStack() {
   const [keyword, setKeyword] = useState('')
   const [keywordEntered, setKeywordEntered] = useState('')
   const [loading, setLoading] = useState(false)
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(collectionSlice.actions.collectionUserReset())
+    }
+  }, [isFocused])
 
   const getSearchList = (keyword: string, page: number) => {
     dispatch(search({keyword, page})).then(() => setLoading(false))

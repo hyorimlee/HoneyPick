@@ -104,7 +104,7 @@ function ItemStack({
 
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
-      {isMyItem ? (
+      {isMyItem && collectionId !== '' ? (
         <ActionSheet
           ref={actionSheetRef}
           containerStyle={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
@@ -161,38 +161,41 @@ function ItemStack({
             <RecommendInfo />
             {isMyItem ? (
               <>
-              {isValidItem ?
-                <BaseButton
-                text={'사이트로 이동하기'}
-                onPress={goToSite}
-                borderRadius={25}
-                marginVertical={10}
-                paddingVertical={15}
-                /> : null
-              }</>
-            ) : (
-              <View style={{flexDirection: 'row'}}>
-                <>
-                {isValidItem ?
-                  <>
+                {isValidItem ? (
                   <BaseButton
-                  flex={1}
-                  text={'사이트로 이동하기'}
+                    text={'사이트로 이동하기'}
                     onPress={goToSite}
                     borderRadius={25}
                     marginVertical={10}
                     paddingVertical={15}
-                    />
-                  <BaseButton
-                  flex={1}
-                  text={'내 컬렉션에 담기'}
-                  onPress={saveMyCollection}
-                  borderRadius={25}
-                  marginVertical={10}
-                  paddingVertical={15}
-                  marginLeft={10}
-                  /></>: null
-                }</>
+                  />
+                ) : null}
+              </>
+            ) : (
+              <View style={{flexDirection: 'row'}}>
+                <>
+                  {isValidItem ? (
+                    <>
+                      <BaseButton
+                        flex={1}
+                        text={'사이트로 이동하기'}
+                        onPress={goToSite}
+                        borderRadius={25}
+                        marginVertical={10}
+                        paddingVertical={15}
+                      />
+                      <BaseButton
+                        flex={1}
+                        text={'내 컬렉션에 담기'}
+                        onPress={saveMyCollection}
+                        borderRadius={25}
+                        marginVertical={10}
+                        paddingVertical={15}
+                        marginLeft={10}
+                      />
+                    </>
+                  ) : null}
+                </>
               </View>
             )}
           </>

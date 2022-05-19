@@ -3,18 +3,28 @@ import {memo, useCallback, useEffect} from 'react'
 import {Dimensions, FlatList, Image, Pressable, Text, View} from 'react-native'
 import {BoldText} from '../../styles'
 import {IProps} from './types'
-import {useNavigation} from '@react-navigation/native'
-import {useAppSelector} from '~/store/types'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
+import {useAppDispatch, useAppSelector} from '~/store/types'
 import {RootStackNavigationProp} from '~/../types/navigation'
 import {ImageContainer, ItemBox, ItemContainer, NormalText} from './styles'
 import Config from 'react-native-config'
 import {moneyComma, stringSlice} from '~/modules/convert'
+import collectionSlice from '~/store/slices/collection'
 
 const {width} = Dimensions.get('window')
 
 function SearchResult({keywordEntered, collections, items}: IProps) {
+  const dispatch = useAppDispatch()
   const navigation = useNavigation<RootStackNavigationProp>()
   const {userId} = useAppSelector(state => state.user)
+
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(collectionSlice.actions.collectionUserReset())
+    }
+  }, [isFocused])
 
   const pressedItem = useCallback(
     (itemId: string) => () => {

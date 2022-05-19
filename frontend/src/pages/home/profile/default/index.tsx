@@ -9,6 +9,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import ProfileLists from '../components/profileLists'
 import {ProfileDefaultNavigationProp, ProfileDefaultRoute} from './types'
 import {BackHandler, ToastAndroid} from 'react-native'
+import collectionSlice from '~/store/slices/collection'
 
 function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   const dispatch = useAppDispatch()
@@ -18,6 +19,12 @@ function Profile({navigation}: {navigation: ProfileDefaultNavigationProp}) {
   const userId = route.params!.userId
   const [isExit, setIsExit] = useState(false)
   const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(collectionSlice.actions.collectionUserReset())
+    }
+  }, [isFocused])
 
   useEffect(() => {
     const backAction = () => {

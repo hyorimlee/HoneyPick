@@ -29,7 +29,7 @@ function RecommendInfo() {
       {review ? (
         <TextContainer>
           <RowTextContainer>
-            <NormalText>{}님이 이 아이템을 추천하는 이유</NormalText>
+            <NormalText>이 아이템을 추천하는 이유</NormalText>
             <Stamp
               source={
                 review.isRecommend === 2
