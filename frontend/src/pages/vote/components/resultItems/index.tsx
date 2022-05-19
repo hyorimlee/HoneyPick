@@ -1,19 +1,39 @@
 import * as React from 'react'
 import {memo, useCallback, useState} from 'react'
 import {useNavigation} from '@react-navigation/native'
-import {Container, LargeItem, MediumItem, SmallItem, LargeItemFlex, LargeItemImage, LargeItemInfoContainer, MediumItemFlex, MediumItemImage, MediumItemInfoContainer, SmallItemFlex, TitleText, NormalText} from './styles'
-import { IComponentProps } from './types'
-import { RootStackNavigationProp } from '../../../../../types/navigation'
+import {
+  Container,
+  LargeItem,
+  MediumItem,
+  SmallItem,
+  LargeItemFlex,
+  LargeItemImage,
+  LargeItemInfoContainer,
+  MediumItemFlex,
+  MediumItemImage,
+  MediumItemInfoContainer,
+  SmallItemFlex,
+  TitleText,
+  NormalText,
+} from './styles'
+import {IComponentProps} from './types'
+import {RootStackNavigationProp} from '../../../../../types/navigation'
 import Config from 'react-native-config'
 
-function ResultItems({accountId, collectionId, eventId, voteId, result}: IComponentProps) {
+function ResultItems({
+  accountId,
+  collectionId,
+  eventId,
+  voteId,
+  result,
+}: IComponentProps) {
   const itemNavigation = useNavigation<RootStackNavigationProp>()
 
   const pushToItemPage = useCallback((itemId: string) => {
     if (collectionId) {
       itemNavigation.push('Item', {itemId: itemId, collectionId: collectionId})
     } else {
-      itemNavigation.push('Item', {itemId: itemId, collectionId: '' })
+      itemNavigation.push('Item', {itemId: itemId, collectionId: ''})
     }
   }, [])
 
@@ -21,12 +41,13 @@ function ResultItems({accountId, collectionId, eventId, voteId, result}: ICompon
     <Container>
       {result.map((item: any, index: number) => {
         if (index === 0) {
-          return(
+          return (
             <LargeItem key={index} onPress={() => pushToItemPage(item._id)}>
               <LargeItemFlex>
                 <LargeItemImage
-                  source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
-                ></LargeItemImage>
+                  source={{
+                    uri: `${Config.IMAGE_BASE_URL}/w128/${item.thumbnail}`,
+                  }}></LargeItemImage>
                 <LargeItemInfoContainer>
                   <TitleText numberOfLines={1}>{item.title}</TitleText>
                   <NormalText>{item.count} 표</NormalText>
@@ -35,12 +56,13 @@ function ResultItems({accountId, collectionId, eventId, voteId, result}: ICompon
             </LargeItem>
           )
         } else if (index === 1 || index === 2) {
-          return(
+          return (
             <MediumItem key={index} onPress={() => pushToItemPage(item._id)}>
               <MediumItemFlex>
                 <MediumItemImage
-                  source={{uri: `${Config.IMAGE_BASE_URL}/raw/${item.thumbnail}`}}
-                ></MediumItemImage>
+                  source={{
+                    uri: `${Config.IMAGE_BASE_URL}/w128/${item.thumbnail}`,
+                  }}></MediumItemImage>
                 <MediumItemInfoContainer>
                   <TitleText numberOfLines={1}>{item.title}</TitleText>
                   <NormalText>{item.count} 표</NormalText>
@@ -49,20 +71,22 @@ function ResultItems({accountId, collectionId, eventId, voteId, result}: ICompon
             </MediumItem>
           )
         } else {
-          return(
+          return (
             <SmallItem key={index} onPress={() => pushToItemPage(item._id)}>
               <SmallItemFlex>
-                <TitleText>{item.title.length < 20 ? `${item.title}` : `${item.title.substring(0, 20)}...`}</TitleText>
+                <TitleText>
+                  {item.title.length < 20
+                    ? `${item.title}`
+                    : `${item.title.substring(0, 20)}...`}
+                </TitleText>
                 <NormalText>{item.count} 표</NormalText>
               </SmallItemFlex>
             </SmallItem>
           )
         }
-
       })}
     </Container>
   )
 }
-
 
 export default memo(ResultItems)

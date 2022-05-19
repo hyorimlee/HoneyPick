@@ -19,40 +19,44 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
             User.find({}).sort({ followerCount: -1 }).limit(5)
         ])
 
-
-        const collectionTitles = myFollow.followings.map(({ nickname }) => `팔로우중인 ${nickname}의`).slice((page-1)*5, page*5)
-        const followUserIds = myFollow.followings.map(({ _id }) => _id).slice((page-1)*5, page*5)
+        const followUserIds = myFollow.followings.map(({ _id }) => _id)
 
         const [likedCollection, followCollections] = await Promise.all([
             Collection.find({ liked: { $gt: 0 } }).sort({ liked: -1 }).limit(5),
-            Collection.find({'user._id': {$in : followUserIds }})
+            Collection.aggregate([
+                { $match: { 'user._id': { $in : followUserIds } } },
+                { $sample: { size: 5 } }
+            ])
         ])
 
-        const collections = collectionTitles.map((title, idx) => {
+        const collections = followCollections.map((collection) => {
             return {
-                title,
-                collection: followCollections[idx]
+                title: 0,
+                collection
             }
         })
 
         // 많은 사람들의 찜에 담긴 컬렉션
         collections.push(...likedCollection.map(collection => {
             return {
-                title: `${collection.liked}명의 사람들의 찜에 담긴 컬렉션`,
+                title: 1,
                 collection
             }
         }))
 
         // 팔로워 수가 많은 유저의 랜덤 컬렉션
-        const influencerCollection = influencers.map(({ _id, followerCount, nickname, collections }) => {
+        const influencerCollection = influencers.map(({ _id, username, followerCount, nickname, collections }) => {
             if(collections.length) {
                 targetCollection = collections[Math.floor(Math.random() * collections.length)]
                 return {
-                    title: `${followerCount}명이 팔로우중인 ${nickname}의`,
+                    title: 2,
                     collection: {
                         ...targetCollection._doc,
                         user: {
-                            _id
+                            _id,
+                            username,
+                            nickname,
+                            followerCount,
                         }
                     }
                 }
@@ -93,17 +97,20 @@ recommendRouter.get('/item', authAccessToken, async (req, res) => {
             recs = recs.split(',').map((item) => parseInt(item))
         }
         else {
-            recs = getMultipleRandom([...Array(9).keys()], 5).sort()
+            recs = getMultipleRandom([...Array(9).keys()], 9).sort()
         }
         
         stickers = [...Array(8).keys()].map(idx => {
             stickerNo = idx+1
             sortKey = `stickers.${stickerNo}`
             obj = {
-                title: `스티커 ${stickerNo}이 많은 아이템`,
+
             }
             obj[sortKey] = -1
-            return obj
+            return {
+                title: `스티커 ${stickerNo}이 많은 아이템`,
+                sort: obj
+            }
         })
         
         recommends = [
@@ -116,6 +123,7 @@ recommendRouter.get('/item', authAccessToken, async (req, res) => {
 
         const promises = recommends.map(({ sort }) => Item.find({}).sort(sort).skip((page-1)*8).limit(8))
         const result = await Promise.all(promises)
+
         const items = result.map((item, idx) => {
             return {
                 rec: recs[idx],

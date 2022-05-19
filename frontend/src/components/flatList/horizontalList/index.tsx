@@ -13,19 +13,32 @@ function HorizontalList({data, title}: IProps) {
   const {userId} = useAppSelector(state => state.profile)
 
   const pressedList = useCallback(
-    (collectionId: string, voteId?: string, isClosed?: boolean) => () => {
-      title && title.includes('투표') && voteId && isClosed !== undefined
-        ? navigation.navigate('Vote', {
-            accountId: userId,
-            collectionId,
-            voteId,
-            isClosed,
-          })
-        : navigation.navigate('Collection', {
-            accountId: userId,
-            collectionId,
-          })
-    },
+    ({
+        collectionId,
+        voteId,
+        isClosed,
+        accountId,
+      }: {
+        collectionId: string
+        voteId?: string
+        isClosed?: boolean
+        accountId?: string
+      }) =>
+      () => {
+        title && title.includes('투표') && voteId && isClosed !== undefined
+          ? navigation.navigate('Vote', {
+              accountId: userId,
+              collectionId,
+              voteId,
+              isClosed,
+            })
+          : title && title.includes('찜') && accountId
+          ? navigation.navigate('Collection', {accountId, collectionId})
+          : navigation.navigate('Collection', {
+              accountId: userId,
+              collectionId,
+            })
+      },
     [userId],
   )
 
@@ -36,16 +49,23 @@ function HorizontalList({data, title}: IProps) {
         : title?.includes('찜') && item.items.length > 0
         ? item.items.slice(-1)[0].thumbnail
         : item.thumbnail
+
     return (
       <ItemContainer
         onPress={
           title && title.includes('투표')
-            ? pressedList(item.collectionId, item._id, item.isClosed)
-            : pressedList(item._id)
+            ? pressedList({
+                collectionId: item.collectionId,
+                voteId: item._id,
+                isClosed: item.isClosed,
+              })
+            : title?.includes('찜')
+            ? pressedList({collectionId: item._id, accountId: item.user._id})
+            : pressedList({collectionId: item._id})
         }
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
         <Image
-          source={{uri: `${Config.IMAGE_BASE_URL}/raw/${thumbnail}`}}
+          source={{uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`}}
           style={{
             width: 110,
             height: 110,

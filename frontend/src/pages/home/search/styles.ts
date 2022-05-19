@@ -23,7 +23,7 @@ const BoldText = styled.Text`
   margin-vertical: 20px;
   font-size: 16px;
   font-weight: bold;
-  margin-left: 30px;
+  margin-horizontal: 30px;
 `
 
 export {Container, SearchBarImage, SearchBarContainer, BoldText}

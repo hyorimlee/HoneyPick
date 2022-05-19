@@ -33,7 +33,11 @@ import {
 import {useNavigation} from '@react-navigation/native'
 import {RootStackNavigationProp} from '~/../types/navigation'
 import {STICKERS} from '~/modules/stickers'
-import {moneyComma, stringSlice} from '~/modules/convert'
+import {
+  moneyComma,
+  recommendCollectionKey,
+  stringSlice,
+} from '~/modules/convert'
 
 const {width} = Dimensions.get('window')
 
@@ -73,6 +77,13 @@ function RecommendStack() {
       return <></>
     }
 
+    const thumbnail =
+      item.title === 2
+        ? item.collection.thumbnail
+        : item.collection.items.length > 0
+        ? item.collection.items.slice(-1)[0].thumbnail
+        : item.collection.thumbnail
+
     return (
       <View key={item.collection._id} style={{marginBottom: 40}}>
         <CollectionContainer
@@ -83,17 +94,15 @@ function RecommendStack() {
           style={{width: width * 0.8, marginLeft: !index ? 30 : 0}}>
           <CollectionImageContainer
             source={{
-              uri: `${Config.IMAGE_BASE_URL}/raw/${item.collection.thumbnail}`,
+              uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`,
             }}
             resizeMode={'contain'}
           />
           <InfoContainer style={{flex: 1}}>
-            <NormalText
-              style={{color: 'black'}}
-              numberOfLines={1}
-              ellipsizeMode={'middle'}>
-              {item.title}
+            <NormalText numberOfLines={1} ellipsizeMode={'middle'}>
+              {recommendCollectionKey[item.title]}
             </NormalText>
+            <NormalText>{item.collection.user.nickname} 님의</NormalText>
             <BoldText>{item.collection.title}</BoldText>
           </InfoContainer>
         </CollectionContainer>
@@ -127,7 +136,9 @@ function RecommendStack() {
               : '가격정보 없음'}
           </NormalText>
           <NormalText>
-            {item.title ? stringSlice(item.title, 18) : 'No Title'}
+            {item.title
+              ? stringSlice(item.title, 18)
+              : '이름을 찾을 수 없어요.'}
           </NormalText>
         </Pressable>
       </ItemBox>
