@@ -12,6 +12,7 @@ const CollectionSchema = new Schema(
     thumbnail: { type: String, required: true, default: process.env.DEFAULT_PROFILE_IMG },
     items: [{
       _id: { type: ObjectId, required: true, ref: 'item'},
+      thumbnail: { type: String, required: true, default: process.env.DEFAULT_PROFILE_IMG },
       recommend: { type: Number, required: true, default: 0}
     }],
     isPublic: { type: Boolean, required: true },
