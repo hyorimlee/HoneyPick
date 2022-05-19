@@ -103,7 +103,7 @@ function VoteInfo({accountId, collectionId, voteId}: IComponentProps) {
           <>
             <BaseButton
               text={`${
-                currentCollection.myLiked ? '마음이 바뀌었어요' : '마음에 들어요'
+                currentCollection.myLiked ? '마음이 취소하기' : '마음에 들어요'
               }`}
               backgroundColor={`${
                 currentCollection.myLiked ? '#C4C4C4' : 'default'

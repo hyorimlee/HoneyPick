@@ -52,7 +52,7 @@ function ProfileLists() {
         <CustomActivityIndicator />
       )}
       <DivisionContainer>
-        <DivisionText>찜한 컬렉션</DivisionText>
+        <DivisionText>마음에 든 컬렉션</DivisionText>
       </DivisionContainer>
       {likes ? (
         <HorizontalList data={likes} title={'찜한 컬렉션'} />
