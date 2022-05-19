@@ -45,17 +45,13 @@ function EventList() {
   }
 
   const SubEvents = events.map((event, idx) => {
-    const thumbnail =
-      event.items.length > 0
-        ? event.items.slice(-1)[0].thumbnail
-        : event.thumbnail
     if (idx > 0) {
       return (
         <SubEvent onPress={() => onClick(event._id)} key={idx}>
           <InfoTop>
             <SubEventImage
               source={{
-                uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`,
+                uri: `${Config.IMAGE_BASE_URL}/w128/${event.thumbnail}`,
               }}></SubEventImage>
             <InfoContainer>
               <TitleText style={{color: '#8C8C8C'}}>{event.title}</TitleText>
@@ -81,9 +77,7 @@ function EventList() {
               <InfoTop>
                 <EventImage
                   source={{
-                    uri: `${Config.IMAGE_BASE_URL}/w128/${
-                      events[0].items.slice(-1)[0].thumbnail
-                    }`,
+                    uri: `${Config.IMAGE_BASE_URL}/w128/${events[0].thumbnail}`,
                   }}></EventImage>
                 <InfoContainer>
                   <TitleText>{events[0].title}</TitleText>
