@@ -44,7 +44,7 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
         }))
 
         // 팔로워 수가 많은 유저의 랜덤 컬렉션
-        const influencerCollection = influencers.map(({ _id, followerCount, nickname, collections }) => {
+        const influencerCollection = influencers.map(({ _id, username, followerCount, nickname, collections }) => {
             if(collections.length) {
                 targetCollection = collections[Math.floor(Math.random() * collections.length)]
                 return {
