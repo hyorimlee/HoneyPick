@@ -25,6 +25,7 @@ import {
   NormalText,
   BoldText,
   InfoContainer,
+  CollectionImageContainer,
   ImageContainer,
   ItemBox,
 } from './styles'
@@ -80,14 +81,19 @@ function RecommendStack() {
             item.collection._id,
           )}
           style={{width: width * 0.8, marginLeft: !index ? 30 : 0}}>
-          <ImageContainer
+          <CollectionImageContainer
             source={{
               uri: `${Config.IMAGE_BASE_URL}/raw/${item.collection.thumbnail}`,
             }}
             resizeMode={'contain'}
           />
           <InfoContainer style={{flex: 1}}>
-            <NormalText style={{color: 'black'}}>{item.title}</NormalText>
+            <NormalText
+              style={{color: 'black'}}
+              numberOfLines={1}
+              ellipsizeMode={'middle'}>
+              {item.title}
+            </NormalText>
             <BoldText>{item.collection.title}</BoldText>
           </InfoContainer>
         </CollectionContainer>

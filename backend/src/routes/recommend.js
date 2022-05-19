@@ -62,50 +62,62 @@ recommendRouter.get('/collection', authAccessToken, async (req, res) => {
 
         collections.push(...influencerCollection.filter(item => item))
 
+        var uniqueCollections = []
+        var uniqueCollectionIds = []
+        collections.forEach(({ title, collection }) => {
+            stringId = collection._id.toString()
+            if(uniqueCollectionIds.indexOf(stringId) > -1){
 
-        return res.status(200).send({ collections })
+            } else {
+                uniqueCollectionIds.push(stringId)
+                uniqueCollections.push({
+                    title, collection
+                })
+            }
+        })
+
+        return res.status(200).send({ collections: uniqueCollections })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ err: error.message })
     }
 })
 
+
 recommendRouter.get('/item', authAccessToken, async (req, res) => {
     try {
-        let { page=1, recs='0,1,2,3,4' } = req.query
+        let { page=1, recs } = req.query
         page = parseInt(page)
 
-        recs = recs.split(',').map((item) => parseInt(item))
-
-        // Recommend Schema
+        if(recs){
+            recs = recs.split(',').map((item) => parseInt(item))
+        }
+        else {
+            recs = getMultipleRandom([...Array(9).keys()], 5).sort()
+        }
+        
+        stickers = [...Array(8).keys()].map(idx => {
+            stickerNo = idx+1
+            sortKey = `stickers.${stickerNo}`
+            obj = {
+                title: `스티커 ${stickerNo}이 많은 아이템`,
+            }
+            obj[sortKey] = -1
+            return obj
+        })
+        
         recommends = [
             {
                 title: '최근 등록된 아이템',
                 sort: { updatedAt: -1 }
             },
-            {
-                title: '스티커 1이 많은 아이템',
-                sort: { 'stickers.1': -1 }
-            },
-            {
-                title: '스티커 2가 많은 아이템',
-                sort: { 'stickers.2': -1 }
-            },
-            {
-                title: '스티커 3이 많은 아이템',
-                sort: { 'stickers.3': -1 }
-            },
-            {
-                title: '스티커 4가 많은 아이템',
-                sort: { 'stickers.4': -1 }
-            },
+            ...stickers
         ].filter(({ }, idx) => recs.includes(idx))
 
         const promises = recommends.map(({ sort }) => Item.find({}).sort(sort).skip((page-1)*8).limit(8))
         const result = await Promise.all(promises)
         const items = result.map((item, idx) => {
             return {
-                // rec로 배열에 추가가 가능했으면 좋겠네
                 rec: recs[idx],
                 title: recommends[idx].title,
                 itemList: item,
@@ -119,5 +131,12 @@ recommendRouter.get('/item', authAccessToken, async (req, res) => {
         return res.status(500).send({ err: error.message })
     }
 })
+
+// 배열에서 랜덤개수만큼 뽑기
+function getMultipleRandom(arr, num) {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random())
+  
+    return shuffled.slice(0, num)
+}
 
 module.exports = recommendRouter

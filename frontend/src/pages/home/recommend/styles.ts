@@ -6,17 +6,26 @@ const Container = styled.ScrollView`
 
 const CollectionContainer = styled.TouchableOpacity`
   border-radius: 10px;
-  background-color: #c4c4c4;
+  background-color: #f7f7f7;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin-right: 30px;
+  margin-left: 30px;
+  elevation: 3;
+`
+const CollectionImageContainer = styled.Image`
+  height: 100px;
+  width: 100px;
+  margin: 10px;
+  background-color: #f9c12e;
+  border-radius: 10px;
+  border-color: #c4c4c4;
 `
 
 const ImageContainer = styled.Image`
   height: 100px;
   width: 100px;
-  border-radius: 10px;
   border-radius: 10px;
   border-color: #c4c4c4;
   border-width: 1px;
@@ -58,6 +67,7 @@ export {
   NormalText,
   BoldText,
   InfoContainer,
+  CollectionImageContainer,
   ImageContainer,
   ItemBox,
   ItemPageContainer,

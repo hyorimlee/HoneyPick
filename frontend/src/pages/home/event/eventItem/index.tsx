@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {memo, useEffect, useState, useCallback} from 'react'
-import {SafeAreaView, Dimensions, Text} from 'react-native'
+import {SafeAreaView, Dimensions, Text, Alert} from 'react-native'
 import {useRoute, RouteProp} from '@react-navigation/native'
 
 import BaseButton from '../../../../components/button/base'
@@ -11,7 +11,6 @@ import VoteItems from '../../../vote/components/voteItems'
 import ResultItems from '~/pages/vote/components/resultItems'
 import {vote} from '~/store/slices/vote/asyncThunk'
 import {cleanSelectedItems} from '~/store/slices/vote'
-
 import {Container, EventInfoContainer, VoteItemsContainer} from './styles'
 import {
   MainEvent,
@@ -42,19 +41,24 @@ function EventItem() {
     if (!prevState) {
       setOnVote(!prevState)
     }
+    Alert.alert('아이템을 선택 후 투표를 제출해 주세요!')
   }, [onVote])
 
   const submitVote = useCallback(() => {
-    selectedItems.map(async (item) => {
-      await dispatch(vote({accountId: '', voteId: event.vote._id, itemId: item._id}))
-    })
+    if (selectedItems.length === 0) {
+      Alert.alert('하나 이상의 아이템을 선택해 주세요!')
+    } else {
+      selectedItems.map(async (item) => {
+        await dispatch(vote({accountId: '', voteId: event.vote._id, itemId: item._id}))
+      })
 
-    dispatch(getEvent(eventId))
-    dispatch(cleanSelectedItems())
+      dispatch(getEvent(eventId))
+      dispatch(cleanSelectedItems())
 
-    const prevState = onVote
-    if (prevState) {
-      setOnVote(!prevState)
+      const prevState = onVote
+      if (prevState) {
+        setOnVote(!prevState)
+      }
     }
   }, [event, onVote, selectedItems])
 
@@ -69,9 +73,9 @@ function EventItem() {
                   <EventImage
                     source={require('~/assets/images/sampleimage2.jpg')}></EventImage>
                   <InfoContainer>
-                    <NormalText>directed by {event.user.nickname}</NormalText>
                     <TitleText>{event.title}</TitleText>
                     <NormalText>{event.description}</NormalText>
+                    <NormalText>directed by {event.user.nickname}</NormalText>
                   </InfoContainer>
                 </InfoTop>
                 <NormalText>{event.additional}</NormalText>

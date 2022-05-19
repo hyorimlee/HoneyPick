@@ -39,19 +39,26 @@ function Vote() {
     if (!prevState) {
       setOnVote(!prevState)
     }
+    Alert.alert('아이템을 선택 후 투표를 제출해 주세요!')
   }, [onVote])
 
   const submitVote = useCallback(() => {
-    Promise.all(
-      selectedItems.map(item =>
-        dispatch(vote({accountId, voteId: currentVote?._id, itemId: item._id})),
-      ),
-    ).then(() => {
-      Alert.alert('투표가 완료 되었습니다.')
-    })
+    if (selectedItems.length === 0) {
+      Alert.alert('하나 이상의 아이템을 선택해 주세요!')
+    } else {
+      Promise.all(
+        selectedItems.map(item =>
+          dispatch(
+            vote({accountId, voteId: currentVote?._id, itemId: item._id}),
+          ),
+        ),
+      ).then(() => {
+        Alert.alert('투표가 완료 되었습니다.')
+      })
 
-    setIsVoted(true)
-    setOnVote(false)
+      setIsVoted(true)
+      setOnVote(false)
+    }
   }, [accountId, currentVote, selectedItems])
 
   return (
@@ -71,13 +78,13 @@ function Vote() {
         <BaseButton
           text={onVote ? '투표 제출하기' : '투표 시작하기'}
           onPress={onVote ? submitVote : startVote}
-          fontSize={16}
+          borderRadius={25}
           marginVertical={10}
-          paddingVertical={15}
           marginHorizontal={30}
+          paddingVertical={15}
           position="absolute"
           width={windowWidth - 60}
-          bottom="0%"
+          bottom={0}
         />
       ) : null}
     </>
