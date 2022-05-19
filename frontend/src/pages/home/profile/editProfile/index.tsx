@@ -31,7 +31,7 @@ function EditProfile() {
   const [nickname, setNickname] = useState(initNickname)
   const [description, setDescription] = useState(initDescription)
   const [profileImage, setProfileImage] = useState(
-    `${Config.IMAGE_BASE_URL}/raw/${initProfileImage}`,
+    `${Config.IMAGE_BASE_URL}/w128/${initProfileImage}`,
   )
   const [phone, setPhone] = useState('')
   const [isPhoneChange, setIsPhoneChange] = useState(false)

@@ -49,7 +49,7 @@ function SearchResult({keywordEntered, collections, items}: IProps) {
           })}>
           <ImageContainer
             source={{
-              uri: `${Config.IMAGE_BASE_URL}/raw/${thumbnail}`,
+              uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`,
             }}
             style={{}}></ImageContainer>
           <Text style={{color: 'black', fontSize: 14, alignSelf: 'center'}}>

@@ -20,21 +20,22 @@ function ItemInfo({openSheet, collectionId}: IProps) {
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
   const isValidItem = item.title || item.priceBefore
-  console.log(item)
 
   return (
     <InfoContainer>
       <TextContainer>
         <NormalText>{item.brand}</NormalText>
-        <BoldText>{isValidItem ? item.title : '유효하지 않은 상품입니다.'}</BoldText>
+        <BoldText>
+          {isValidItem ? item.title : '유효하지 않은 상품입니다.'}
+        </BoldText>
         {!item.priceAfter ? (
           <RowTextContainer>
-            {isValidItem ?
+            {isValidItem ? (
               <>
                 <PriceText>￦</PriceText>
                 <PriceText>{moneyComma(item.priceBefore!)}</PriceText>
-              </> : null
-            }
+              </>
+            ) : null}
           </RowTextContainer>
         ) : (
           <View
@@ -53,7 +54,11 @@ function ItemInfo({openSheet, collectionId}: IProps) {
             </Text>
           </View>
         )}
-        <NormalText>{isValidItem ? currentCollection!.title : '우측 버튼을 눌러 상품을 삭제할 수 있습니다.'}</NormalText>
+        <NormalText>
+          {isValidItem
+            ? currentCollection!.title
+            : '우측 버튼을 눌러 상품을 삭제할 수 있습니다.'}
+        </NormalText>
       </TextContainer>
       {userId === currentCollection!.user._id ? (
         <TouchableOpacity onPress={openSheet}>

@@ -18,6 +18,7 @@ export const getCollectionRecommend = createAsyncThunk<
         authorization: `Bearer ${accessToken}`,
       },
     })
+
     return response.data
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err.response.data)
@@ -28,16 +29,17 @@ export const getItemRecommend = createAsyncThunk<
   any,
   IRecommendItemQuery,
   {state: RootState}
->('recommend/getItem', async ({page = 1, recs = '0,1,2,3,4'}, thunkAPI) => {
+>('recommend/getItem', async ({page = 1}, thunkAPI) => {
   try {
     const {accessToken} = thunkAPI.getState().user
     const response = await axios({
       method: 'GET',
-      url: `${Config.API_BASE_URL}/recommend/item?page=${page}&recs=${recs}`,
+      url: `${Config.API_BASE_URL}/recommend/item?page=${page}`,
       headers: {
         authorization: `Bearer ${accessToken}`,
       },
     })
+
     return response.data
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err.response.data)
