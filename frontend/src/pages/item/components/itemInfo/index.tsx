@@ -19,7 +19,7 @@ function ItemInfo({openSheet, collectionId}: IProps) {
   const {item} = useAppSelector(state => state.item)
   const {userId} = useAppSelector(state => state.user)
   const {currentCollection} = useAppSelector(state => state.collection)
-  const isValidItem = item.title && item.priceBefore
+  const isValidItem = item.title || item.priceBefore
   console.log(item)
 
   return (
