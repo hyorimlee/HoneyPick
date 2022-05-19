@@ -73,11 +73,11 @@ function ItemStack({
             )
               .unwrap()
               .then(() => navigation.pop())
-              .catch(() =>
+              .catch(error => {
                 Alert.alert(
                   '삭제가 되지 않았습니다.\n잠시후 다시 시도해주세요.',
-                ),
-              )
+                )
+              })
           },
         },
         {

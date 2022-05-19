@@ -88,13 +88,15 @@ function RecommendStack() {
             resizeMode={'contain'}
           />
           <InfoContainer style={{flex: 1}}>
-            <NormalText
+            <BoldText
               style={{color: 'black'}}
               numberOfLines={1}
               ellipsizeMode={'middle'}>
               {item.title}
-            </NormalText>
-            <BoldText>{item.collection.title}</BoldText>
+            </BoldText>
+            <BoldText>{item.collection.user.nickname} 님의</BoldText>
+            <BoldText>{item.collection.title} 컬렉션</BoldText>
+            <NormalText>{item.collection.description}</NormalText>
           </InfoContainer>
         </CollectionContainer>
       </View>
