@@ -11,20 +11,17 @@ phoneRouter.post('/', async (req, res) => {
         const { phoneNumber } = req.body
         if(typeof phoneNumber !== 'string') return res.status(400).send({ err: "핸드폰 번호를 입력해주세요." })
         
-        // 폰번호 검증 01000000000
-
         const verificationCode = Math.floor(Math.random()*1000000).toString().padStart(6, '0')
         
         const phone = new Phone({ phoneNumber, verificationCode })
         await phone.save()
 
-        // 테스트
-        // phone.verificationCode = undefined
+        phone.verificationCode = undefined
 
-        // // 문자 발송
-        // send(phoneNumber.replace('-', ''), verificationCode)
-        //     .then(res => console.log(res))
-        //     .catch(err => console.log(err))
+        // 문자 발송
+        send(phoneNumber.replace('-', ''), verificationCode)
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
 
         return res.status(201).send({ phone })
     } catch (error) {
