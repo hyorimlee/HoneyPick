@@ -113,8 +113,12 @@ itemRouter.patch('/:itemId', authAccessToken, async (req, res) => {
             if(!isValidObjectId(originalCollectionId)) return res.status(400).send({ err: "잘못된 originalCollectionId" })
             const idList = originalCollection.items.map(({_id}) => _id.toString())
             const itemList = await Item.find({ _id: { $in: idList }})
-            const targetThumbnail = itemList.filter(({ _id }) => _id.toString() !== itemId ).slice(-1)[0]['thumbnail']
-
+            let targetThumbnail = itemList.filter(({ _id }) => _id.toString() !== itemId ).slice(-1)[0]
+            if (!targetThumbnail) {
+              targetThumbnail = process.env.DEFAULT_PROFILE_IMG
+            } else {
+              targetThumbnail = targetThumbnail['thumbnail']
+            }
             promises.push(Collection.findOneAndUpdate({ _id: originalCollectionId, 'user._id': userId }, { $pull: { items: { _id: itemId } } }, { new: true }))
             promises.push(User.updateOne({ _id: userId , 'collections._id': originalCollectionId }, { 'collections.$.thumbnail': targetThumbnail }))
         }
