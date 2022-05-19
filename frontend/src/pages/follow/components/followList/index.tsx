@@ -49,7 +49,7 @@ function FollowList({data}: IProps) {
             style={{flexDirection: 'row'}}>
             <ProfileImage
               source={{
-                uri: `${Config.IMAGE_BASE_URL}/raw/${profileImage}`,
+                uri: `${Config.IMAGE_BASE_URL}/w128/${profileImage}`,
               }}></ProfileImage>
             <View style={{paddingLeft: 10}}>
               <Nickname>{nickname}</Nickname>

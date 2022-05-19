@@ -41,8 +41,8 @@ function VoteItems({
             return (
               <ItemComponent
                 key={index}
-                text={item?.title ? item.title : 'No title'}
-                price={item?.priceBefore ? item.priceBefore : 'No Price'}
+                text={item?.title ? item.title : '이름을 찾을 수 없어요.'}
+                price={item?.priceBefore ? item.priceBefore : '가격정보 없음'}
                 uri={item.thumbnail}
                 borderColor={
                   selectedItems?.find(votedItem => votedItem._id === item._id)
@@ -69,8 +69,8 @@ function VoteItems({
             return (
               <ItemComponent
                 key={index}
-                text={item?.title ? item.title : 'No title'}
-                price={item?.priceBefore ? item.priceBefore : 'No Price'}
+                text={item?.title ? item.title : '이름을 찾을 수 없어요.'}
+                price={item?.priceBefore ? item.priceBefore : '가격정보 없음'}
                 uri={item.thumbnail}
                 borderColor={
                   selectedItems?.find(votedItem => votedItem._id === item._id)

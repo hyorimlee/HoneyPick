@@ -15,3 +15,9 @@ export const moneyComma = (num: number | string) => {
     return num
   }
 }
+
+export const recommendCollectionKey = [
+  '내가 팔로우 중인',
+  '많은 사람들이 찜한',
+  '팔로워 수가 많은',
+]

@@ -17,8 +17,8 @@ const CollectionContainer = styled.TouchableOpacity`
 const CollectionImageContainer = styled.Image`
   height: 100px;
   width: 100px;
-  margin: 10px;
-  background-color: #f9c12e;
+  margin: 15px;
+  // background-color: #f9c12e;
   border-radius: 10px;
   border-color: #c4c4c4;
 `
@@ -53,7 +53,7 @@ const NormalText = styled.Text`
 `
 
 const BoldText = styled.Text`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: black;
 `

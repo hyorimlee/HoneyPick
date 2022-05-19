@@ -102,7 +102,7 @@ function CollectionInfo({accountId, collectionId}: IComponentProps) {
         </InfoTextContainer>
         <Image
           source={{
-            uri: `${Config.IMAGE_BASE_URL}/raw/${currentCollection.thumbnail}`,
+            uri: `${Config.IMAGE_BASE_URL}/w128/${currentCollection.thumbnail}`,
           }}
           style={{
             width: 96,

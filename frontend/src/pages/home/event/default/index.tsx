@@ -48,11 +48,13 @@ function EventList() {
           <InfoTop>
             <SubEventImage
               source={{
-                uri: `${Config.IMAGE_BASE_URL}/raw/${thumbnail}`,
+                uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`,
               }}></SubEventImage>
             <InfoContainer>
               <TitleText style={{color: '#8C8C8C'}}>{event.title}</TitleText>
-              <NormalText style={{color: '#8C8C8C'}}>directed by {event.user.nickname}</NormalText>
+              <NormalText style={{color: '#8C8C8C'}}>
+                directed by {event.user.nickname}
+              </NormalText>
             </InfoContainer>
           </InfoTop>
           <NormalText style={{color: '#8C8C8C'}}>
@@ -72,7 +74,7 @@ function EventList() {
               <InfoTop>
                 <EventImage
                   source={{
-                    uri: `${Config.IMAGE_BASE_URL}/raw/${
+                    uri: `${Config.IMAGE_BASE_URL}/w128/${
                       events[0].items.slice(-1)[0].thumbnail
                     }`,
                   }}></EventImage>
