@@ -65,7 +65,7 @@ function HorizontalList({data, title}: IProps) {
         }
         style={index === 0 ? {marginLeft: 30} : {marginLeft: -20}}>
         <Image
-          source={{uri: `${Config.IMAGE_BASE_URL}/raw/${thumbnail}`}}
+          source={{uri: `${Config.IMAGE_BASE_URL}/w128/${thumbnail}`}}
           style={{
             width: 110,
             height: 110,

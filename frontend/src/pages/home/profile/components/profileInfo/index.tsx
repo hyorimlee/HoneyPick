@@ -62,7 +62,7 @@ function ProfileInfo() {
     <Container>
       <InfoContainer>
         <ProfileImage
-          source={{uri: `${Config.IMAGE_BASE_URL}/raw/${profileImage}`}}
+          source={{uri: `${Config.IMAGE_BASE_URL}/w128/${profileImage}`}}
           resizeMode={'contain'}
         />
         <View>

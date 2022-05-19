@@ -42,7 +42,7 @@ function ItemComponent({
           borderColor: borderColor ? borderColor : '#C4C4C4',
           borderWidth: borderWidth ? borderWidth : 1,
         }}
-        source={{uri: `${Config.IMAGE_BASE_URL}/raw/${uri}`}}
+        source={{uri: `${Config.IMAGE_BASE_URL}/w128/${uri}`}}
       />
       <Text style={{fontSize: 14, fontWeight: '600', textAlign, color}}>
         {moneyComma(price)}

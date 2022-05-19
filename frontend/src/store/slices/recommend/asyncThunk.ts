@@ -40,13 +40,6 @@ export const getItemRecommend = createAsyncThunk<
       },
     })
 
-    console.log(response.data)
-
-    console.log(response.data.items[4].title)
-    console.log(response.data.items[4].itemList[0].stickers)
-    console.log(response.data.items[4].title)
-    console.log(response.data.items[4].itemList.slice(-1)[0].stickers)
-
     return response.data
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err.response.data)
