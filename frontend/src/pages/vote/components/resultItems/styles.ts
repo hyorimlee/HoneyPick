@@ -12,6 +12,7 @@ export const LargeItem = styled.TouchableOpacity`
   margin-vertical: 2%;
   border-radius: 20px;
   background-color: #F7F7F7;
+  elevation: 3;
 `
 export const LargeItemFlex = styled.View`
   flex-direction: row;
@@ -40,6 +41,7 @@ export const MediumItem = styled.TouchableOpacity`
   margin-horizontal: 2%;
   border-radius: 20px;
   background-color: #F7F7F7;
+  elevation: 3;
 `
 export const MediumItemFlex = styled.View`
   flex-direction: column;
@@ -66,6 +68,7 @@ export const SmallItem = styled.TouchableOpacity`
   margin-vertical: 2%;
   border-radius: 10px;
   background-color: #F7F7F7;
+  elevation: 3;
 `
 
 export const SmallItemFlex = styled.View`

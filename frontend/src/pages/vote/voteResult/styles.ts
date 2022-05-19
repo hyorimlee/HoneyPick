@@ -7,6 +7,11 @@ export const Container = styled.View`
   margin-top: 30px;
 `
 
+export const VoteResultInfoContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`
+
 export const TitleContainer = styled.View`
   flex-direction: row;
   justify-content: flex-start;
