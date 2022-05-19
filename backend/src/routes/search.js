@@ -7,12 +7,16 @@ const { authAccessToken } = require('./auth')
 
 async function searchItem(keyword, page, res){
     try {
-        let result=new Set()
-        for(let i=0;i<keyword.length;i++){            
-            const search = await Item.find({title: new RegExp(keyword[i])})
-            for(let j=0;j<search.length;j++) result.add(search[i])
+        let chk = new Set()
+        let result=[]
+        for(let i=0;i<keyword.length;i++){
+            const search = await Item.find({title: {$regex:keyword[i]}}).skip((page-1)*18).limit(18)
+            for(let i=0;i<search.length;i++){
+                if(chk.has(JSON.stringify(search[i]._id)))continue
+                chk.add(JSON.stringify(search[i]._id))
+                result.push(search[i])
+            }
         }
-        console.log("***************************************")
         return [...result]
     } catch (err) {
         console.log(err)
@@ -22,13 +26,20 @@ async function searchItem(keyword, page, res){
 
 async function searchCollection(keyword, res){
     try {
-        let result=new Set()
+        let chk=new Set()
+        let result = []
         for(let i=0;i<keyword.length;i++){    
-            let search = await Collection.find({title: new RegExp(keyword[i])})
-            for(let j=0;j<search.length;j++) result.add(search[i])
-            search = await Collection.find({description:new RegExp(keyword[i])})
-            for(let j=0;j<search.length;j++) {
-                if(search[i].description)result.add(search[i])
+            let search = await Collection.find({title: {$regex:keyword[i]}})
+            for(let i=0;i<search.length;i++){
+                if(chk.has(JSON.stringify(search[i]._id)))continue
+                chk.add(JSON.stringify(search[i]._id))
+                result.push(search[i])
+            }
+            search = await Collection.find({description:{$regex:keyword[i]}})
+            for(let i=0;i<search.length;i++){
+                if(chk.has(JSON.stringify(search[i]._id)))continue
+                chk.add(JSON.stringify(search[i]._id))
+                result.push(search[i])
             }
         }
         console.log(result)
@@ -48,7 +59,6 @@ searchRouter.post('/', authAccessToken, async (req, res) => {
         keyword = keyword.split(" ");
         const [items,collections] = await Promise.all([
             searchItem(keyword, page, res),
-            
             searchCollection(keyword, res)
         ])
         
