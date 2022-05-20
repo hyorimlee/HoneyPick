@@ -1,0 +1,335 @@
+[{
+  "_id": {
+    "$oid": "62869afe1df6c5557030680d"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030674f"
+    },
+    "username": "sosiny",
+    "nickname": "재지니"
+  },
+  "title": "재지니 개발자키트",
+  "description": "재지니가 사용하는 개발자 아이템 !",
+  "thumbnail": "honeypick.png",
+  "isPublic": true,
+  "liked": 1,
+  "items": [
+    {
+      "_id": {
+        "$oid": "62869afd1df6c5557030678b"
+      },
+      "thumbnail": "e58ed5d1-0699-4800-8999-a29cfd1ca131.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c5557030678f"
+      },
+      "thumbnail": "1fa69db0-ba9c-414e-9af6-71a3580e4bfa.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c55570306793"
+      },
+      "thumbnail": "3b63606b-8f29-4c4f-b452-06726103a7f4.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c55570306796"
+      },
+      "thumbnail": "f23fdb5e-d474-4988-8c4b-50192cef2f5c.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c55570306799"
+      },
+      "thumbnail": "2361fdb6-0c7c-408e-9a13-67568b996ee6.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c5557030679d"
+      },
+      "thumbnail": "970df614-14a0-4a15-a1e5-0022aee493a4.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c555703067a0"
+      },
+      "thumbnail": "b4fdc230-b3d2-4434-a468-9b156f639104.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c555703067a3"
+      },
+      "thumbnail": "0c2395b4-080c-4423-9efc-90b79fa20c8c.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c555703067a6"
+      },
+      "thumbnail": "e1ad1eca-8ae9-4a3d-92ec-dbc5c65f239d.jpg",
+      "recommend": 0
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988670667"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989694529"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869aff1df6c5557030684d"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030675e"
+    },
+    "username": "yoon",
+    "nickname": "yoon"
+  },
+  "title": "위시리스트",
+  "description": "언젠간 꼭 사야지",
+  "thumbnail": "honeypick.png",
+  "isPublic": true,
+  "liked": 0,
+  "items": [
+    {
+      "_id": {
+        "$oid": "62869afd1df6c555703067d0"
+      },
+      "thumbnail": "b32e0f99-b657-4b27-983f-5b5d305dc585.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c555703067d4"
+      },
+      "thumbnail": "835603ea-2840-45a4-bdb2-b265024d126d.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c555703067d7"
+      },
+      "thumbnail": "31431213-5562-4c99-b1e7-7f3c1ea84c9a.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067db"
+      },
+      "thumbnail": "00072847-415a-40fe-a012-a2c525e5ab34.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067de"
+      },
+      "thumbnail": "7be97139-16d1-4927-873c-c42632013ae1.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067e1"
+      },
+      "thumbnail": "60189502-c5a4-4c87-b8ab-941f2860974d.jpg",
+      "recommend": 2
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988671259"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652988671560"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869aff1df6c55570306877"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c55570306759"
+    },
+    "username": "croquant",
+    "nickname": "croquant"
+  },
+  "title": "키보드",
+  "description": "키보드&키캡",
+  "thumbnail": "honeypick.png",
+  "isPublic": true,
+  "liked": 0,
+  "items": [
+    {
+      "_id": {
+        "$oid": "62869afc1df6c55570306764"
+      },
+      "thumbnail": "aa6b230c-c0c4-4913-8eaf-099484a1ebba.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afc1df6c55570306767"
+      },
+      "thumbnail": "dbfc5754-dcdb-4ca7-b437-c8989a16b462.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afc1df6c5557030676a"
+      },
+      "thumbnail": "3e228fb5-44e4-4d1c-a8c0-2f28bb49ac3f.jpg",
+      "recommend": 0
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988671757"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652988671880"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869b001df6c5557030688b"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c55570306754"
+    },
+    "username": "unho",
+    "nickname": "언호"
+  },
+  "title": "키보드~!",
+  "description": "키보드 사고 싶습니다",
+  "thumbnail": "honeypick.png",
+  "isPublic": true,
+  "liked": 0,
+  "items": [
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067e4"
+      },
+      "thumbnail": "036d3d21-c1c1-46fd-bee3-30a49d9c06da.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067e8"
+      },
+      "thumbnail": "41e08566-105c-442f-9a7e-9a609927045a.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067ec"
+      },
+      "thumbnail": "d1703e31-48d7-4f90-a548-a1ace5781872.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067f0"
+      },
+      "thumbnail": "d8f8d201-f918-4e19-9bdd-343f73267c36.jpg",
+      "recommend": 2
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067f3"
+      },
+      "thumbnail": "5cbbe246-83b9-45e6-832e-477551db8ff5.jpg",
+      "recommend": 1
+    },
+    {
+      "_id": {
+        "$oid": "62869afe1df6c555703067e1"
+      },
+      "thumbnail": "60189502-c5a4-4c87-b8ab-941f2860974d.jpg",
+      "recommend": 1
+    },
+    {
+      "_id": {
+        "$oid": "62869afd1df6c555703067b9"
+      },
+      "thumbnail": "12dec7c1-7e0e-4709-b999-9547465f917f.jpg",
+      "recommend": 0
+    },
+    {
+      "_id": {
+        "$oid": "62869afc1df6c5557030676a"
+      },
+      "thumbnail": "3e228fb5-44e4-4d1c-a8c0-2f28bb49ac3f.jpg",
+      "recommend": 0
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988672022"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989987551"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286c4b86ef53e4a01a28aa0"
+  },
+  "user": {
+    "_id": {
+      "$oid": "6286c3b76ef53e4a01a289cb"
+    },
+    "username": "minchae",
+    "nickname": "밍채"
+  },
+  "title": "맛집",
+  "description": "꼭 간다!!!",
+  "thumbnail": "honeypick.png",
+  "isPublic": true,
+  "liked": 0,
+  "items": [
+    {
+      "_id": {
+        "$oid": "6286c53f6ef53e4a01a28ab7"
+      },
+      "thumbnail": "34ea6128-a3b3-43ad-b240-05dbabd0fba1.jpg",
+      "recommend": 0
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652999352499"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652999490392"
+    }
+  },
+  "__v": 0
+}]

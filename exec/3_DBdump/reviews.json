@@ -1,0 +1,123 @@
+[{
+  "_id": {
+    "$oid": "62869aff1df6c55570306871"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030675e"
+    },
+    "username": "yoon",
+    "nickname": "yoon"
+  },
+  "item": {
+    "$oid": "62869afe1df6c555703067e1"
+  },
+  "isRecommend": 2,
+  "stickers": [
+    3,
+    6
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988671563"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652988671563"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869b571df6c55570306907"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c55570306754"
+    },
+    "username": "unho",
+    "nickname": "언호"
+  },
+  "item": {
+    "$oid": "62869afe1df6c555703067f3"
+  },
+  "isRecommend": 1,
+  "stickers": [
+    "2",
+    "6",
+    "7"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988759920"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652988829808"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869e241df6c55570306c75"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c55570306754"
+    },
+    "username": "unho",
+    "nickname": "언호"
+  },
+  "item": {
+    "$oid": "62869afe1df6c555703067f0"
+  },
+  "isRecommend": 2,
+  "stickers": [
+    "2",
+    "4",
+    "6"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652989476530"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989476530"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a023f89c5630b6539707"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c55570306754"
+    },
+    "username": "unho",
+    "nickname": "언호"
+  },
+  "item": {
+    "$oid": "62869afe1df6c555703067e1"
+  },
+  "isRecommend": 1,
+  "stickers": [
+    "2",
+    "6"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652989987563"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989987563"
+    }
+  },
+  "__v": 0
+}]
