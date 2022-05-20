@@ -1,4 +1,8 @@
 apply plugin: "com.android.application"
+project.ext.envConfigFiles = [
+        debug: ".env",
+        release: ".env"
+]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
@@ -136,13 +140,13 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.frontend"
+        applicationId "com.koko.honeypick"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "4.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-        resValue "string", "build_config_package", "com.frontend"
+        resValue "string", "build_config_package", "com.koko.honeypick"
 
         if (isNewArchitectureEnabled()) {
             // We configure the NDK build only if you decide to opt-in for the New Architecture.
@@ -232,6 +236,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if(project.hasProperty('HONEYPICK_RELEASE_STORE_FILE')) {
+                storeFile file(HONEYPICK_RELEASE_STORE_FILE)
+                storePassword HONEYPICK_RELEASE_STORE_PASSWORD
+                keyAlias HONEYPICK_RELEASE_KEY_ALIAS
+                keyPassword HONEYPICK_RELEASE_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
@@ -240,7 +252,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
