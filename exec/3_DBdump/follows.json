@@ -1,0 +1,212 @@
+[{
+  "_id": {
+    "$oid": "62869afb1df6c55570306746"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afb1df6c55570306745"
+    },
+    "username": "google"
+  },
+  "followings": [],
+  "followers": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869afc1df6c5557030674b"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030674a"
+    },
+    "username": "koko"
+  },
+  "followings": [],
+  "followers": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869afc1df6c55570306750"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030674f"
+    },
+    "username": "sosiny"
+  },
+  "followings": [],
+  "followers": [
+    {
+      "_id": {
+        "$oid": "62869afc1df6c55570306754"
+      },
+      "username": "unho",
+      "nickname": "언호",
+      "description": "",
+      "profileImage": "honeypick.png",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1652988938321"
+        }
+      },
+      "myFollow": false
+    },
+    {
+      "_id": {
+        "$oid": "6286c3b76ef53e4a01a289cb"
+      },
+      "username": "minchae",
+      "nickname": "밍차이",
+      "description": "",
+      "profileImage": "honeypick.png",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1652999095454"
+        }
+      },
+      "myFollow": false
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869afc1df6c55570306755"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c55570306754"
+    },
+    "username": "unho"
+  },
+  "followings": [
+    {
+      "_id": {
+        "$oid": "62869afc1df6c5557030674f"
+      },
+      "username": "sosiny",
+      "nickname": "재지니",
+      "description": "",
+      "profileImage": "honeypick.png",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1652988671120"
+        }
+      },
+      "myFollow": true
+    }
+  ],
+  "followers": [
+    {
+      "_id": {
+        "$oid": "6286c3b76ef53e4a01a289cb"
+      },
+      "username": "minchae",
+      "nickname": "밍차이",
+      "description": "",
+      "profileImage": "honeypick.png",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1652999121394"
+        }
+      },
+      "myFollow": false
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869afc1df6c5557030675a"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c55570306759"
+    },
+    "username": "croquant"
+  },
+  "followings": [],
+  "followers": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869afc1df6c5557030675f"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030675e"
+    },
+    "username": "yoon"
+  },
+  "followings": [],
+  "followers": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a4226ef53e4a01a287ef"
+  },
+  "user": {
+    "_id": {
+      "$oid": "6286a4226ef53e4a01a287ee"
+    },
+    "username": "unho3"
+  },
+  "followings": [],
+  "followers": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286c3b76ef53e4a01a289cc"
+  },
+  "user": {
+    "_id": {
+      "$oid": "6286c3b76ef53e4a01a289cb"
+    },
+    "username": "minchae"
+  },
+  "followings": [
+    {
+      "_id": {
+        "$oid": "62869afc1df6c5557030674f"
+      },
+      "username": "sosiny",
+      "nickname": "재지니",
+      "description": "",
+      "profileImage": "honeypick.png",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1652988985180"
+        }
+      },
+      "myFollow": true
+    },
+    {
+      "_id": {
+        "$oid": "62869afc1df6c55570306754"
+      },
+      "username": "unho",
+      "nickname": "언호",
+      "description": "안뇽",
+      "profileImage": "2497b078-eb5c-4230-ac59-fcda1810d2b5.jpeg",
+      "updatedAt": {
+        "$date": {
+          "$numberLong": "1652989806771"
+        }
+      },
+      "myFollow": true
+    }
+  ],
+  "followers": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286e0cf6ef53e4a01a28b5a"
+  },
+  "user": {
+    "_id": {
+      "$oid": "6286e0cf6ef53e4a01a28b59"
+    },
+    "username": "Hyorim"
+  },
+  "followings": [],
+  "followers": [],
+  "__v": 0
+}]

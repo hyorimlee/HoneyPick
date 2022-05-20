@@ -1,0 +1,209 @@
+[{
+  "_id": {
+    "$oid": "62869d961df6c55570306c03"
+  },
+  "verificationCode": "345236",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652989334502"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989334502"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869dfe1df6c55570306c51"
+  },
+  "verificationCode": "912454",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652989438751"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989438751"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869f1710744d0ecd583edf"
+  },
+  "verificationCode": "189096",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652989719205"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989719205"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62869f350f66d138436528e2"
+  },
+  "verificationCode": "407732",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652989749661"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652989749661"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a041f89c5630b653971a"
+  },
+  "verificationCode": "575957",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652990017348"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652990017348"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a0f3f89c5630b65397ae"
+  },
+  "verificationCode": "631563",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652990195811"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652990195811"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a215f89c5630b6539812"
+  },
+  "verificationCode": "102185",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652990485564"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652990485564"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a21df89c5630b6539814"
+  },
+  "verificationCode": "073473",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652990493265"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652990493265"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a3aef89c5630b653985b"
+  },
+  "verificationCode": "285827",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652990894322"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652990894322"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a3e06ef53e4a01a287d7"
+  },
+  "verificationCode": "524214",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652990944034"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652990944034"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286a3f46ef53e4a01a287ea"
+  },
+  "verificationCode": "018007",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652990964605"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652990964605"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286c3ab6ef53e4a01a289c7"
+  },
+  "verificationCode": "276125",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652999083614"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652999083614"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6286e0c36ef53e4a01a28b55"
+  },
+  "verificationCode": "920710",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1653006531859"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1653006531859"
+    }
+  },
+  "__v": 0
+}]
