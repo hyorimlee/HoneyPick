@@ -1,4 +1,4 @@
-package com.frontend;
+package com.koko.honeypick;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
