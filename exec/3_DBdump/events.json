@@ -1,0 +1,150 @@
+[{
+  "_id": {
+    "$oid": "62869afe1df6c555703067f6"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030674a"
+    },
+    "username": "koko",
+    "nickname": "코코"
+  },
+  "title": "어버이날 선물 모음",
+  "description": "~2022.05.08",
+  "additional": "어버이날 선물하기 좋은 아이템 모음전",
+  "thumbnail": "parentsday.png",
+  "items": [
+    {
+      "$oid": "62869afc1df6c5557030676d"
+    },
+    {
+      "$oid": "62869afc1df6c55570306770"
+    },
+    {
+      "$oid": "62869afd1df6c55570306773"
+    },
+    {
+      "$oid": "62869afd1df6c55570306776"
+    },
+    {
+      "$oid": "62869afd1df6c5557030677a"
+    },
+    {
+      "$oid": "62869afd1df6c5557030677e"
+    },
+    {
+      "$oid": "62869afd1df6c55570306781"
+    },
+    {
+      "$oid": "62869afd1df6c55570306785"
+    },
+    {
+      "$oid": "62869afd1df6c55570306788"
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988670298"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652988670428"
+    }
+  },
+  "__v": 0,
+  "vote": {
+    "$oid": "62869afe1df6c555703067fa"
+  }
+},{
+  "_id": {
+    "$oid": "62869afe1df6c55570306802"
+  },
+  "user": {
+    "_id": {
+      "$oid": "62869afc1df6c5557030674a"
+    },
+    "username": "koko",
+    "nickname": "코코"
+  },
+  "title": "개발자를 살려줘",
+  "description": "2022.05.21~2022.05.28",
+  "additional": "각자의 BEST 개발자템을 뽑아주세요",
+  "thumbnail": "saveprogrammer.png",
+  "items": [
+    {
+      "$oid": "62869afd1df6c5557030678b"
+    },
+    {
+      "$oid": "62869afd1df6c5557030678f"
+    },
+    {
+      "$oid": "62869afd1df6c55570306793"
+    },
+    {
+      "$oid": "62869afd1df6c55570306796"
+    },
+    {
+      "$oid": "62869afd1df6c55570306799"
+    },
+    {
+      "$oid": "62869afd1df6c5557030679d"
+    },
+    {
+      "$oid": "62869afd1df6c555703067a0"
+    },
+    {
+      "$oid": "62869afd1df6c555703067a3"
+    },
+    {
+      "$oid": "62869afd1df6c555703067a6"
+    },
+    {
+      "$oid": "62869afd1df6c555703067ab"
+    },
+    {
+      "$oid": "62869afd1df6c555703067ae"
+    },
+    {
+      "$oid": "62869afd1df6c555703067b2"
+    },
+    {
+      "$oid": "62869afd1df6c555703067b6"
+    },
+    {
+      "$oid": "62869afd1df6c555703067b9"
+    },
+    {
+      "$oid": "62869afd1df6c555703067bd"
+    },
+    {
+      "$oid": "62869afd1df6c555703067c0"
+    },
+    {
+      "$oid": "62869afd1df6c555703067c3"
+    },
+    {
+      "$oid": "62869afd1df6c55570306781"
+    },
+    {
+      "$oid": "62869afd1df6c555703067c9"
+    },
+    {
+      "$oid": "62869afd1df6c555703067cc"
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1652988670472"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1652988670522"
+    }
+  },
+  "__v": 0,
+  "vote": {
+    "$oid": "62869afe1df6c55570306805"
+  }
+}]
