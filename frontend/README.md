@@ -99,21 +99,59 @@ JavaScript 를 이용한 프로젝트 개발 진행시 테스트 및 실서비�
 
 ### 투표 페이지
 
+<img src="https://user-images.githubusercontent.com/84773475/169754326-ddf0dc97-bb77-4fcd-b5ae-22561acd8109.jpg" alt="vote" style="float: left; margin-right: 1rem; height: 300px;">
+
+컬렉션의 아이템들로 투표를 진행 할 수 있으며, 투표를 종료하여 투표 결과를 확인 할 수 있습니다.
+
+<div style="clear: both;">
+
 &nbsp;
 
 ### 아이템 추가하기
+
+<img src="https://user-images.githubusercontent.com/84773475/169755265-d9e5110d-dea3-4253-af24-01010860422e.gif" alt="add_item" style="float: left; margin-right: 1rem; height: 300px;">
+
+브라우저를 이용하여 쇼핑하였을때, 해당 쇼핑몰의 주소를 복사하여 상품의 정보를 가져 올 수 있습니다.
+
+주소를 복사 한 이후 어플리케이션 재접속시 복사된 링크를 감지하여 추가 가능합니다.
+
+<div style="clear: both;">
 
 &nbsp;
 
 ### 추천 페이지
 
+<img src="https://user-images.githubusercontent.com/84773475/169756196-7b2359c3-aaa2-43a1-810b-12d34afc4fdc.gif" alt="recommend" style="float: left; margin-right: 1rem; height: 300px;">
+
+하단 탭의 추천을 선택하여 다른 사용자들이 추가한 아이템과 컬렉션을 추천 받을 수 있습니다.
+
+추천의 종류로 가장 많은 마음을 담은 컬렉션(인기가 많은), 특정 스티커를 많이 받은 아이템 등을 추천 받을 수 있습니다.
+
+<div style="clear: both;">
+
 &nbsp;
 
 ### 검색 페이지
 
+<img src="https://user-images.githubusercontent.com/84773475/169757215-f341e5d9-2fdb-41c2-ab0c-1e4828c23b74.gif" alt="search" style="float: left; margin-right: 1rem; height: 300px;">
+
+하단 탭의 검색을 이용하여, 원하는 컬렉션 또는 아이템을 검색 할 수 있습니다.
+
+검색된 컬렉션 또는 아이템을 선택하여 상세페이지로 이동되고, 본인의 컬렉션에 추가 할 수 있습니다.
+
+<div style="clear: both;">
+
 &nbsp;
 
 ### 이벤트 페이지
+
+<img src="https://user-images.githubusercontent.com/84773475/169756573-57505ae1-2e76-4cb7-b76b-8f8e6b91c356.gif" alt="event" style="float: left; margin-right: 1rem; height: 300px;">
+
+관리자가 진행하는 특정 이벤트 투표에 참여 할 수 있습니다.
+
+특정 기간 진행되는 이벤트는 이벤트 종료 이후 투표의 결과를 확인 할 수 있습니다.
+
+<div style="clear: both;">
 
 &nbsp;
 &nbsp;
