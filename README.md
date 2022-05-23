@@ -68,7 +68,7 @@
 | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- |
 | <img src="https://github.com/minchae9.png" width=150px, height=150px> | <img src="https://github.com/hyorimlee.png" width=150px, height=150px > | <img src="https://github.com/svstar94.png" width=150px, height=150px> |
 | 팀장, Backend                              | Backend                                  | Backend                                  |
-| PM(Jira, Wiki 관리)<br>API 문서 작성 및 구현<br>인프라 보조<br>UCC 기획 |                                          | API 문서 작성<br>FE, BE 개발<br>이미지 관리<br>크롤러 개발 |
+| PM(Jira, Wiki 관리)<br>API 문서 작성 및 구현<br>인프라 보조<br>UCC 기획 |   인프라 구축<br>BE 개발(User, Profile, Search)<br>API 문서 작성<br>UCC기획 및 제작                   | API 문서 작성<br>FE, BE 개발<br>이미지 관리<br>크롤러 개발 |
 
 | [이언호](https://github.com/unho-00)        | [최현규](https://github.com/%7B%7D)         | [한지윤](https://github.com/yoonnotyoun)    |
 | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- |
