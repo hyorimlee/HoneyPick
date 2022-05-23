@@ -74,4 +74,4 @@
 | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- |
 | <img src="https://github.com/unho-00.png" width=150px, height=150px> | <img src="https://github.com/" width=150px, height=150px > | <img src="https://github.com/yoonnotyoun.png" width=150px, height=150px> |
 | Frontend                                 | Frontend                                 | Frontend                                 |
-|                                          |                                          |                                          |
+| FE 개발 (공통 컴포넌트 생성, 로그인/회원가입 페이지, 프로필 페이지, 팔로우 페이지, 기타 버그 수정) |                                          |                                          |
